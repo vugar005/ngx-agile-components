@@ -23,6 +23,12 @@
       ],
       "dropdown/*": [
         "dist/dropdown/*"
+      ],
+      "native-table": [
+        "dist/native-table"
+      ],
+      "native-table/*": [
+        "dist/native-table/*"
       ]
     }
   }

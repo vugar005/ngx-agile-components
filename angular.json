@@ -160,6 +160,41 @@
           }
         }
       }
+    },
+    "native-table": {
+      "root": "projects/native-table",
+      "sourceRoot": "projects/native-table/src",
+      "projectType": "library",
+      "prefix": "ngx",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/native-table/tsconfig.lib.json",
+            "project": "projects/native-table/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/native-table/src/test.ts",
+            "tsConfig": "projects/native-table/tsconfig.spec.json",
+            "karmaConfig": "projects/native-table/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/native-table/tsconfig.lib.json",
+              "projects/native-table/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "ngx-agile-components"
