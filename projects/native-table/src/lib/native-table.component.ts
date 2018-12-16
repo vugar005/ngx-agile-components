@@ -1,13 +1,19 @@
+import { CheckboxStatus } from './checkbox-status';
 import { ApiConfig } from './api-config.model';
-import { Component, OnInit, Input, Output, EventEmitter, TemplateRef, ContentChild, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, TemplateRef,
+        ContentChild, AfterViewInit, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { NativeTableService } from './native-table.service';
 import { PageQuery } from './page-query.model';
+import { RowCheckboxDirective } from './row-checkbox.directive';
 
 @Component({
   selector: 'ngx-native-table',
   template: `
    <table class="ngx-native-table">
    <thead>
+   <th *ngIf="enableCheckboxSelection"></th>
+   <th *ngIf="indexNumber" class="ngx-index-number">#</th>
+
    <th *ngFor="let col of visibleColumnDefs" [attr.col-key]="col?.i">
    {{col.n}}
    </th>
@@ -15,6 +21,14 @@ import { PageQuery } from './page-query.model';
    </thead>
    <tbody>
    <tr *ngFor="let row of rowData; let i = index" [attr.row-id]="row?.id">
+   <td *ngIf="enableCheckboxSelection" rowCheckbox>
+      <label class="ngx-checkmark-container">
+        <input type="checkbox">
+        <span class="ngx-checkmark"></span>
+     </label>
+   </td>
+   <td *ngIf="indexNumber" class="ngx-index-number"> {{i+1}}</td>
+
     <td *ngFor="let col of visibleColumnDefs" [attr.col-key]="col?.i">
     {{row[col.i]}}
     </td>
@@ -25,7 +39,7 @@ import { PageQuery } from './page-query.model';
      </row-editer>
      </td>
    </tr>
-   <tbody>
+   </tbody>
    </table>
   `,
   styles: [
@@ -36,6 +50,63 @@ import { PageQuery } from './page-query.model';
       border-collapse: seperate;
       width: 100%;
       background: #ffffff;
+    }
+    th.ngx-index-number {
+      z-index: 3!important;
+    }
+    .ngx-index-number {
+      position: sticky;
+      left: 0;
+      background: #ffffff;
+    }
+    td.checked .ngx-checkmark:after {
+      display: block;
+    }
+    .ngx-checkmark-container {
+      position: relative;
+      cursor: pointer;
+      pointer-events: none;
+      font-size: 22px;
+    }
+    .ngx-checkmark-container input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+    .ngx-checkmark {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 25px;
+      width: 25px;
+      background-color: #eee;
+    }
+    .ngx-checkmark:after {
+      content: "";
+      position: absolute;
+      display: none;
+      left: 9px;
+      top: 5px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 3px 3px 0;
+      -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+    .ngx-checmark:after {
+      left: 9px;
+      top: 5px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 3px 3px 0;
+      -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg);
     }
     .ngx-native-table thead {
       color: rgba(0,0,0,.54);
@@ -66,9 +137,12 @@ import { PageQuery } from './page-query.model';
   providers: [NativeTableService]
 })
 export class NgxNativeTableComponent implements OnInit, AfterViewInit {
+  @ViewChildren(RowCheckboxDirective) rowCheckboxes: QueryList<any>;
   @Input() config: ApiConfig;
+  @Input() indexNumber = true;
   @Input() editTemplate: TemplateRef<any>;
   @Input() dialogRef: any;
+  @Input() enableCheckboxSelection = true;
   @Output() rowAdd = new EventEmitter();
   @Output() rowEdit = new EventEmitter();
   @Output()
@@ -78,7 +152,7 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit {
   allColumnDefs: any;
   defaultColumnDefs: any;
   visibleColumnDefs: any;
-  hiddenColumnNames: any;
+  hiddenColumnNames: string[];
   pageLength: number;
   pageQuery: PageQuery = new PageQuery();
   activeEditMenuIndex: string | number;
@@ -89,7 +163,13 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit {
     this.getTableData(this.pageQuery, true);
   }
   ngAfterViewInit() {
-    console.log(this.editerComponent)
+    console.log(this.rowCheckboxes);
+    this.getCheckedRows();
+  }
+  getCheckedRows() {
+   const checkedRows = this.rowCheckboxes.toArray()
+   .filter((row: RowCheckboxDirective) => row.checkBoxStatus === CheckboxStatus.checked);
+   console.log(checkedRows);
   }
   getTableData(pageQuery: PageQuery, newColumns = false): void {
     this.tableService.getTableData(pageQuery, this.config).subscribe(
@@ -142,9 +222,6 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit {
     console.log('allCol', this.allColumnDefs)
     console.log('defaultCol', this.defaultColumnDefs)
     console.log('visibCols', this.visibleColumnDefs)
-    /**  manually adding custom columns otherwise
-       they will be hidden because they are not received from api */
- //   this.visibleColumnDefs =  this.reAddWhiteListedColumns([...this.visibleColumnDefs]);
     /** determines which columns to display on table view */
     this.toggleColumns(this.visibleColumnDefs);
   }
@@ -159,6 +236,7 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit {
     // });
   }
   addData(): void {
+    this.rowAdd.next();
     this.optClick.next('insert');
   }
 

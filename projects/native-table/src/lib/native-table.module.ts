@@ -6,19 +6,21 @@ import { InsertTableDataDirective } from './insert-table-data.directive';
 import { NgxNativeTableComponent } from './native-table.component';
 import { UpdateTableDataDirective } from './update-table-data.directive';
 import { NgxDropdownModule } from 'projects/dropdown/src/lib/dropdown.module';
+import { RowCheckboxDirective } from './row-checkbox.directive';
 
 
 @NgModule({
    imports: [
       CommonModule,
-       NgxDropdownModule
+      NgxDropdownModule
    ],
    declarations: [
       NgxNativeTableComponent,
       RowEditerComponent,
       RowInsertDialogComponent,
       InsertTableDataDirective,
-      UpdateTableDataDirective
+      UpdateTableDataDirective,
+      RowCheckboxDirective
    ],
    exports: [
       NgxNativeTableComponent,

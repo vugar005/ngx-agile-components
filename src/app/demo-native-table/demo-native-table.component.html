@@ -1,5 +1,7 @@
+
+<button (click)="table.getCheckedRows()">Rows</button>
 <div class="table-wrapper" >
-  <ngx-native-table
+  <ngx-native-table #table
     [config]="config"
     [editTemplate]="editer"
     [dialogRef]="dialog"

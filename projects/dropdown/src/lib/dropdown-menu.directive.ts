@@ -20,7 +20,6 @@ export class DropdownMenuDirective implements OnInit, OnDestroy , AfterViewInit 
     private viewContainer: ViewContainerRef
   ) { }
  ngAfterViewInit() {
-
  }
   ngOnInit() {
     this.dropdown.statusChange()
@@ -32,13 +31,30 @@ export class DropdownMenuDirective implements OnInit, OnDestroy , AfterViewInit 
         // Listen to click events to realise when to close the dropdown.
        document.addEventListener('click', this.clickListener, true);
         this.viewContainer.createEmbeddedView(this.templateRef)
-
+      //   const el = document.getElementsByClassName('ngx-dropdown-menu')[0] as HTMLElement;
+       //  const rect = el.getBoundingClientRect();
+      //   console.log(rect)
+       //  console.log(el.getBoundingClientRect().top)
+      //   console.log(el.getBoundingClientRect().right)
+    //    el.style.top = `${innerTop - outerTop}px`;
+      //  el.style.left = `${rect.left}px`;
+       //  console.log(window.scrollT)
       } else {
        document.removeEventListener('click', this.clickListener, true);
       this.viewContainer.clear();
       }
     });
   }
+   getOffset( el ) {
+    let _x = 0;
+    let _y = 0;
+    while ( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+        _x += el.offsetLeft - el.scrollLeft;
+        _y += el.offsetTop - el.scrollTop;
+        el = el.offsetParent;
+    }
+    return { top: _y, left: _x };
+}
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
