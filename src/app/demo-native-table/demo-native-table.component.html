@@ -1,11 +1,11 @@
 <div class="table-wrapper" >
   <ngx-native-table
-[config]="config"
-[editTemplate]="editer"
-[dialogRef]="dialog"
-(rowAdd)="initDialog(table)"
- (rowEdit)="initDialog(table, $event)"
- (optClick)="onOptClick($event)"
+    [config]="config"
+    [editTemplate]="editer"
+    [dialogRef]="dialog"
+    (rowAdd)="initDialog(table)"
+    (rowEdit)="initDialog(table, $event)"
+    (optClick)="onOptClick($event)"
 >
 </ngx-native-table>
 </div>

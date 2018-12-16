@@ -11,15 +11,16 @@ import { PageQuery } from './page-query.model';
    <th *ngFor="let col of visibleColumnDefs" [attr.col-key]="col?.i">
    {{col.n}}
    </th>
-   <th *ngIf="editTemplate"> </th>
+   <th *ngIf="editTemplate" class="ngx-native-table-editTemplate" > Editer </th>
    </thead>
    <tbody>
-   <tr *ngFor="let row of rowData" [attr.row-id]="row?.id">
+   <tr *ngFor="let row of rowData; let i = index" [attr.row-id]="row?.id">
     <td *ngFor="let col of visibleColumnDefs" [attr.col-key]="col?.i">
     {{row[col.i]}}
     </td>
-    <td *ngIf="editTemplate" >
-     <row-editer [row]="row">
+    <td *ngIf="editTemplate" class="ngx-native-table-editTemplate"
+     [ngStyle]="{'z-index': activeEditMenuIndex === i ? '2' : '0' }">
+     <row-editer [row]="row" [index]="i" (open)="activeEditMenuIndex=$event">
       <ng-container  *ngTemplateOutlet="editTemplate"> </ng-container>
      </row-editer>
      </td>
@@ -32,22 +33,33 @@ import { PageQuery } from './page-query.model';
     .ngx-native-table {
       display: table;
       table-layout: auto;
-      border-collapse: collapse;
+      border-collapse: seperate;
       width: 100%;
       background: #ffffff;
     }
     .ngx-native-table thead {
       color: rgba(0,0,0,.54);
-      border-bottom: 1px solid #e0e0e0;
     }
     .ngx-native-table th {
       padding: 0.8rem;
+      border-bottom: 1px solid #e0e0e0;
+      position: sticky;
+      top: 0;
+      background: #ffffff;
+      z-index: 2;
     }
     .ngx-native-table tr {
-      border-bottom: 1px solid #e0e0e0;
     }
     .ngx-native-table td {
       padding: 0.7rem;
+      border-bottom: 1px solid #e0e0e0;
+
+    }
+    .ngx-native-table-editTemplate {
+      position: sticky;
+      right: 0;
+      background: #ffffff;
+      border-left: 1px solid #e0e0e0;;
     }
     `
   ],
@@ -69,7 +81,8 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit {
   hiddenColumnNames: any;
   pageLength: number;
   pageQuery: PageQuery = new PageQuery();
-  showEditMenu = false;
+  activeEditMenuIndex: string | number;
+
   constructor(public tableService: NativeTableService) { }
 
   ngOnInit() {

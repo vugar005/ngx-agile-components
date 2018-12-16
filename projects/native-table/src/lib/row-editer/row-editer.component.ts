@@ -1,4 +1,4 @@
-import { Component, OnInit, Host, Input } from '@angular/core';
+import { Component, OnInit, Host, Input, EventEmitter, Output } from '@angular/core';
 import { NgxNativeTableComponent } from '../native-table.component';
 
 @Component({
@@ -8,12 +8,16 @@ import { NgxNativeTableComponent } from '../native-table.component';
 })
 export class RowEditerComponent  {
   @Input() row: any;
+  @Input() index: string | number;
+  @Output() open = new EventEmitter<string | number>();
+  @Output() close = new EventEmitter<string | number>();
   optBtns: any;
   optClickListener = this.handleOpClick.bind(this);
   constructor(@Host() private tableComponent: NgxNativeTableComponent) { }
 
 
   onMenuOpen(): void {
+    this.open.next(this.index);
     this.optBtns = document.querySelectorAll('[t-btn]');
     Array.from(this.optBtns).forEach((btn: HTMLElement) => {
      btn.addEventListener('click', this.optClickListener, true);
@@ -22,6 +26,7 @@ export class RowEditerComponent  {
     console.log(this.optBtns);
   }
   onMenuClose(): void {
+    this.close.next(this.index);
 //     Array.from(this.optBtns).forEach((btn: HTMLElement) => {
 //       console.log('remove ltn called');
 //  //     btn.removeEventListener('click', this.optClickListener, true);
