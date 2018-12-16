@@ -1,4 +1,16 @@
 <ngx-native-table
 [config]="config"
+[editTemplate]="editer"
+[dialogRef]="dialog"
+(rowAdd)="initDialog(table)"
+ (rowEdit)="initDialog(table, $event)"
+ (optClick)="onOptClick($event)"
 >
 </ngx-native-table>
+
+<ng-template #editer>
+   <button [attr.t-btn]="'edit'">Edit</button>
+   <button [attr.t-btn]="'remove'">Remove</button>
+   <button [attr.t-btn]="'confirm'">Confirm</button>
+   <button [attr.t-btn]="'unConfirm'">UnConfirm</button>
+  </ng-template>

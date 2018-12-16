@@ -9,22 +9,41 @@ import { DemoDropdownComponent } from './demo-dropdown/demo-dropdown.component';
 import { DemoNativeTableComponent } from './demo-native-table/demo-native-table.component';
 import { NgxNativeTableModule } from 'projects/native-table/src/lib/native-table.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {MatMenuModule} from '@angular/material/menu';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TableDataInsertComponent } from './demo-native-table/table-data-insert/table-data-insert.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { FormUtilsModule } from 'ngx-form-utils';
+import {MatInputModule} from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
 @NgModule({
    declarations: [
       AppComponent,
       DemoDropdownComponent,
-      DemoNativeTableComponent
+      DemoNativeTableComponent,
+      TableDataInsertComponent,
    ],
    imports: [
       BrowserModule,
+      BrowserAnimationsModule,
       AppRoutingModule,
       NgxDropdownModule,
       NgxNativeTableModule,
-      HttpClientModule
+      HttpClientModule,
+      MatMenuModule,
+      MatDialogModule,
+      MatFormFieldModule,
+      MatInputModule,
+      FormsModule,
+      FormUtilsModule,
+      MatButtonModule
    ],
    providers: [
      {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}
    ],
+   entryComponents: [TableDataInsertComponent],
    bootstrap: [
       AppComponent
    ]

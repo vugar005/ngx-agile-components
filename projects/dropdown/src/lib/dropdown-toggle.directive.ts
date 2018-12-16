@@ -1,4 +1,5 @@
 import { NgxDropdownComponent } from './dropdown.component';
+import { DropdownDirective } from './dropdown.directive';
 import { Directive, Host, HostListener, OnInit, Optional, HostBinding } from '@angular/core';
 
 @Directive({

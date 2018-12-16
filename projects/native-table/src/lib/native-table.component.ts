@@ -1,5 +1,5 @@
 import { ApiConfig } from './api-config.model';
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, TemplateRef, ContentChild, AfterViewInit, ElementRef } from '@angular/core';
 import { NativeTableService } from './native-table.service';
 import { PageQuery } from './page-query.model';
 
@@ -11,12 +11,18 @@ import { PageQuery } from './page-query.model';
    <th *ngFor="let col of visibleColumnDefs">
    {{col.n}}
    </th>
+   <th *ngIf="editTemplate"> </th>
    </thead>
    <tbody>
    <tr *ngFor="let row of rowData">
     <td *ngFor="let col of visibleColumnDefs">
     {{row[col.i]}}
     </td>
+    <td *ngIf="editTemplate" >
+     <row-editer [row]="row">
+      <ng-container  *ngTemplateOutlet="editTemplate"> </ng-container>
+     </row-editer>
+     </td>
    </tr>
    <tbody>
    </table>
@@ -24,23 +30,32 @@ import { PageQuery } from './page-query.model';
   styles: [],
   providers: [NativeTableService]
 })
-export class NativeTableComponent implements OnInit {
+export class NgxNativeTableComponent implements OnInit, AfterViewInit {
   @Input() config: ApiConfig;
+  @Input() editTemplate: TemplateRef<any>;
+  @Input() dialogRef: any;
+  @Output() rowAdd = new EventEmitter();
+  @Output() rowEdit = new EventEmitter();
   @Output()
   optClick = new EventEmitter<any>();
+  @ContentChild('', {read: ElementRef}) editerComponent: any;
   rowData: any;
   allColumnDefs: any;
   defaultColumnDefs: any;
   visibleColumnDefs: any;
-  hiddenColumnNames: string[];
+  hiddenColumnNames: any;
   pageLength: number;
   pageQuery: PageQuery = new PageQuery();
-  constructor(private tableService: NativeTableService) { }
+  showEditMenu = false;
+  constructor(public tableService: NativeTableService) { }
 
   ngOnInit() {
     this.getTableData(this.pageQuery, true);
   }
-  getTableData(pageQuery: PageQuery, newColumns = false) {
+  ngAfterViewInit() {
+    console.log(this.editerComponent)
+  }
+  getTableData(pageQuery: PageQuery, newColumns = false): void {
     this.tableService.getTableData(pageQuery, this.config).subscribe(
       res => this.buildTableData(res, newColumns),
       (er: Error) => {
@@ -48,7 +63,7 @@ export class NativeTableComponent implements OnInit {
      }
     );
   }
-  buildTableData(res, newColumns) {
+  buildTableData(res, newColumns): void {
     if (res && res.tbl[0] && res.tbl[0].c) {
       if (newColumns) {
         this.buildColumns(res);
@@ -59,7 +74,7 @@ export class NativeTableComponent implements OnInit {
     //  this.gridApi.showNoRowsOverlay();
     }
     }
-    buildRows(data) {
+    buildRows(data): void {
       this.pageLength = data.tbl[0].rowCount;
       const rowData = data.tbl[0].r;
       const newRowData = [...rowData].map((row, index) => {
@@ -68,7 +83,7 @@ export class NativeTableComponent implements OnInit {
       });
       this.rowData = newRowData;
     }
-    buildColumns(data) {
+    buildColumns(data): void {
       const customSequentialColumndDefs = [];
       const columnDefs = data.tbl[0].c;
       const seqColumns = data.tbl[0].seqColumn.split(',');
@@ -83,7 +98,7 @@ export class NativeTableComponent implements OnInit {
     // const temp = columnDefs.slice(columnDefs.length - 10, columnDefs.length);
       this.allColumnDefs = customSequentialColumndDefs;
   }
-  setColumnsView(res) {
+  setColumnsView(res): void {
     this.hiddenColumnNames = res.tbl[0].hiddenColumn;
     const defaultColumnNames = res.tbl[0].seqColumn.slice().split(',');
     this.defaultColumnDefs = [...this.allColumnDefs].filter( col => defaultColumnNames.includes(col.i));
@@ -97,7 +112,7 @@ export class NativeTableComponent implements OnInit {
     /** determines which columns to display on table view */
     this.toggleColumns(this.visibleColumnDefs);
   }
-  toggleColumns(selectedColumns) {
+  toggleColumns(selectedColumns): void {
     // const columns = [...this.allColumnDefs.map(res => res.id)];
     // columns.forEach((col, index) => {
     //   if ( (!selectedColumns.includes(col)) ) {
@@ -107,7 +122,8 @@ export class NativeTableComponent implements OnInit {
     //   }
     // });
   }
-  addData() {
+  addData(): void {
     this.optClick.next('insert');
   }
+
 }

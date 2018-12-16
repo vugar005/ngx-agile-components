@@ -1,0 +1,8 @@
+<div class="ngx-dropdown-wrapper" style="width: 5rem; font-size: 12px;" >
+<ngx-dropdown (closed)="onMenuClose()" (opened)="onMenuOpen()" >
+  <p  dropdownToggle>....</p>
+  <ul *dropdownMenu class="ngx-dropdown-menu">
+    <ng-content> </ng-content>
+  </ul>
+</ngx-dropdown>
+</div>

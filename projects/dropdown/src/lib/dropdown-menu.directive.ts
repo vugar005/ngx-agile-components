@@ -1,44 +1,50 @@
 import { NgxDropdownComponent } from './dropdown.component';
+import { takeUntil } from 'rxjs/operators/';
+import { Directive, ElementRef, Host, OnInit, OnDestroy, TemplateRef, ViewContainerRef, HostBinding, AfterViewInit} from '@angular/core';
+
 import { TOGGLE_STATUS } from './toggle-status';
-import { Directive, OnInit, OnDestroy, Host, ElementRef, HostBinding, AfterViewInit } from '@angular/core';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/internal/operators/takeUntil';
 
 @Directive({
   selector: '[dropdownMenu]',
-  exportAs: 'dropdownMenu'
+  exportAs: 'dropdownMenu',
 })
-export class DropdownMenuDirective implements OnInit, OnDestroy {
- @HostBinding('class') classes = 'ngx-dropdown-menu';
-  _onDestroy$: Subject<void> = new Subject<void>();
-
+export class DropdownMenuDirective implements OnInit, OnDestroy , AfterViewInit {
+  ngUnsubscribe: Subject<void> = new Subject<void>();
+  @HostBinding('class') classes = 'ngx-dropdown-menu';
+  clickListener = this.onDocumentClick.bind(this);
   constructor(
     @Host() public dropdown: NgxDropdownComponent,
     private elementRef: ElementRef,
+    private templateRef: TemplateRef<any>,
+    private viewContainer: ViewContainerRef
   ) { }
+ ngAfterViewInit() {
 
+ }
   ngOnInit() {
-    console.log(this.elementRef)
     this.dropdown.statusChange()
     .pipe(
-      takeUntil(this._onDestroy$)
+      takeUntil(this.ngUnsubscribe)
     )
-      .subscribe((newStatus: TOGGLE_STATUS) => {
-        if (newStatus === TOGGLE_STATUS.OPEN) {
-          console.log('open')
-          // Listen to click events to realise when to close the dropdown.
-          document.addEventListener('click', this.onDocumentClick.bind(this), true);
-        } else {
-          document.removeEventListener('click', this.onDocumentClick, true);
-        }
-      });
+    .subscribe((newStatus: TOGGLE_STATUS) => {
+      if (newStatus === TOGGLE_STATUS.OPEN) {
+        // Listen to click events to realise when to close the dropdown.
+       document.addEventListener('click', this.clickListener, true);
+        this.viewContainer.createEmbeddedView(this.templateRef)
+
+      } else {
+       document.removeEventListener('click', this.clickListener, true);
+      this.viewContainer.clear();
+      }
+    });
   }
 
   ngOnDestroy() {
-    this._onDestroy$.next();
-    this._onDestroy$.complete();
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
 
-    document.removeEventListener('click', this.onDocumentClick, true);
+    document.removeEventListener('click', this.clickListener, true);
   }
 
   onDocumentClick(event: MouseEvent) {
@@ -48,11 +54,10 @@ export class DropdownMenuDirective implements OnInit, OnDestroy {
       return;
     }
     const isInsideClick = this.elementRef.nativeElement.contains(target);
-    if (!isInsideClick || target instanceof HTMLElement && target.tagName === 'LI') {
+    if (!isInsideClick || target instanceof HTMLElement && target.tagName === 'BUTTON') {
       this.dropdown.close();
     } else {
-      this.dropdown.open();
+   //   this.dropdown.open();
     }
   }
-
 }
