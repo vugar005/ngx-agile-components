@@ -6,16 +6,16 @@ import { PageQuery } from './page-query.model';
 @Component({
   selector: 'ngx-native-table',
   template: `
-   <table>
+   <table class="ngx-native-table">
    <thead>
-   <th *ngFor="let col of visibleColumnDefs">
+   <th *ngFor="let col of visibleColumnDefs" [attr.col-key]="col?.i">
    {{col.n}}
    </th>
    <th *ngIf="editTemplate"> </th>
    </thead>
    <tbody>
-   <tr *ngFor="let row of rowData">
-    <td *ngFor="let col of visibleColumnDefs">
+   <tr *ngFor="let row of rowData" [attr.row-id]="row?.id">
+    <td *ngFor="let col of visibleColumnDefs" [attr.col-key]="col?.i">
     {{row[col.i]}}
     </td>
     <td *ngIf="editTemplate" >
@@ -27,7 +27,30 @@ import { PageQuery } from './page-query.model';
    <tbody>
    </table>
   `,
-  styles: [],
+  styles: [
+    `
+    .ngx-native-table {
+      display: table;
+      table-layout: auto;
+      border-collapse: collapse;
+      width: 100%;
+      background: #ffffff;
+    }
+    .ngx-native-table thead {
+      color: rgba(0,0,0,.54);
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .ngx-native-table th {
+      padding: 0.8rem;
+    }
+    .ngx-native-table tr {
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .ngx-native-table td {
+      padding: 0.7rem;
+    }
+    `
+  ],
   providers: [NativeTableService]
 })
 export class NgxNativeTableComponent implements OnInit, AfterViewInit {

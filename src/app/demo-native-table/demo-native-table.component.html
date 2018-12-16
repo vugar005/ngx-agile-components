@@ -1,4 +1,5 @@
-<ngx-native-table
+<div class="table-wrapper" >
+  <ngx-native-table
 [config]="config"
 [editTemplate]="editer"
 [dialogRef]="dialog"
@@ -7,6 +8,7 @@
  (optClick)="onOptClick($event)"
 >
 </ngx-native-table>
+</div>
 
 <ng-template #editer>
    <button [attr.t-btn]="'edit'">Edit</button>
