@@ -17,7 +17,7 @@ export class DemoNativeTableComponent  {
   constructor(public dialog: MatDialog) { }
 
   initDialog(table, row = null) {
-    console.log('row edit emitted')
+    console.log(row)
     this.dialog.open(TableDataInsertComponent, {
       data: { table: table, row: row || undefined}
     });

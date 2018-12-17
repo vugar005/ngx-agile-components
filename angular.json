@@ -195,6 +195,41 @@
           }
         }
       }
+    },
+    "form-utils": {
+      "root": "projects/form-utils",
+      "sourceRoot": "projects/form-utils/src",
+      "projectType": "library",
+      "prefix": "ngx",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/form-utils/tsconfig.lib.json",
+            "project": "projects/form-utils/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/form-utils/src/test.ts",
+            "tsConfig": "projects/form-utils/tsconfig.spec.json",
+            "karmaConfig": "projects/form-utils/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/form-utils/tsconfig.lib.json",
+              "projects/form-utils/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "ngx-agile-components"

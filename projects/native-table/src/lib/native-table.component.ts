@@ -9,9 +9,17 @@ import { RowCheckboxDirective } from './row-checkbox.directive';
 @Component({
   selector: 'ngx-native-table',
   template: `
-   <table class="ngx-native-table">
+   <table class="ngx-native-table" *ngIf="rowData && visibleColumnDefs">
    <thead>
-   <th *ngIf="enableCheckboxSelection"></th>
+   <th *ngIf="enableCheckboxSelection" rowsToggleAllCheckbox
+   [(rowCheckboxes)]="rowCheckboxes"
+   class="data-cell"
+   >
+    <div class="ngx-checkmark-container">
+          <input type="checkbox">
+          <span class="ngx-checkmark"></span>
+    </div>
+   </th>
    <th *ngIf="indexNumber" class="ngx-index-number">#</th>
 
    <th *ngFor="let col of visibleColumnDefs" [attr.col-key]="col?.i">
@@ -20,16 +28,15 @@ import { RowCheckboxDirective } from './row-checkbox.directive';
    <th *ngIf="editTemplate" class="ngx-native-table-editTemplate" > Editer </th>
    </thead>
    <tbody>
-   <tr *ngFor="let row of rowData; let i = index" [attr.row-id]="row?.id">
-   <td *ngIf="enableCheckboxSelection" rowCheckbox>
-      <label class="ngx-checkmark-container">
-        <input type="checkbox">
+   <tr *ngFor="let row of rowData; let i = index" [attr.row-id]="row?.id" rowCheckbox >
+   <td *ngIf="enableCheckboxSelection" valign="middle" class="ngx-native-checkmark-cell">
+      <div class="ngx-checkmark-container">
         <span class="ngx-checkmark"></span>
-     </label>
+     </div>
    </td>
    <td *ngIf="indexNumber" class="ngx-index-number"> {{i+1}}</td>
 
-    <td *ngFor="let col of visibleColumnDefs" [attr.col-key]="col?.i">
+    <td *ngFor="let col of visibleColumnDefs" [attr.col-key]="col?.i" class="data-cell">
     {{row[col.i]}}
     </td>
     <td *ngIf="editTemplate" class="ngx-native-table-editTemplate"
@@ -58,15 +65,32 @@ import { RowCheckboxDirective } from './row-checkbox.directive';
       position: sticky;
       left: 0;
       background: #ffffff;
+      border-bottom: 1px solid #e0e0e0;
+      text-align:center;
     }
-    td.checked .ngx-checkmark:after {
+    tr.checked {
+      background-color: #eee;
+    }
+    tr.checked td {
+      background-color: #eee!important;
+    }
+    tr.checked .ngx-checkmark:after {
       display: block;
+    }
+    td.ngx-native-checkmark-cell {
+      cursor: pointer;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    td.ngx-native-checkmark-cell > * {
+      pointer-events: none;
     }
     .ngx-checkmark-container {
       position: relative;
       cursor: pointer;
       pointer-events: none;
       font-size: 22px;
+      height: 25px;
+      width: 25px;
     }
     .ngx-checkmark-container input {
       position: absolute;
@@ -117,11 +141,23 @@ import { RowCheckboxDirective } from './row-checkbox.directive';
       position: sticky;
       top: 0;
       background: #ffffff;
-      z-index: 2;
+      z-index: 10;
     }
     .ngx-native-table tr {
+      transition: background-color 0.1s ease-in-out;
     }
-    .ngx-native-table td {
+    .ngx-native-table tr:hover {
+      background-color: #fafafa;
+    }
+    .ngx-native-table tr:hover td {
+      background-color: #fafafa;
+    }
+    .ngx-native-table td.data-cell {
+      padding: 0.7rem;
+      border-bottom: 1px solid #e0e0e0;
+      text-align: left;
+    }
+    .ngx-native-table th.data-cell {
       padding: 0.7rem;
       border-bottom: 1px solid #e0e0e0;
 
@@ -131,13 +167,14 @@ import { RowCheckboxDirective } from './row-checkbox.directive';
       right: 0;
       background: #ffffff;
       border-left: 1px solid #e0e0e0;;
+      border-bottom: 1px solid #e0e0e0;
     }
     `
   ],
   providers: [NativeTableService]
 })
 export class NgxNativeTableComponent implements OnInit, AfterViewInit {
-  @ViewChildren(RowCheckboxDirective) rowCheckboxes: QueryList<any>;
+  @ViewChildren(RowCheckboxDirective) public rowCheckboxes: QueryList<any>;
   @Input() config: ApiConfig;
   @Input() indexNumber = true;
   @Input() editTemplate: TemplateRef<any>;
@@ -163,8 +200,6 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit {
     this.getTableData(this.pageQuery, true);
   }
   ngAfterViewInit() {
-    console.log(this.rowCheckboxes);
-    this.getCheckedRows();
   }
   getCheckedRows() {
    const checkedRows = this.rowCheckboxes.toArray()
@@ -219,9 +254,9 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit {
     const defaultColumnNames = res.tbl[0].seqColumn.slice().split(',');
     this.defaultColumnDefs = [...this.allColumnDefs].filter( col => defaultColumnNames.includes(col.i));
     this.visibleColumnDefs = this.defaultColumnDefs.slice().filter(col => !this.hiddenColumnNames.includes(col.i));
-    console.log('allCol', this.allColumnDefs)
-    console.log('defaultCol', this.defaultColumnDefs)
-    console.log('visibCols', this.visibleColumnDefs)
+  //  console.log('allCol', this.allColumnDefs)
+    // console.log('defaultCol', this.defaultColumnDefs)
+   // console.log('visibCols', this.visibleColumnDefs)
     /** determines which columns to display on table view */
     this.toggleColumns(this.visibleColumnDefs);
   }

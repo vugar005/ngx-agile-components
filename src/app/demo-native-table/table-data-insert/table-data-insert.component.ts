@@ -8,16 +8,18 @@ import { NgxFormUtils } from 'ngx-form-utils';
   templateUrl: './table-data-insert.component.html',
   styleUrls: ['./table-data-insert.component.scss']
 })
-export class TableDataInsertComponent {
+export class TableDataInsertComponent implements OnInit {
 
   @ViewChild('f') ntForm: NgForm;
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<TableDataInsertComponent>
   ) {}
+  ngOnInit() {
+      console.log(this.data)
+  }
   getErrors(str) {
     if (!this.ntForm || !NgxFormUtils) { return; }
      return NgxFormUtils.getErrors(this.ntForm, str);
     }
-
 }

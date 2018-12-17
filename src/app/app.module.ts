@@ -15,9 +15,9 @@ import { TableDataInsertComponent } from './demo-native-table/table-data-insert/
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
-import { FormUtilsModule } from 'ngx-form-utils';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
+import { FormUtilsModule } from 'projects/form-utils/src/lib/form-utils.module';
 @NgModule({
    declarations: [
       AppComponent,

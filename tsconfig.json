@@ -29,6 +29,12 @@
       ],
       "native-table/*": [
         "dist/native-table/*"
+      ],
+      "form-utils": [
+        "dist/form-utils"
+      ],
+      "form-utils/*": [
+        "dist/form-utils/*"
       ]
     }
   }

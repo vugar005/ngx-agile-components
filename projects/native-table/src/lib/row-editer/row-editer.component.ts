@@ -23,7 +23,6 @@ export class RowEditerComponent  {
      btn.addEventListener('click', this.optClickListener, true);
      btn.classList.add('ngx-cell-editor-btn');
     });
-    console.log(this.optBtns);
   }
   onMenuClose(): void {
     this.close.next(this.index);
@@ -34,12 +33,15 @@ export class RowEditerComponent  {
   }
   handleOpClick(el: MouseEvent): void {
     const attribute = el.srcElement.getAttribute('t-btn');
+    const obj = {
+      attribute: attribute,
+      row: this.row
+    };
     switch (attribute) {
       case 'edit':
-        this.onEdit();
+        this.tableComponent.rowEdit.next(this.row);
         break;
       case 'remove':
-        this.onRemove();
         break;
       case 'confirm':
      //   this.onConfirm();
@@ -48,17 +50,6 @@ export class RowEditerComponent  {
       //  this.onUnConfirm();
         break;
     }
-    const obj = {
-      attribute: attribute,
-      row: this.row
-    };
     this.tableComponent.optClick.next(obj);
-    console.log('on opt');
   }
-  onEdit(): void {
-   this.tableComponent.rowEdit.next();
-  }
-  onRemove(): void {
-  }
-
 }
