@@ -42,6 +42,7 @@ export class RowEditerComponent  {
         this.tableComponent.rowEdit.next(this.row);
         break;
       case 'remove':
+
         break;
       case 'confirm':
      //   this.onConfirm();

@@ -11,6 +11,7 @@ import { takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'ngx-native-table',
   template: `
+   <confirm-modal *ngIf="shConfirmModal"> </confirm-modal>
    <table class="ngx-native-table" *ngIf="rowData && visibleColumnDefs">
    <thead>
    <th *ngIf="enableCheckboxSelection" rowsToggleAllCheckbox
@@ -196,6 +197,7 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
   pageQuery: PageQuery = new PageQuery();
   activeEditMenuIndex: string | number;
   _onDestroy$ = new Subject<void>();
+  shConfirmModal: boolean;
   constructor(public tableService: NativeTableService) { }
 
   ngOnInit() {
@@ -290,6 +292,36 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
   addData(): void {
     this.rowAdd.next();
     this.optClick.next('insert');
+  }
+  onRemove() {
+  //  this.shConfirmModal = true;
+  //   const dialogRef = this.dialog.open(DialogComponent);
+  //   dialogRef.afterClosed().subscribe(response => {
+  //     if (response === 'yes') {
+  //       const selectedData = this.gridApi.getSelectedRows();
+  //       selectedData.forEach(row => {
+  //         this.tableService.removeRow(row, this.config).subscribe(
+  //           res => {
+  //             this.rowRemoved.next(row);
+  //             // this.tableService.showNotification(
+  //             //   'Info',
+  //             //   'Removing Data',
+  //             //   'Success'
+  //             // );
+  //             this.tableService.getTableData$.next();
+  //           },
+  //           (er: Error) => {
+  //             // this.tableService.showNotification(
+  //             //   'Error',
+  //             //   'Removing Data',
+  //             //   er.message
+  //             // );
+  //             //    this.tableService.openSnackBar('Removing row', 'Error');
+  //           }
+  //         );
+  //       });
+  //     }
+  //   });
   }
 
 }

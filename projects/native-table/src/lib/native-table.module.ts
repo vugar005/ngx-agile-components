@@ -8,6 +8,7 @@ import { UpdateTableDataDirective } from './update-table-data.directive';
 import { NgxDropdownModule } from 'projects/dropdown/src/lib/dropdown.module';
 import { RowCheckboxDirective } from './row-checkbox.directive';
 import { RowsToggleAllCheckboxDirective } from './rows-toggle-all-checkbox.directive';
+import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { RowsToggleAllCheckboxDirective } from './rows-toggle-all-checkbox.direc
       InsertTableDataDirective,
       UpdateTableDataDirective,
       RowCheckboxDirective,
-      RowsToggleAllCheckboxDirective
+      RowsToggleAllCheckboxDirective,
+      ConfirmModalComponent
    ],
    exports: [
       NgxNativeTableComponent,

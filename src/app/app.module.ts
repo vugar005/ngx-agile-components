@@ -42,7 +42,7 @@ import { FormUtilsModule } from 'projects/form-utils/src/lib/form-utils.module';
       MatButtonModule
    ],
    providers: [
-     {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}
+     {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
      {provide: HTTP_INTERCEPTORS, useClass: APIInterceptor, multi: true}
    ],
    entryComponents: [TableDataInsertComponent],
