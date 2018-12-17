@@ -1,3 +1,4 @@
+import { APIInterceptor } from './../shared/interceptors/api.interceptor';
 import { TokenInterceptor } from './../shared/interceptors/token.interceptor';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -42,6 +43,7 @@ import { FormUtilsModule } from 'projects/form-utils/src/lib/form-utils.module';
    ],
    providers: [
      {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}
+     {provide: HTTP_INTERCEPTORS, useClass: APIInterceptor, multi: true}
    ],
    entryComponents: [TableDataInsertComponent],
    bootstrap: [

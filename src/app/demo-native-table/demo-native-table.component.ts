@@ -1,5 +1,5 @@
 import { ApiConfig } from './../../../projects/native-table/src/lib/api-config.model';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxNativeTableModule } from 'projects/native-table/src/public_api';
 import { TableDataInsertComponent } from './table-data-insert/table-data-insert.component';
@@ -11,7 +11,10 @@ import { TableDataInsertComponent } from './table-data-insert/table-data-insert.
 })
 export class DemoNativeTableComponent  {
  config: ApiConfig = {
-   getApi: 'http://opendata.neuron.az/DispatcherRest/api/post/Permission/Applications/GetApplicationList'
+  getApi: 'api/post/Permission/Applications/GetApplicationList',
+  insertApi: 'api/post/Permission/Applications/InsertNewApplication',
+  updateApi: 'api/post/Permission/Applications/UpdateApplication',
+  deleteApi: 'api/post/Permission/Applications/DeleteApplication',
  };
  @ViewChild('table') table: NgxNativeTableModule;
   constructor(public dialog: MatDialog) { }

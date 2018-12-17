@@ -1,10 +1,12 @@
 import { CheckboxStatus } from './checkbox-status';
 import { ApiConfig } from './api-config.model';
 import { Component, OnInit, Input, Output, EventEmitter, TemplateRef,
-        ContentChild, AfterViewInit, ElementRef, ViewChildren, QueryList } from '@angular/core';
+        ContentChild, AfterViewInit, ElementRef, ViewChildren, QueryList, OnDestroy } from '@angular/core';
 import { NativeTableService } from './native-table.service';
 import { PageQuery } from './page-query.model';
 import { RowCheckboxDirective } from './row-checkbox.directive';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-native-table',
@@ -173,7 +175,7 @@ import { RowCheckboxDirective } from './row-checkbox.directive';
   ],
   providers: [NativeTableService]
 })
-export class NgxNativeTableComponent implements OnInit, AfterViewInit {
+export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(RowCheckboxDirective) public rowCheckboxes: QueryList<any>;
   @Input() config: ApiConfig;
   @Input() indexNumber = true;
@@ -193,13 +195,28 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit {
   pageLength: number;
   pageQuery: PageQuery = new PageQuery();
   activeEditMenuIndex: string | number;
-
+  _onDestroy$ = new Subject<void>();
   constructor(public tableService: NativeTableService) { }
 
   ngOnInit() {
     this.getTableData(this.pageQuery, true);
+    this.listenToGetDataEvent();
+  }
+  listenToGetDataEvent() {
+    this.tableService.getTableData$
+      .pipe(takeUntil(this._onDestroy$))
+      .subscribe(res => {
+        if (this.visibleColumnDefs.length > 0) {
+          this.getTableData(this.pageQuery, false);
+        } else {
+          this.getTableData(this.pageQuery, true);
+        }
+      });
   }
   ngAfterViewInit() {
+  }
+  ngOnDestroy() {
+    this._onDestroy$.next();
   }
   getCheckedRows() {
    const checkedRows = this.rowCheckboxes.toArray()
