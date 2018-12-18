@@ -231,7 +231,7 @@ export class NgxNativeTableComponent
   allColumnDefs: any;
   defaultColumnDefs: any;
   visibleColumnDefs: any;
-  hiddenColumnNames: string[];
+  hiddenColumnNames: string;
   pageLength: number;
   pageQuery: PageQuery = new PageQuery();
   activeEditMenuIndex: string | number;

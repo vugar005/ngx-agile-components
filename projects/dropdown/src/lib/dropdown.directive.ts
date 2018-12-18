@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Renderer, HostListener } from '@angular/core';
+import { Directive, ElementRef, Renderer } from '@angular/core';
 
 import { TOGGLE_STATUS } from './toggle-status';
 import { Subject, Observable } from 'rxjs';
@@ -17,11 +17,11 @@ export class DropdownDirective {
     private renderer: Renderer,
   ) { }
 
-  setActive(active = true) {
+  setActive(active = true): void {
     this.renderer.setElementClass(this.elementRef.nativeElement, 'active', active);
   }
 
-  toggle() {
+  toggle(): void {
     if (this.status === TOGGLE_STATUS.OPEN) {
       this.close();
     } else {
@@ -29,7 +29,7 @@ export class DropdownDirective {
     }
   }
 
-  open() {
+  open(): void {
     this.renderer.setElementClass(this.elementRef.nativeElement, 'open', true);
     if (this.status !== TOGGLE_STATUS.OPEN) {
       this.status$.next(TOGGLE_STATUS.OPEN);
@@ -37,7 +37,7 @@ export class DropdownDirective {
     this.status = TOGGLE_STATUS.OPEN;
   }
 
-  close() {
+  close(): void {
     this.renderer.setElementClass(this.elementRef.nativeElement, 'open', false);
     if (this.status !== TOGGLE_STATUS.CLOSE) {
       this.status$.next(TOGGLE_STATUS.CLOSE);

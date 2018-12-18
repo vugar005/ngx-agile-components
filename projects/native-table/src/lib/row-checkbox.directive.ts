@@ -7,7 +7,7 @@ import { CheckboxStatus } from './checkbox-status';
 export class RowCheckboxDirective {
   checkBoxStatus = CheckboxStatus.unchecked;
   @HostBinding('class') get classList() {return this.getClass(); }
-  @HostListener('click', ['$event']) onClick(): void {this.toggleCheckbox(event); }
+  @HostListener('click') onClick(): void {this.toggleCheckbox(); }
   constructor() { }
   getClass(): string {
     switch (this.checkBoxStatus) {
@@ -21,7 +21,7 @@ export class RowCheckboxDirective {
       return '';
   }
 }
-toggleCheckbox(event: Event): void {
+toggleCheckbox(): void {
   const target = event.target as HTMLElement;
   if (!target.className.includes('ngx-native-checkmark-cell')) {return; }
  if (this.checkBoxStatus === CheckboxStatus.unchecked) {

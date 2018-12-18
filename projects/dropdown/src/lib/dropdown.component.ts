@@ -91,11 +91,11 @@ export class NgxDropdownComponent  implements AfterContentInit {
   ngAfterContentInit() {
   }
 
-  setActive(active = true) {
+  setActive(active = true): void {
     this.renderer.setElementClass(this.elementRef.nativeElement, 'active', active);
   }
 
-  toggle() {
+  toggle(): void {
     if (this.status === TOGGLE_STATUS.OPEN) {
       this.close();
     } else {
@@ -103,7 +103,7 @@ export class NgxDropdownComponent  implements AfterContentInit {
     }
   }
 
-  open() {
+  open(): void {
     this.renderer.setElementClass(this.elementRef.nativeElement, 'open', true);
     if (this.status !== TOGGLE_STATUS.OPEN) {
       this.status$.next(TOGGLE_STATUS.OPEN);
@@ -112,7 +112,7 @@ export class NgxDropdownComponent  implements AfterContentInit {
     this.opened.next();
   }
 
-  close() {
+  close(): void {
     this.renderer.setElementClass(this.elementRef.nativeElement, 'open', false);
     if (this.status !== TOGGLE_STATUS.CLOSE) {
     setTimeout(() =>  this.status$.next(TOGGLE_STATUS.CLOSE), 50);

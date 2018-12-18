@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, HostBinding } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { trigger, transition, animate, keyframes, style } from '@angular/animations';
 
 @Component({
@@ -17,7 +17,7 @@ import { trigger, transition, animate, keyframes, style } from '@angular/animati
 })
 export class ConfirmModalComponent implements OnInit {
  public close$ = new Subject();
- public closeRef$ = this.close$.asObservable();
+ public closeRef$: Observable<any> = this.close$.asObservable();
  @HostBinding('@onEnter') onEnter = true;
   constructor() { }
 

@@ -5,10 +5,10 @@ import { RowInsertDialogComponent } from './row-insert-dialog/row-insert-dialog.
 import { InsertTableDataDirective } from './insert-table-data.directive';
 import { NgxNativeTableComponent } from './native-table.component';
 import { UpdateTableDataDirective } from './update-table-data.directive';
-import { NgxDropdownModule } from 'projects/dropdown/src/lib/dropdown.module';
 import { RowCheckboxDirective } from './row-checkbox.directive';
 import { RowsToggleAllCheckboxDirective } from './rows-toggle-all-checkbox.directive';
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
+import { NgxDropdownModule } from 'ngx-simple-dropdown';
 
 
 @NgModule({

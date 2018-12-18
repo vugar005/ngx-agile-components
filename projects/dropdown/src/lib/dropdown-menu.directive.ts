@@ -1,5 +1,5 @@
 import { NgxDropdownComponent } from './dropdown.component';
-import { takeUntil } from 'rxjs/operators/';
+import { takeUntil } from 'rxjs/operators';
 import {
   Directive,
   ElementRef,
@@ -10,7 +10,6 @@ import {
   ViewContainerRef,
   HostBinding,
   AfterViewInit,
-  HostListener
 } from '@angular/core';
 
 import { TOGGLE_STATUS } from './toggle-status';
@@ -24,11 +23,6 @@ export class DropdownMenuDirective implements OnInit, OnDestroy, AfterViewInit {
   ngUnsubscribe: Subject<void> = new Subject<void>();
   clickListener = this.onDocumentClick.bind(this);
   @HostBinding('class') classes = 'ngx-dropdown-menu';
-  @HostListener('window:resize', ['$event'])
-  windowResize(event) {
-    console.log('onRe', event)
-  //  this.onWindowResize();
-  }
   constructor(
     @Host() public dropdown: NgxDropdownComponent,
     private elementRef: ElementRef,
@@ -54,31 +48,27 @@ export class DropdownMenuDirective implements OnInit, OnDestroy, AfterViewInit {
         }
       });
   }
-  calcMenuPosition() {
-    const hostEl = document.getElementsByClassName(
-      'ngx-dropdown open'
-    )[0] as HTMLElement;
-    const el = document.getElementsByClassName(
-      'ngx-dropdown-menu'
-    )[0] as HTMLElement;
+  calcMenuPosition(): void {
+    const hostEl = document.getElementsByClassName('ngx-dropdown open')[0] as HTMLElement;
+    const el = document.getElementsByClassName('ngx-dropdown-menu')[0] as HTMLElement;
     const rect = hostEl.getBoundingClientRect();
     const top = rect.top ;
    // const top = rect.top - hostEl.offsetHeight;
     el.style.top = `${top}px`;
     el.style.left = `${rect.left}px`;
   }
-  getOffset(el) {
-    let _x = 0;
-    let _y = 0;
-    while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
-      _x += el.offsetLeft - el.scrollLeft;
-      _y += el.offsetTop - el.scrollTop;
-      el = el.offsetParent;
-    }
-    return { top: _y, left: _x };
+  getOffset(el): void {
+    // let _x = 0;
+    // let _y = 0;
+    // while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+    //   _x += el.offsetLeft - el.scrollLeft;
+    //   _y += el.offsetTop - el.scrollTop;
+    //   el = el.offsetParent;
+    // }
+    // return { top: _y, left: _x };
   }
   onWindowResize() {
-    console.log('resiz')
+    console.log('resiz');
     this.calcMenuPosition();
   }
 
@@ -89,7 +79,7 @@ export class DropdownMenuDirective implements OnInit, OnDestroy, AfterViewInit {
     document.removeEventListener('click', this.clickListener, true);
   }
 
-  onDocumentClick(event: MouseEvent) {
+  onDocumentClick(event: MouseEvent): void {
     const target: EventTarget = event.target;
     if (
       target instanceof HTMLElement &&
