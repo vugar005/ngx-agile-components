@@ -1,6 +1,7 @@
 
 <button (click)="table.getCheckedRows()">Rows</button>
 <button (click)="table.addData()">Add Data</button>
+<button (click)="table.onRemoveSelected()">Remove Selected</button>
 <div class="table-wrapper" >
   <ngx-native-table #table
     [config]="config"

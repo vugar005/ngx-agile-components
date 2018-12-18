@@ -4,8 +4,8 @@
     Are you sure to remove selected rows ?
   </div>
   <div class="ng-modal-actions">
-    <button>YES</button>
-    <button>NO</button>
+    <button (click)="close$.next('yes')" >YES</button>
+    <button (click)="close$.next()">NO</button>
   </div>
 </div>
 

@@ -1,60 +1,86 @@
 import { NgxDropdownComponent } from './dropdown.component';
 import { takeUntil } from 'rxjs/operators/';
-import { Directive, ElementRef, Host, OnInit, OnDestroy, TemplateRef, ViewContainerRef, HostBinding, AfterViewInit} from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  Host,
+  OnInit,
+  OnDestroy,
+  TemplateRef,
+  ViewContainerRef,
+  HostBinding,
+  AfterViewInit,
+  HostListener
+} from '@angular/core';
 
 import { TOGGLE_STATUS } from './toggle-status';
-import { Subject } from 'rxjs';
+import { Subject, fromEvent } from 'rxjs';
 
 @Directive({
   selector: '[dropdownMenu]',
-  exportAs: 'dropdownMenu',
+  exportAs: 'dropdownMenu'
 })
-export class DropdownMenuDirective implements OnInit, OnDestroy , AfterViewInit {
+export class DropdownMenuDirective implements OnInit, OnDestroy, AfterViewInit {
   ngUnsubscribe: Subject<void> = new Subject<void>();
-  @HostBinding('class') classes = 'ngx-dropdown-menu';
   clickListener = this.onDocumentClick.bind(this);
+  @HostBinding('class') classes = 'ngx-dropdown-menu';
+  @HostListener('window:resize', ['$event'])
+  windowResize(event) {
+    console.log('onRe', event)
+  //  this.onWindowResize();
+  }
   constructor(
     @Host() public dropdown: NgxDropdownComponent,
     private elementRef: ElementRef,
     private templateRef: TemplateRef<any>,
     private viewContainer: ViewContainerRef
-  ) { }
- ngAfterViewInit() {
- }
-  ngOnInit() {
-    this.dropdown.statusChange()
-    .pipe(
-      takeUntil(this.ngUnsubscribe)
-    )
-    .subscribe((newStatus: TOGGLE_STATUS) => {
-      if (newStatus === TOGGLE_STATUS.OPEN) {
-        // Listen to click events to realise when to close the dropdown.
-       document.addEventListener('click', this.clickListener, true);
-        this.viewContainer.createEmbeddedView(this.templateRef)
-      //   const el = document.getElementsByClassName('ngx-dropdown-menu')[0] as HTMLElement;
-       //  const rect = el.getBoundingClientRect();
-      //   console.log(rect)
-       //  console.log(el.getBoundingClientRect().top)
-      //   console.log(el.getBoundingClientRect().right)
-    //    el.style.top = `${innerTop - outerTop}px`;
-      //  el.style.left = `${rect.left}px`;
-       //  console.log(window.scrollT)
-      } else {
-       document.removeEventListener('click', this.clickListener, true);
-      this.viewContainer.clear();
-      }
-    });
+  ) {}
+  ngAfterViewInit() {
+   // fromEvent(window, 'resize').subscribe(res => console.log('rxjs ', res))
   }
-   getOffset( el ) {
+  ngOnInit() {
+    this.dropdown
+      .statusChange()
+      .pipe(takeUntil(this.ngUnsubscribe))
+      .subscribe((newStatus: TOGGLE_STATUS) => {
+        if (newStatus === TOGGLE_STATUS.OPEN) {
+          // Listen to click events to realise when to close the dropdown.
+          document.addEventListener('click', this.clickListener, true);
+          this.viewContainer.createEmbeddedView(this.templateRef);
+          this.calcMenuPosition();
+        } else {
+          document.removeEventListener('click', this.clickListener, true);
+          this.viewContainer.clear();
+        }
+      });
+  }
+  calcMenuPosition() {
+    const hostEl = document.getElementsByClassName(
+      'ngx-dropdown open'
+    )[0] as HTMLElement;
+    const el = document.getElementsByClassName(
+      'ngx-dropdown-menu'
+    )[0] as HTMLElement;
+    const rect = hostEl.getBoundingClientRect();
+    const top = rect.top ;
+   // const top = rect.top - hostEl.offsetHeight;
+    el.style.top = `${top}px`;
+    el.style.left = `${rect.left}px`;
+  }
+  getOffset(el) {
     let _x = 0;
     let _y = 0;
-    while ( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
-        _x += el.offsetLeft - el.scrollLeft;
-        _y += el.offsetTop - el.scrollTop;
-        el = el.offsetParent;
+    while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+      _x += el.offsetLeft - el.scrollLeft;
+      _y += el.offsetTop - el.scrollTop;
+      el = el.offsetParent;
     }
     return { top: _y, left: _x };
-}
+  }
+  onWindowResize() {
+    console.log('resiz')
+    this.calcMenuPosition();
+  }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
@@ -65,15 +91,22 @@ export class DropdownMenuDirective implements OnInit, OnDestroy , AfterViewInit 
 
   onDocumentClick(event: MouseEvent) {
     const target: EventTarget = event.target;
-    if (target instanceof HTMLElement && target.hasAttribute('dropdownToggle')) {
+    if (
+      target instanceof HTMLElement &&
+      target.hasAttribute('dropdownToggle')
+    ) {
       // Ignore dropdownToggle element, even if it's outside the menu.
+      this.dropdown.close();
       return;
     }
     const isInsideClick = this.elementRef.nativeElement.contains(target);
-    if (!isInsideClick || target instanceof HTMLElement && target.tagName === 'BUTTON') {
+    if (
+      !isInsideClick ||
+      (target instanceof HTMLElement && target.tagName === 'BUTTON')
+    ) {
       this.dropdown.close();
     } else {
-   //   this.dropdown.open();
+      //   this.dropdown.open();
     }
   }
 }

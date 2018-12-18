@@ -23,7 +23,7 @@ export class RowCheckboxDirective {
 }
 toggleCheckbox(event: Event): void {
   const target = event.target as HTMLElement;
-  if (target.className !== 'ngx-native-checkmark-cell') {return; }
+  if (!target.className.includes('ngx-native-checkmark-cell')) {return; }
  if (this.checkBoxStatus === CheckboxStatus.unchecked) {
     this.checkBoxStatus = CheckboxStatus.checked;
     return;
