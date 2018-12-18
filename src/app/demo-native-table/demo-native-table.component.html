@@ -1,7 +1,23 @@
 
 <button (click)="table.getCheckedRows()">Rows</button>
-<button (click)="table.addData()">Add Data</button>
-<button (click)="table.onRemoveSelected()">Remove Selected</button>
+<button (click)="table?.addData()">Add Data</button>
+<button (click)="table?.onRemoveSelected()">Remove Selected</button>
+
+<mat-form-field >
+    <mat-select placeholder="Toggle Columns" [multiple]="true"
+             (selectionChange)="table?.toggleColumns($event)"
+             [(ngModel)]="table.visibleColumnDefs"
+             #select="ngModel"
+ >
+   <div style="margin: 5px 0;display: flex;justify-content: center">
+     <button mat-button color="primary" (click)="table?.showAllColumns()">Show all</button>
+     <button mat-button color="warn" (click)="table?.hideAllColumns()">Hide all</button>
+   </div>
+   <mat-option *ngFor="let col of table?.defaultColumnDefs" [value]="col">{{col.n}}</mat-option>
+ </mat-select>
+</mat-form-field>
+
+
 <div class="table-wrapper" >
   <ngx-native-table #table
     [config]="config"

@@ -19,6 +19,8 @@ import { FormsModule } from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import { FormUtilsModule } from 'projects/form-utils/src/lib/form-utils.module';
+import {MatSelectModule} from '@angular/material/select';
+
 @NgModule({
    declarations: [
       AppComponent,
@@ -39,7 +41,8 @@ import { FormUtilsModule } from 'projects/form-utils/src/lib/form-utils.module';
       MatInputModule,
       FormsModule,
       FormUtilsModule,
-      MatButtonModule
+      MatButtonModule,
+      MatSelectModule
    ],
    providers: [
      {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},

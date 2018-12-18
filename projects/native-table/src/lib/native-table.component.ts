@@ -158,8 +158,8 @@ import { isArray } from 'util';
         position: absolute;
         top: 0;
         left: 0;
-        height: 25px;
-        width: 25px;
+        height: 19px;
+        width: 19px;
         background-color: #ffffff;
         border: 1px solid #eee;
       }
@@ -167,8 +167,8 @@ import { isArray } from 'util';
         content: '';
         position: absolute;
         display: none;
-        left: 9px;
-        top: 5px;
+        left: 7px;
+        top: 3px;
         width: 5px;
         height: 10px;
         border: solid #9B9B9B;
@@ -234,9 +234,9 @@ export class NgxNativeTableComponent
   @ContentChild('', { read: ElementRef }) editerComponent: any;
   rowData: any;
   allColumnDefs: any;
-  defaultColumnDefs: any;
   visibleColumnDefs: any;
   hiddenColumnNames: string;
+  defaultColumnDefs: any;
   pageLength: number;
   pageQuery: PageQuery = new PageQuery();
   activeEditMenuIndex: string | number;
@@ -325,27 +325,27 @@ export class NgxNativeTableComponent
   setColumnsView(res): void {
     this.hiddenColumnNames = res.tbl[0].hiddenColumn;
     const defaultColumnNames = res.tbl[0].seqColumn.slice().split(',');
-    this.defaultColumnDefs = [...this.allColumnDefs].filter(col =>
-      defaultColumnNames.includes(col.i)
+    this.defaultColumnDefs = [...this.allColumnDefs].filter(colDef =>
+      defaultColumnNames.includes(colDef.i)
     );
     this.visibleColumnDefs = this.defaultColumnDefs
       .slice()
       .filter(col => !this.hiddenColumnNames.includes(col.i));
-    //  console.log('allCol', this.allColumnDefs)
-    // console.log('defaultCol', this.defaultColumnDefs)
-    // console.log('visibCols', this.visibleColumnDefs)
+      console.log('allCol', this.allColumnDefs)
+     console.log('defaultCol', this.defaultColumnDefs)
+     console.log('visibCols', this.visibleColumnDefs)
     /** determines which columns to display on table view */
-    this.toggleColumns(this.visibleColumnDefs);
+ //   this.toggleColumns(this.visibleColumnDefs);
   }
-  toggleColumns(selectedColumns): void {
-    // const columns = [...this.allColumnDefs.map(res => res.id)];
-    // columns.forEach((col, index) => {
-    //   if ( (!selectedColumns.includes(col)) ) {
-    //     this.changeColumnsVisibility(col, false);
-    //   } else {
-    //     this.changeColumnsVisibility(col, true);
-    //   }
-    // });
+  toggleColumns() {
+   this.visibleColumnDefs = [...this.defaultColumnDefs].
+   filter(colDef => this.visibleColumnDefs.map(col => col.n).includes(colDef.n));
+  }
+  showAllColumns() {
+    this.visibleColumnDefs = [...this.defaultColumnDefs];
+  }
+  hideAllColumns() {
+    this.visibleColumnDefs = [];
   }
   addData(): void {
     this.rowAdd.next();

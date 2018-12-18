@@ -1,3 +1,4 @@
+import { NgxDropdownModule } from 'projects/dropdown/src/lib/dropdown.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RowEditerComponent } from './row-editer/row-editer.component';
@@ -8,7 +9,6 @@ import { UpdateTableDataDirective } from './update-table-data.directive';
 import { RowCheckboxDirective } from './row-checkbox.directive';
 import { RowsToggleAllCheckboxDirective } from './rows-toggle-all-checkbox.directive';
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
-import { NgxDropdownModule } from 'ngx-simple-dropdown';
 import { TableLoaderOverlayComponent } from './table-loader-overlay/table-loader-overlay.component';
 import { TableNoDataOverlayComponent } from './table-no-data-overlay/table-no-data-overlay.component';
 
