@@ -9,6 +9,8 @@ import { RowCheckboxDirective } from './row-checkbox.directive';
 import { RowsToggleAllCheckboxDirective } from './rows-toggle-all-checkbox.directive';
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { NgxDropdownModule } from 'ngx-simple-dropdown';
+import { TableLoaderOverlayComponent } from './table-loader-overlay/table-loader-overlay.component';
+import { TableNoDataOverlayComponent } from './table-no-data-overlay/table-no-data-overlay.component';
 
 
 @NgModule({
@@ -24,7 +26,9 @@ import { NgxDropdownModule } from 'ngx-simple-dropdown';
       UpdateTableDataDirective,
       RowCheckboxDirective,
       RowsToggleAllCheckboxDirective,
-      ConfirmModalComponent
+      ConfirmModalComponent,
+      TableLoaderOverlayComponent,
+      TableNoDataOverlayComponent
    ],
    exports: [
       NgxNativeTableComponent,

@@ -1,0 +1,79 @@
+:host {
+  display: block;
+  width:100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+@mixin loader-text {
+  background: linear-gradient(-90deg, #efefef 0%, #fcfcfc 50%, #efefef 100%);
+  border-radius: 15px;
+  background-size: 400% 400%;
+  animation: pulse 1.2s ease-in-out infinite;
+  @keyframes pulse {
+    0% {
+      background-position: 0% 0%;
+    }
+    100% {
+      background-position: -135% 0%
+    }
+  }
+}
+
+table {
+  display: table;
+  table-layout:fixed;
+  border-collapse: seperate;
+  width: 100%;
+  background: #ffffff;
+  .col {
+    width: 150px;
+    &:first-child {
+    width: 200px;
+  }
+}
+  thead {
+    color: rgba(0, 0, 0, 0.54);
+    th {
+      padding: 0.8rem 0;
+      border-bottom: .5px solid #f3f3f3;
+      p {
+       @include loader-text();
+       height: 20px;
+       width: 120px;
+       // padding-left: 15px;
+     //   width: 170px;
+      }
+    }
+  }
+  td {
+    padding: 0.6rem 0;
+    border-bottom: .5px solid #f3f3f3;
+    p {
+      @include loader-text();
+      height: 21px;
+      width:100px;
+    }
+  }
+  tr:nth-child(3n+1) {
+    td:first-child {
+     p {
+      width: 50%;
+     }
+    }
+  }
+  tr:nth-child(3n+2) {
+    td:first-child {
+     p {
+      width: 80%;
+     }
+    }
+  }
+  tr:nth-child(3n+3) {
+    td:first-child {
+      p {
+        width: 90%;
+      }
+    }
+  }
+}

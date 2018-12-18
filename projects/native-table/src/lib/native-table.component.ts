@@ -27,7 +27,14 @@ import { isArray } from 'util';
   selector: 'ngx-native-table',
   template: `
     <confirm-modal *ngIf="shConfirmModal" #confirmRef> </confirm-modal>
-    <table class="ngx-native-table" *ngIf="rowData && visibleColumnDefs">
+    <ng-template #loadingOverlay>
+      <table-loader-overlay > </table-loader-overlay>
+    </ng-template>
+    <ng-template #noData>
+      <table-no-data-overlay> </table-no-data-overlay>
+     </ng-template>
+    <ng-container *ngIf="!loading else loadingOverlay">
+      <table class="ngx-native-table" *ngIf="rowData && visibleColumnDefs else noData ">
       <thead>
         <th
           *ngIf="enableCheckboxSelection"
@@ -35,7 +42,7 @@ import { isArray } from 'util';
           [(rowCheckboxes)]="rowCheckboxes"
           class="data-cell"
         >
-         <!-- <div class="ngx-checkmark-container">
+        <!-- <div class="ngx-checkmark-container">
             <input type="checkbox" /> <span class="ngx-checkmark"></span>
           </div> -->
         </th>
@@ -87,16 +94,24 @@ import { isArray } from 'util';
           </td>
         </tr>
       </tbody>
-    </table>
+  </table>
+    </ng-container>
+
   `,
   styles: [
     `
+    :host {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
       .ngx-native-table {
         display: table;
         table-layout: auto;
         border-collapse: seperate;
         width: 100%;
         background: #ffffff;
+        border-spacing: 0;
       }
       th.ngx-index-number {
         z-index: 3 !important;
@@ -145,7 +160,8 @@ import { isArray } from 'util';
         left: 0;
         height: 25px;
         width: 25px;
-        background-color: #eee;
+        background-color: #ffffff;
+        border: 1px solid #eee;
       }
       .ngx-checkmark:after {
         content: '';
@@ -155,18 +171,7 @@ import { isArray } from 'util';
         top: 5px;
         width: 5px;
         height: 10px;
-        border: solid white;
-        border-width: 0 3px 3px 0;
-        -webkit-transform: rotate(45deg);
-        -ms-transform: rotate(45deg);
-        transform: rotate(45deg);
-      }
-      .ngx-checmark:after {
-        left: 9px;
-        top: 5px;
-        width: 5px;
-        height: 10px;
-        border: solid white;
+        border: solid #9B9B9B;
         border-width: 0 3px 3px 0;
         -webkit-transform: rotate(45deg);
         -ms-transform: rotate(45deg);
@@ -237,6 +242,7 @@ export class NgxNativeTableComponent
   activeEditMenuIndex: string | number;
   _onDestroy$ = new Subject<void>();
   shConfirmModal: boolean;
+  loading: boolean;
   constructor(public tableService: NativeTableService) {}
 
   ngOnInit() {
@@ -268,23 +274,29 @@ export class NgxNativeTableComponent
     return checkedRows;
   }
   getTableData(pageQuery: PageQuery, newColumns = false): void {
+    this.loading = true;
     this.tableService.getTableData(pageQuery, this.config).subscribe(
-      res => this.buildTableData(res, newColumns),
+      res => {
+        this.buildTableData(res, newColumns);
+        this.loading = false;
+      },
       (er: Error) => {
         console.log(`Error: ${er.message}`);
-      }
+        this.loading = false;
+      },
+      () =>  this.loading = false
     );
   }
   buildTableData(res, newColumns): void {
-    if (res && res.tbl[0] && res.tbl[0].c) {
-      if (newColumns) {
-        this.buildColumns(res);
-        this.setColumnsView(res);
+    try {
+      if (res && res.tbl[0] && res.tbl[0].c) {
+        if (newColumns) {
+          this.buildColumns(res);
+          this.setColumnsView(res);
+        }
+        this.buildRows(res);
       }
-      this.buildRows(res);
-    } else {
-      //  this.gridApi.showNoRowsOverlay();
-    }
+    } catch (er) {console.log(er); }
   }
   buildRows(data): void {
     this.pageLength = data.tbl[0].rowCount;
