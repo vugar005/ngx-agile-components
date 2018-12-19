@@ -1,7 +1,7 @@
 
 <button (click)="table.getCheckedRows()">Rows</button>
 <button (click)="table?.addData()">Add Data</button>
-<button (click)="table?.onRemoveSelected()">Remove Selected</button>
+<button (click)="table?.onRemoveSelected()" [disabled]="!table?.isRowSelected">Remove Selected</button>
 
 <mat-form-field >
     <mat-select placeholder="Toggle Columns" [multiple]="true"

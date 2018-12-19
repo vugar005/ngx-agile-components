@@ -35,6 +35,9 @@ import { isArray } from 'util';
      </ng-template>
     <ng-container *ngIf="!loading else loadingOverlay">
       <table class="ngx-native-table" *ngIf="rowData && visibleColumnDefs else noData ">
+      <colgroup>
+        <col *ngFor="let col of visibleColumnDefs">
+      </colgroup>
       <thead>
         <th
           *ngIf="enableCheckboxSelection"
@@ -75,9 +78,9 @@ import { isArray } from 'util';
           <td
             *ngFor="let col of visibleColumnDefs"
             [attr.col-key]="col?.i"
-            class="data-cell"
+
           >
-            {{ row[col.i] }}
+           <div class="data-cell"> {{ row[col.i] }} </div>
           </td>
           <td
             *ngIf="editTemplate"
@@ -109,7 +112,7 @@ import { isArray } from 'util';
         display: table;
         table-layout: auto;
         border-collapse: seperate;
-        width: 100%;
+        max-width: 100%;
         background: #ffffff;
         border-spacing: 0;
       }
@@ -197,7 +200,7 @@ import { isArray } from 'util';
       .ngx-native-table tr:hover td {
         background-color: #fafafa;
       }
-      .ngx-native-table td.data-cell {
+      .ngx-native-table td .data-cell {
         padding: 0.7rem;
         border-bottom: 1px solid #e0e0e0;
         text-align: left;
@@ -264,7 +267,12 @@ export class NgxNativeTableComponent
   ngOnDestroy() {
     this._onDestroy$.next();
   }
+ get isRowSelected() {
+   if (!this.getCheckedRows() ) {return; }
+   return this.getCheckedRows().length > 0;
+  }
   getCheckedRows() {
+    if (!this.rowCheckboxes) {return; }
     const checkedRows = this.rowCheckboxes
       .toArray()
       .filter(
