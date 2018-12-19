@@ -52,9 +52,9 @@ export class DropdownMenuDirective implements OnInit, OnDestroy, AfterViewInit {
     const hostEl = document.getElementsByClassName('ngx-dropdown open')[0] as HTMLElement;
     const el = document.getElementsByClassName('ngx-dropdown-menu')[0] as HTMLElement;
     const rect = hostEl.getBoundingClientRect();
-    const top = rect.top ;
+    const top = this.dropdown.positinY === 'above' ? rect.top - el.offsetHeight : rect.top;
    // const top = rect.top - hostEl.offsetHeight;
-    el.style.top = `${top}px`;
+    el.style.top =  `${top}px`;
     el.style.left = `${rect.left}px`;
   }
   getOffset(el): void {

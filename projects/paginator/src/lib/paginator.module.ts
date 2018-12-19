@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PaginatorComponent } from './paginator.component';
-import { NgxDropdownModule } from 'projects/dropdown/src/lib/dropdown.module';
+import { NgxDropdownModule } from 'ngx-simple-dropdown';
+// import { NgxDropdownModule } from 'projects/dropdown/src/lib/dropdown.module';
 
 @NgModule({
   imports: [

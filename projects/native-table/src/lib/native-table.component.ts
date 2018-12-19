@@ -33,8 +33,8 @@ import { isArray } from 'util';
     <ng-template #noData>
       <table-no-data-overlay> </table-no-data-overlay>
      </ng-template>
-    <ng-container *ngIf="!loading else loadingOverlay">
-      <div class ="ngx-table-element-wrapper" >
+    <ng-container >
+      <div class ="ngx-table-element-wrapper" *ngIf="!loading else loadingOverlay">
       <table class="ngx-native-table" *ngIf="rowData && visibleColumnDefs else noData ">
       <colgroup>
         <col *ngFor="let col of visibleColumnDefs">
@@ -100,7 +100,11 @@ import { isArray } from 'util';
       </tbody>
   </table>
   </div>
-  <ngx-simple-paginator> </ngx-simple-paginator>
+  <ngx-simple-paginator
+  [length] = "rowCount"
+  [pageSize]="10"
+  (page)="onPageChange($event)"
+  > </ngx-simple-paginator>
 
     </ng-container>
 
@@ -210,14 +214,20 @@ import { isArray } from 'util';
       .ngx-native-table tr:hover td {
         background-color: #fafafa;
       }
+      .ngx-native-table td {
+        height: 48px;
+        border-bottom: 1px solid #e0e0e0;
+      }
       .ngx-native-table td .data-cell {
         padding: 0.7rem;
-        border-bottom: 1px solid #e0e0e0;
         text-align: left;
+        height: 100%;
+      }
+      .ngx-native-table th {
+        border-bottom: 1px solid #e0e0e0;
       }
       .ngx-native-table th.data-cell {
         padding: 0.7rem;
-        border-bottom: 1px solid #e0e0e0;
       }
       .ngx-native-table-editTemplate {
         position: sticky;
@@ -256,6 +266,7 @@ export class NgxNativeTableComponent
   _onDestroy$ = new Subject<void>();
   shConfirmModal: boolean;
   loading: boolean;
+  rowCount: number;
   constructor(public tableService: NativeTableService) {}
 
   ngOnInit() {
@@ -272,6 +283,12 @@ export class NgxNativeTableComponent
           this.getTableData(this.pageQuery, true);
         }
       });
+  }
+  onPageChange(e) {
+    console.log(e.pageIndex)
+    this.pageQuery.pageIndex = e.pageIndex;
+    this.pageQuery.pageSize = e.pageSize;
+    this.getTableData(this.pageQuery);
   }
   ngAfterViewInit() {}
   ngOnDestroy() {
@@ -311,6 +328,7 @@ export class NgxNativeTableComponent
         if (newColumns) {
           this.buildColumns(res);
           this.setColumnsView(res);
+           this.rowCount = res.tbl[0].rowCount;
         }
         this.buildRows(res);
       }

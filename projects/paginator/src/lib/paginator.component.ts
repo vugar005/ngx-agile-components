@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'ngx-simple-paginator',
@@ -9,25 +9,25 @@ import { Component, OnInit } from '@angular/core';
         </div>
       </div>
       <div class="ngx-paginator-range-actions">
-        <div class="ngx-paginator-range-label"> 1 - 10 of 100</div>
-        <div class="ngx-dropdown-wrapper" style="width: 12rem; font-size: 12px;">
-        <ngx-simple-dropdown>
-          <p  dropdownToggle>10</p>
+        <div class="ngx-paginator-range-label"> {{label}}</div>
+        <div class="ngx-dropdown-wrapper" style="width: 2rem; font-size: 12px;">
+        <ngx-simple-dropdown [positinY]="'above'">
+          <p  dropdownToggle>{{pageSize}}</p>
           <ul *dropdownMenu class="ngx-dropdown-menu">
-            <button>10</button>
-            <button>25</button>
-            <button>100</button>
+            <button (click)="_changePageSize(2)">2</button>
+            <button (click)="_changePageSize(25)">25</button>
+            <button (click)="_changePageSize(100)">100</button>
           </ul>
         </ngx-simple-dropdown>
       </div>
         <div class="ngx-paginator-range-actions-btns">
-         <button>
-          <svg class="ngx-paginator-icon" focusable="false" viewBox="0 0 24 24">
-          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path></svg>
+         <button [disabled]="!hasPreviousPage()" (click)="previousPage()">
+          <svg class="ngx-paginator-icon left" focusable="false" viewBox="0 0 24 24">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="rgba(0, 0, 0, 0.54)"></path></svg>
          </button>
-         <button>
-          <svg class="ngx-paginator-icon" focusable="false" viewBox="0 0 24 24">
-          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path></svg>
+         <button [disabled]="!hasNextPage()" (click)="nextPage()">
+          <svg class="ngx-paginator-icon right" focusable="false" viewBox="0 0 24 24">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="rgba(0, 0, 0, 0.54)"></path></svg>
          </button>
         </div>
      </div>
@@ -36,10 +36,80 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./paginator.component.scss']
 })
 export class PaginatorComponent implements OnInit {
-
+  @Input()  get length() {return this._length; }
+            set length(value: number) { this._length = +value ; }
+  @Input()  get pageSize() {return this._pageSize; }
+            set pageSize(value: number) { this._pageSize = +value; }
+  @Output() page = new EventEmitter();
+  pageIndex = 0;
+  private _length: number;
+  private _pageSize: number;
   constructor() { }
 
   ngOnInit() {
   }
+  get label() {return this.getRangeLabel(this.pageIndex, this._pageSize, this._length); }
+  getRangeLabel (pageIndex: number, pageSize: number, length: number)  {
+    if (length === 0 || pageSize === 0) { return `0 of ${length}`; }
 
+    length = Math.max(length, 0);
+
+    const startIndex = pageIndex * pageSize;
+
+    // If the start index exceeds the list length, do not try and fix the end index to the end.
+    const endIndex = startIndex < length ?
+        Math.min(startIndex + pageSize, length) :
+        startIndex + pageSize;
+
+    return `${startIndex + 1} - ${endIndex} of ${length}`;
+  }
+  onSelect(e) {console.log(e)}
+    /** Whether there is a previous page. */
+    hasPreviousPage(): boolean {
+      return this.pageIndex >= 1 && this.pageSize !== 0;
+    }
+    /** Whether there is a next page. */
+    hasNextPage(): boolean {
+      const numberOfPages = this.getNumberOfPages();
+      return this.pageIndex < numberOfPages && this.pageSize !== 0;
+    }
+     /** Calculate the number of pages */
+    getNumberOfPages(): number {
+      return Math.ceil(this.length / this.pageSize) - 1;
+    }
+      /** Advances to the next page if it exists. */
+  nextPage(): void {
+    if (!this.hasNextPage()) { return; }
+
+    const previousPageIndex = this.pageIndex;
+    this.pageIndex++;
+    this._emitPageEvent(previousPageIndex);
+  }
+
+  /** Move back to the previous page if it exists. */
+  previousPage(): void {
+    if (!this.hasPreviousPage()) { return; }
+
+    const previousPageIndex = this.pageIndex;
+    this.pageIndex--;
+    this._emitPageEvent(previousPageIndex);
+  }
+ private  _emitPageEvent(previousPageIndex: number) {
+    this.page.emit({
+      previousPageIndex,
+      pageIndex: this.pageIndex,
+      pageSize: this.pageSize,
+      length: this.length
+    });
+  }
+  _changePageSize(pageSize: number) {
+    // Current page needs to be updated to reflect the new page size. Navigate to the page
+    // containing the previous page's first item.
+    const startIndex = this.pageIndex * this.pageSize;
+    const previousPageIndex = this.pageIndex;
+
+    this.pageIndex = Math.floor(startIndex / pageSize) || 0;
+    this.pageSize = pageSize;
+    this._emitPageEvent(previousPageIndex);
+  }
 }

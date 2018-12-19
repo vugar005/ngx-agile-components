@@ -1,4 +1,3 @@
-import { NgxDropdownModule } from 'projects/dropdown/src/lib/dropdown.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RowEditerComponent } from './row-editer/row-editer.component';
@@ -11,7 +10,11 @@ import { RowsToggleAllCheckboxDirective } from './rows-toggle-all-checkbox.direc
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { TableLoaderOverlayComponent } from './table-loader-overlay/table-loader-overlay.component';
 import { TableNoDataOverlayComponent } from './table-no-data-overlay/table-no-data-overlay.component';
-import { NgxPaginatorModule } from 'projects/paginator/src/lib/paginator.module';
+import { NgxPaginatorModule } from 'ngx-simple-paginator';
+import { NgxDropdownModule } from 'ngx-simple-dropdown';
+// import { NgxDropdownModule } from 'projects/dropdown/src/lib/dropdown.module';
+
+// import { NgxPaginatorModule } from 'projects/paginator/src/lib/paginator.module';
 
 
 @NgModule({

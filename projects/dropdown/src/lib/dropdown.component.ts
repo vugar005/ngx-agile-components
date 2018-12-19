@@ -1,5 +1,6 @@
 import { DropdownService } from './dropdown.service';
-import { Component, ElementRef, Renderer, ViewEncapsulation, AfterContentInit, HostBinding, Output, EventEmitter} from '@angular/core';
+import { Component, ElementRef, Renderer, ViewEncapsulation,
+   AfterContentInit, HostBinding, Output, EventEmitter, Input} from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { TOGGLE_STATUS } from './toggle-status';
 
@@ -82,6 +83,7 @@ export class NgxDropdownComponent  implements AfterContentInit {
   @HostBinding('class') classes = 'ngx-dropdown';
   @Output() closed = new EventEmitter();
   @Output() opened = new EventEmitter();
+  @Input() positinY: string;
  public status: TOGGLE_STATUS = TOGGLE_STATUS.CLOSE;
   private status$: Subject<TOGGLE_STATUS> = new Subject<TOGGLE_STATUS>();
   constructor(

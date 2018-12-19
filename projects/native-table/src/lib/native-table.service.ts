@@ -10,7 +10,7 @@ export class NativeTableService {
   getTableData$ = new Subject<void>();
   getTableData(pageQuery: PageQuery, config: ApiConfig): Observable<any> {
     const kvData = {
-      startLimit: pageQuery.pageIndex * pageQuery.pageSize || undefined,
+      startLimit: pageQuery.pageIndex * pageQuery.pageSize || 0,
       endLimit: pageQuery.pageIndex * pageQuery.pageSize + pageQuery.pageSize || undefined,
     };
     this.appendAdditionFormData(kvData, config);
