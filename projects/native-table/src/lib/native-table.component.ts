@@ -34,6 +34,7 @@ import { isArray } from 'util';
       <table-no-data-overlay> </table-no-data-overlay>
      </ng-template>
     <ng-container *ngIf="!loading else loadingOverlay">
+      <div class ="ngx-table-element-wrapper" >
       <table class="ngx-native-table" *ngIf="rowData && visibleColumnDefs else noData ">
       <colgroup>
         <col *ngFor="let col of visibleColumnDefs">
@@ -98,21 +99,30 @@ import { isArray } from 'util';
         </tr>
       </tbody>
   </table>
+  </div>
+  <ngx-simple-paginator> </ngx-simple-paginator>
+
     </ng-container>
 
   `,
   styles: [
     `
     :host {
-      display: block;
+      display: flex;
+      flex-direction: column;
       width: 100%;
       height: 100%;
     }
+       .ngx-table-element-wrapper {
+        width: 100%;
+        flex: 1;
+        overflow: auto;
+       }
       .ngx-native-table {
         display: table;
         table-layout: auto;
-        border-collapse: seperate;
         max-width: 100%;
+        border-collapse: seperate;
         background: #ffffff;
         border-spacing: 0;
       }

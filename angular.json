@@ -230,6 +230,41 @@
           }
         }
       }
+    },
+    "paginator": {
+      "root": "projects/paginator",
+      "sourceRoot": "projects/paginator/src",
+      "projectType": "library",
+      "prefix": "ngx",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/paginator/tsconfig.lib.json",
+            "project": "projects/paginator/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/paginator/src/test.ts",
+            "tsConfig": "projects/paginator/tsconfig.spec.json",
+            "karmaConfig": "projects/paginator/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/paginator/tsconfig.lib.json",
+              "projects/paginator/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "ngx-agile-components"

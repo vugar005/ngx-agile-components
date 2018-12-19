@@ -1,0 +1,38 @@
+:host {
+  display: block;
+}
+.ngx-paginator-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 56px;
+  padding: 0 8px;
+  color: rgba(0, 0, 0, 0.54);
+}
+.ngx-paginator-page-size {
+  display: flex;
+  align-items: baseline;
+  margin-right: 8px;
+}
+.ngx-paginator-page-size .ngx-paginator-range-label {
+font-size: 12px;
+}
+.ngx-paginator-range-label {
+margin: 0 32px 0 24px;
+font-size: 12px;
+}
+.ngx-paginator-range-actions {
+  display: flex;
+  align-items: center;
+}
+.ngx-paginator-range-actions-btns {
+  display: flex;
+}
+.ngx-paginator-range-actions-btns  button {
+  background: transparent;
+  border: 0;
+  outline: 0;
+  }
+.ngx-paginator-range-actions-btns .ngx-paginator-icon {
+  width: 28px;
+  }

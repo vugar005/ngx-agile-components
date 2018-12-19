@@ -4,7 +4,7 @@ import { Subject, Observable } from 'rxjs';
 import { TOGGLE_STATUS } from './toggle-status';
 
 @Component({
-  selector: 'ngx-dropdown',
+  selector: 'ngx-simple-dropdown',
   template: `
   <ng-content select="[dropdownToggle]" class="dew"> </ng-content>
       <ng-content > </ng-content>

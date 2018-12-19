@@ -35,6 +35,12 @@
       ],
       "form-utils/*": [
         "dist/form-utils/*"
+      ],
+      "paginator": [
+        "dist/paginator"
+      ],
+      "paginator/*": [
+        "dist/paginator/*"
       ]
     }
   }

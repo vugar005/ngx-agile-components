@@ -11,12 +11,14 @@ import { RowsToggleAllCheckboxDirective } from './rows-toggle-all-checkbox.direc
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { TableLoaderOverlayComponent } from './table-loader-overlay/table-loader-overlay.component';
 import { TableNoDataOverlayComponent } from './table-no-data-overlay/table-no-data-overlay.component';
+import { NgxPaginatorModule } from 'projects/paginator/src/lib/paginator.module';
 
 
 @NgModule({
    imports: [
       CommonModule,
-      NgxDropdownModule
+      NgxDropdownModule,
+      NgxPaginatorModule
    ],
    declarations: [
       NgxNativeTableComponent,
