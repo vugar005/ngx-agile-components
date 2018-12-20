@@ -20,6 +20,8 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import { FormUtilsModule } from 'projects/form-utils/src/lib/form-utils.module';
 import {MatSelectModule} from '@angular/material/select';
+import { DemoFilePickerComponent } from './demo-file-picker/demo-file-picker.component';
+import { FilePickerModule } from 'projects/file-picker/src/public_api';
 
 @NgModule({
    declarations: [
@@ -27,28 +29,31 @@ import {MatSelectModule} from '@angular/material/select';
       DemoDropdownComponent,
       DemoNativeTableComponent,
       TableDataInsertComponent,
+      DemoFilePickerComponent
    ],
    imports: [
       BrowserModule,
       BrowserAnimationsModule,
-      AppRoutingModule,
       NgxDropdownModule,
+      FormUtilsModule,
       NgxNativeTableModule,
+      FilePickerModule,
+      AppRoutingModule,
       HttpClientModule,
       MatMenuModule,
       MatDialogModule,
       MatFormFieldModule,
       MatInputModule,
       FormsModule,
-      FormUtilsModule,
       MatButtonModule,
       MatSelectModule
    ],
    providers: [
-     {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
-     {provide: HTTP_INTERCEPTORS, useClass: APIInterceptor, multi: true}
+
    ],
-   entryComponents: [TableDataInsertComponent],
+   entryComponents: [
+      TableDataInsertComponent
+   ],
    bootstrap: [
       AppComponent
    ]

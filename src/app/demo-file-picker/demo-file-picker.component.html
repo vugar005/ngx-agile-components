@@ -1,0 +1,7 @@
+<div style="position: fixed;width: 100vw;height: 80vh;display: flex;align-items: center;justify-content: center">
+  <ngx-file-picker
+    [allowedSize]="100"
+    [uploadType]="'multiple'"
+    (uploaded)="onUploaded($event)"
+  ></ngx-file-picker>
+</div>

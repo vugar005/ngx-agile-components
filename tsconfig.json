@@ -41,6 +41,12 @@
       ],
       "paginator/*": [
         "dist/paginator/*"
+      ],
+      "file-picker": [
+        "dist/file-picker"
+      ],
+      "file-picker/*": [
+        "dist/file-picker/*"
       ]
     }
   }
