@@ -296,7 +296,7 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
     const isValidSize = this.validateSize(file.size);
     return isValidType && isValidSize;
   }
-  pushFile(type: string, safeUrl: SafeResourceUrl, file: File) {
+  pushFile(type: string, safeUrl: SafeResourceUrl, file: File): void {
     if (this.uploadType === 'single') {
       this.clearOldFiles();
       }
