@@ -15,6 +15,7 @@ import {
 } from 'ngx-file-drop';
 import { CropperComponent } from 'angular-cropperjs';
 import { FilePickerService } from './file-picker.service';
+import { FilePreviewModel } from './file-preview.model';
 declare var Viewer;
 
 @Component({
@@ -45,7 +46,11 @@ declare var Viewer;
        <angular-cropper #angularCropper [cropperOptions]="cropperOptions" [imageUrl]="safeCropperImgUrl"></angular-cropper>
       </div>
     </div>
-    <div class="preview-container">
+    <div class="file-preview-wrapper">
+    <file-preview-container [previewFiles]="files"> </file-preview-container>
+    </div>
+   <!--  <div class="preview-container">
+
       <div id="images" *ngIf="previewPictures">
         <div *ngFor="let preview of previewPictures" class="image">
         <span class="cancelArrow" (click)="cancelFile(preview)">x</span>
@@ -59,6 +64,8 @@ declare var Viewer;
         </video>
     </div>
     </div>
+    -->
+
   `,
   styles: [
     `
@@ -66,6 +73,8 @@ declare var Viewer;
         display: flex;
         flex-direction: column;
         align-items: center;
+        width: 100%;
+        max-width: 440px;
       }
       .preview-container {
         display: flex;
@@ -124,7 +133,6 @@ declare var Viewer;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 150px;
         height: 150px;
         text-align:center;
         border: 2px dotted #bbb;
@@ -194,7 +202,7 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
    /** When defined , the video privewer will be shown */
   safeVideoUrl: SafeResourceUrl;
   /** All file list including image, video and others */
-  files = [];
+  files: FilePreviewModel[] = [];
   /** Pictures list to show in preview */
   previewPictures = [];
  /** Photo regular expression to filter photos */
@@ -313,12 +321,12 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
   }
   pushImage(safeUrl: SafeResourceUrl, file: File): void {
     this.previewPictures.push({ safeUrl: safeUrl, file: file });
-    this.files.push(file);
+    this.files.push({safeUrl: safeUrl, file: file});
   }
   pushVideo(safeUrl: SafeResourceUrl, file: File): void {
     this.safeVideoUrl = undefined;
     setTimeout(() => (this.safeVideoUrl = safeUrl), 10);
-    this.files.push(file);
+    this.files.push({safeUrl: safeUrl, file: file});
   }
   openClipper(safeUrl: SafeResourceUrl): void {
     this.safeCropperImgUrl = safeUrl;
@@ -336,7 +344,7 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
     }
   }
   cancelFile(preview): void {
-    this.files = this.files.filter(file => file.name !== preview.file.name);
+    this.files = this.files.filter(filePreview => filePreview.file.name !== preview.file.name);
     this.cropForm = new FormData();
     this.previewPictures = this.previewPictures.filter(pic => {
       return (
