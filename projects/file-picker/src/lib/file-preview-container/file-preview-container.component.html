@@ -1,4 +1,5 @@
 <file-preview-item
 *ngFor="let file of previewFiles"
 [fileItem]="file"
+(remove)="remove.next($event)"
 ></file-preview-item>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FilePreviewModel } from '../file-preview.model';
 
 @Component({
@@ -8,6 +8,7 @@ import { FilePreviewModel } from '../file-preview.model';
 })
 export class FilePreviewContainerComponent implements OnInit {
   @Input() previewFiles: FilePreviewModel[];
+  @Output() public remove = new EventEmitter<File>();
   constructor() { }
 
   ngOnInit() {

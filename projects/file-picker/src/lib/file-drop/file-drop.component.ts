@@ -3,7 +3,7 @@ import { timer, Subscription } from 'rxjs';
 
 import { UploadFile } from './upload-file.model';
 import { UploadEvent } from './upload-event.model';
-import { FileSystemFileEntry, FileSystemEntryMetadata, FileSystemEntry, FileSystemDirectoryEntry } from './dom.types';
+import { FileSystemFileEntry, FileSystemEntry, FileSystemDirectoryEntry } from './dom.types';
 
 @Component({
   selector: 'file-drop',

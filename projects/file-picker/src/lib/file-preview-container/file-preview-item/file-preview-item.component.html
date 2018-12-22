@@ -10,7 +10,7 @@
       <div class="ngx-checkmark-wrapper"*ngIf="icon === 'checkmark' " (mouseenter)="icon = 'close'">
         <span class="ngx-checkmark"></span>
       </div>
-      <div class="ngx-close-icon-wrapper" *ngIf= "icon === 'close'"  (mouseleave)="icon = 'checkmark'" >
+      <div class="ngx-close-icon-wrapper" *ngIf= "icon === 'close'" (click)="remove.next(fileItem)"  (mouseleave)="icon = 'checkmark'" >
         <div class="ngx-close-icon"></div>
 
       </div>

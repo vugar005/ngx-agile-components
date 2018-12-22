@@ -25,7 +25,7 @@ declare var Viewer;
       <file-drop
         (onFileDrop)="dropped($event)"
         [customstyle]="'custom-drag'"
-        [headertext]="'Clik to browse or Drag files here'"
+        [headertext]="'Drag and drop file here'"
       >
       </file-drop>
     </div>
@@ -36,18 +36,18 @@ declare var Viewer;
            (change)="onChange($event, fileInput)"
            class="file_multi_video"
           >
-    <div class="actions-template">
+   <!-- <div class="actions-template">
       <button class="upload-btn" [disabled]="!(files?.length >0)" (click)="onUpload()">Upload</button>
-    </div>
+    </div> -->
 
     <div class="cropperJsOverlay" *ngIf="objectForCropper">
      <div class="cropperJsBox">
-       <button class="saveCropped" (click)="saveCropped()">Crop</button>
        <angular-cropper #angularCropper [cropperOptions]="cropperOptions" [imageUrl]="objectForCropper.safeUrl"></angular-cropper>
+       <button class="saveCropped" (click)="saveCropped()">Crop</button>
       </div>
     </div>
     <div class="file-preview-wrapper">
-    <file-preview-container [previewFiles]="files"> </file-preview-container>
+    <file-preview-container [previewFiles]="files" (remove)="onRemove($event)"> </file-preview-container>
     </div>
    <!--  <div class="preview-container">
 
@@ -75,6 +75,9 @@ declare var Viewer;
         align-items: center;
         width: 100%;
         max-width: 440px;
+        padding: 20px 16px;
+        background: #fafbfd;
+        border-radius: 6px;
       }
       .file-preview-wrapper {
         width: 100%;
@@ -96,6 +99,7 @@ declare var Viewer;
         justify-content: center;
         align-items: center;
         position: fixed;
+        z-index: 999;
         top: 0;
         left: 0;
         width: 100vw;
@@ -106,11 +110,16 @@ declare var Viewer;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        align-items: flex-end;
+        align-items: center;
       }
       .cropperJsBox .saveCropped {
         cursor: pointer;
-        margin-bottom: 5px;
+        margin: 5px 0 ;
+        padding: 12px 25px;
+        border-radius: 6px;
+        border: 0;
+        color: #ffffff;
+        background: #474787;
       }
       /deep/.cropper img {
         max-height: 300px !important;
@@ -132,17 +141,7 @@ declare var Viewer;
         width: 100%;
         cursor: pointer;
       }
-      /deep/ .custom-drag {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 150px;
-        text-align:center;
-        border: 2px dotted #bbb;
-      }
-      /deep/ .custom-drag .content {
-        color: grey!important;
-      }
+
       .video-co {
         margin-top: 20px;
       }
@@ -414,6 +413,10 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
     console.log(this.cropForm);
     // this.fileService.uploadFile(this.cropForm )
     // .subscribe(res => this.handleUploadResponse(res));
+  }
+  onRemove(file: File) {
+    console.log(file)
+;    console.log( 'remove requested');
   }
   handleUploadResponse(res) {
     if (res && res.data) {

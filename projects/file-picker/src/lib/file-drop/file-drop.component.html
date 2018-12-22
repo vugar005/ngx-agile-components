@@ -3,6 +3,18 @@
     (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)">
     <div class="content">
         <ng-content></ng-content>
-        {{headertext}}
+        <div class="cloud-icon-wrapper">
+        <div class="cloud-upload-icon"><i></i></div>
+        </div>
+        <div class="content-top-text">
+          {{headertext}}
+        </div>
+        <div class="content-center-text">
+          or
+        </div>
+        <button class="file-browse-button">
+           Browser Files
+        </button>
+
     </div>
 </div>

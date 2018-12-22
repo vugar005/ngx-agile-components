@@ -1,6 +1,6 @@
 import { FilePreviewModel } from './../../file-preview.model';
-import { Component, OnInit, Input } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'file-preview-item',
@@ -10,6 +10,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 export class FilePreviewItemComponent implements OnInit {
   @Input() fileItem: FilePreviewModel;
   icon = 'checkmark';
+  @Output() public remove = new EventEmitter<File>();
   constructor(private sanitizer: DomSanitizer) { }
 
   ngOnInit() {
