@@ -21,7 +21,7 @@ declare var Viewer;
 @Component({
   selector: 'ngx-file-picker',
   template: `
-   <div (click)="fileInput.click()">
+   <div (click)="fileInput.click()" class="file-drop-wrapper">
       <file-drop
         (onFileDrop)="dropped($event)"
         [customstyle]="'custom-drag'"
@@ -69,13 +69,19 @@ declare var Viewer;
   `,
   styles: [
     `
+    * {
+      box-sizing: border-box;
+    }
+    .file-drop-wrapper {
+      width: 100%;
+    }
       :host {
         display: flex;
         flex-direction: column;
         align-items: center;
         width: 100%;
         max-width: 440px;
-        padding: 20px 16px;
+        padding: 20px 0;
         background: #fafbfd;
         border-radius: 6px;
       }
@@ -404,23 +410,15 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
   }
   blobFallBack(blob) {
    this.pushImage(blob, this.objectForCropper.file.name);
-   this.cropForm.append('image', blob);
+  // this.cropForm.append('image', blob);
    console.log(this.files);
   // this.initViewer();
   this.closeClipper();
   }
-  onUpload() {
-    console.log(this.cropForm);
-    // this.fileService.uploadFile(this.cropForm )
-    // .subscribe(res => this.handleUploadResponse(res));
-  }
+
   onRemove(file: File) {
-    console.log(file)
-;    console.log( 'remove requested');
+    console.log(file);
+    console.log( 'remove requested');
   }
-  handleUploadResponse(res) {
-    if (res && res.data) {
-      this.uploaded.next(res.data.toString());
-    }
-  }
+
 }

@@ -1,13 +1,15 @@
 :host {
   display: block;
-  width: 408px;
+  width: 100%;
+  padding: 0 16px;
 }
 #dropZone {
-  width: 100%;
+  max-width: 440px;
   margin: auto;
   border: 2px dashed #c2cdda;
   border-radius: 6px;
   padding: 56px 0;
+  background: #ffffff;
 }
 .file-browse-button {
   padding: 12px 18px;

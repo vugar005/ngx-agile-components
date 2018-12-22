@@ -2,11 +2,11 @@
   <div class="file-preview-thumbnail">
     <img [src]="getSafeUrl(fileItem.file)">
   </div>
-  <div class="file-preview-description">
-    <div class="file-preview-title">{{fileItem.fileName}}</div>
+  <div class="file-preview-description" >
+    <a class="file-preview-title" [title]="fileItem.fileName" href="javascript:void(0)"><p>{{fileItem.fileName}}</p></a>
     <div class="file-preview-size">{{niceBytes(fileItem.file.size)}}</div>
   </div>
-  <div class="file-preview-actions">
+  <div class="file-preview-actions" >
       <div class="ngx-checkmark-wrapper"*ngIf="icon === 'checkmark' " (mouseenter)="icon = 'close'">
         <span class="ngx-checkmark"></span>
       </div>
@@ -15,4 +15,16 @@
 
       </div>
   </div>
+  <!-- *ngIf="uploadProgress !== 100"-->
+  <ng-container *ngIf="uploadProgress">
+  <div class="file-upload-progress-bar-wrapper"  >
+    <div class="file-upload-progress-bar"  [ngStyle]="{ 'width': uploadProgress + '%' }">
+    </div>
+  </div>
+
+  <div class="file-upload-percentage-wrapper" >
+    <div class="file-upload-percentage">{{uploadProgress}} %</div>
+    </div>
+  </ng-container>
+
 </div>

@@ -49,8 +49,8 @@ import { FilePickerModule } from 'projects/file-picker/src/public_api';
       MatSelectModule
    ],
    providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: APIInterceptor, multi: true},
-    {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}
+    // {provide: HTTP_INTERCEPTORS, useClass: APIInterceptor, multi: true},
+    // {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}
    ],
    entryComponents: [
       TableDataInsertComponent
