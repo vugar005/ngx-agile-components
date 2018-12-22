@@ -1,10 +1,18 @@
 <div class="file-preview-wrapper" *ngIf="fileItem">
   <div class="file-preview-thumbnail">
-    <img src="{{fileItem.safeUrl}}">
+    <img [src]="getSafeUrl(fileItem.file)">
   </div>
   <div class="file-preview-description">
-    <div class="file-preview-title">{{fileItem.file.name}}</div>
-    <div class="file-preview-size">{{fileItem.file.size}}</div>
+    <div class="file-preview-title">{{fileItem.fileName}}</div>
+    <div class="file-preview-size">{{niceBytes(fileItem.file.size)}}</div>
   </div>
-  <div class="file-preview-actions"></div>
+  <div class="file-preview-actions">
+      <div class="ngx-checkmark-wrapper"*ngIf="icon === 'checkmark' " (mouseenter)="icon = 'close'">
+        <span class="ngx-checkmark"></span>
+      </div>
+      <div class="ngx-close-icon-wrapper" *ngIf= "icon === 'close'"  (mouseleave)="icon = 'checkmark'" >
+        <div class="ngx-close-icon"></div>
+
+      </div>
+  </div>
 </div>
