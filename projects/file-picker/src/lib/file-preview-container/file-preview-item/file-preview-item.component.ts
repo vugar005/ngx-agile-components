@@ -10,9 +10,10 @@ import { HttpEvent, HttpEventType } from '@angular/common/http';
   styleUrls: ['./file-preview-item.component.scss']
 })
 export class FilePreviewItemComponent implements OnInit {
+  @Output() public remove = new EventEmitter<FilePreviewModel>();
+  @Output() public imageClicked = new EventEmitter<FilePreviewModel>();
   @Input() fileItem: FilePreviewModel;
   icon = 'checkmark';
-  @Output() public remove = new EventEmitter<File>();
   uploadProgress: number;
   constructor(
     private sanitizer: DomSanitizer,
@@ -20,7 +21,6 @@ export class FilePreviewItemComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log(this.fileItem.fileName)
     this.uploadFile(this.fileItem);
   }
   getSafeUrl(file: File) {
@@ -70,4 +70,14 @@ export class FilePreviewItemComponent implements OnInit {
         return `File "${fileName}" surprising upload event: ${event.type}.`;
     }
   }
+  cancelFile(preview): void {
+    //   this.files = this.files.filter(filePreview => filePreview.file.name !== preview.file.name);
+    //   this.cropForm = new FormData();
+      //  this.previewPictures = this.previewPictures.filter(pic => {
+      //    return (
+      //      pic.safeUrl.changingThisBreaksApplicationSecurity !==
+      //      preview.safeUrl.changingThisBreaksApplicationSecurity
+      //    );
+      //  });
+     }
 }

@@ -16,7 +16,6 @@ import {
 import { CropperComponent } from 'angular-cropperjs';
 import { FilePickerService } from './file-picker.service';
 import { FilePreviewModel } from './file-preview.model';
-declare var Viewer;
 
 @Component({
   selector: 'ngx-file-picker',
@@ -47,7 +46,7 @@ declare var Viewer;
       </div>
     </div>
     <div class="file-preview-wrapper">
-    <file-preview-container [previewFiles]="files" (remove)="onRemove($event)"> </file-preview-container>
+    <file-preview-container [previewFiles]="files" (fileRemove)="onRemove($event)"> </file-preview-container>
     </div>
    <!--  <div class="preview-container">
 
@@ -218,11 +217,8 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
   /** Video regular expression to filter videos */
   @Input() videoRegEx = /(\.mp4|\.avi|\.flv|\.mpg)$/i;
 
-  viewer: any;
   /** Cropper options */
   cropperOptions: any;
- /** The form that will be submitted on upload */
-  cropForm = new FormData();
   /** When defined , the cropper will be shown */
 
   objectForCropper: {safeUrl: SafeResourceUrl, file: File};
@@ -245,36 +241,7 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     // View a list of images
   }
-  initViewer() {
-    this.viewer && this.viewer.destroy();
-    setTimeout(() => {
-      const options = {
-        // inline: true,
-        url: 'data-original',
-        transition: false,
-        ready: e => {
-        },
-        show: e => {
-        },
-        shown: e => {
-         // console.log(e.type);
-        },
-        hide: e => {
-        },
-        hidden: e => {
-        },
-        view: e => {
-        },
-        viewed: e => {
-        },
-        zoom: e => {
-        },
-        zoomed: e => {
-        }
-      };
-      this.viewer = new Viewer(document.getElementById('images'), options);
-    }, 200);
-  }
+
   onChange(e: MSInputMethodContext, fileInput: HTMLInputElement) {
     const file: File = fileInput.files[0];
     this.handleFile(file);
@@ -318,7 +285,6 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
       this.clearOldFiles();
       }
     if (type === 'image') {
-    //  this.initViewer();
      this.pushImage(file, file.name);
     } else if (type === 'video') {
       this.pushVideo(file);
@@ -353,15 +319,12 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
       return 'other';
     }
   }
-  cancelFile(preview): void {
+  onRemove(file: FilePreviewModel): void {
  //   this.files = this.files.filter(filePreview => filePreview.file.name !== preview.file.name);
-    this.cropForm = new FormData();
-    this.previewPictures = this.previewPictures.filter(pic => {
-      return (
-        pic.safeUrl.changingThisBreaksApplicationSecurity !==
-        preview.safeUrl.changingThisBreaksApplicationSecurity
-      );
-    });
+ //   this.cropForm = new FormData();
+    this.files = this.files.filter(f =>  f.fileName !== file.fileName);
+    console.log(file);
+    console.log(this.files)
   }
 
   validateFileType(type: string, value: string): boolean {
@@ -410,15 +373,9 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
   }
   blobFallBack(blob) {
    this.pushImage(blob, this.objectForCropper.file.name);
-  // this.cropForm.append('image', blob);
    console.log(this.files);
-  // this.initViewer();
   this.closeClipper();
   }
 
-  onRemove(file: File) {
-    console.log(file);
-    console.log( 'remove requested');
-  }
 
 }

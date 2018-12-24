@@ -8,10 +8,17 @@ import { FilePreviewModel } from '../file-preview.model';
 })
 export class FilePreviewContainerComponent implements OnInit {
   @Input() previewFiles: FilePreviewModel[];
-  @Output() public remove = new EventEmitter<File>();
+  @Output() public fileRemove = new EventEmitter<FilePreviewModel>();
+  lightboxFile: FilePreviewModel;
   constructor() { }
 
   ngOnInit() {
+  }
+  openLightbox(file: FilePreviewModel) {
+   this.lightboxFile = file;
+  }
+  closeLightbox() {
+    this.lightboxFile = undefined;
   }
 
 }

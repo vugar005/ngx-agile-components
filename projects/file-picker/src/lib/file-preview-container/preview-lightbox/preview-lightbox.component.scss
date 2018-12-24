@@ -1,0 +1,50 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed; /* Stay in place */
+  z-index: 1040; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100vw; /* Full width */
+  height: 100vh; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  overflow: hidden;
+}
+.ng-modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  background: rgba(0,0,0,.288);
+}
+.ng-modal-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(0,0,0,.87);
+  z-index: 1041;
+  position: relative;
+  .lightbox-item {
+    max-width: calc(100vw - 30px);
+    img {
+      width: 100%;
+      height: 56.25vw;
+      animation-name: zoomIn;
+      animation-duration: 200ms;
+    }
+  }
+}
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale3d(0.9, 0.9, 0.9);
+  }
+
+  50% {
+    opacity: 1;
+  }
+}

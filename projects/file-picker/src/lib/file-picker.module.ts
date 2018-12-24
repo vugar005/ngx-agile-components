@@ -7,6 +7,7 @@ import { AngularCropperjsModule } from 'angular-cropperjs';
 import { HttpClientModule } from '@angular/common/http';
 import { FilePickerService } from './file-picker.service';
 import { FileDropModule } from './file-drop/file-drop.module';
+import { PreviewLightboxComponent } from './file-preview-container/preview-lightbox/preview-lightbox.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -17,7 +18,8 @@ import { FileDropModule } from './file-drop/file-drop.module';
   declarations: [
     FilePickerComponent,
     FilePreviewContainerComponent,
-    FilePreviewItemComponent
+    FilePreviewItemComponent,
+    PreviewLightboxComponent
   ],
   exports: [FilePickerComponent],
   providers: [FilePickerService]

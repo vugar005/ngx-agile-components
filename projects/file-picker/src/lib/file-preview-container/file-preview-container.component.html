@@ -1,5 +1,7 @@
+<preview-lightbox *ngIf="lightboxFile" [file]="lightboxFile" (close)="closeLightbox()"></preview-lightbox>
 <file-preview-item
 *ngFor="let file of previewFiles"
 [fileItem]="file"
-(remove)="remove.next($event)"
+(remove)="fileRemove.next($event)"
+(imageClicked)="openLightbox($event)"
 ></file-preview-item>
