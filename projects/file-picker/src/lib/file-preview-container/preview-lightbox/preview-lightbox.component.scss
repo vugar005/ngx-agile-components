@@ -33,6 +33,7 @@
     img {
       width: 100%;
       height: 56.25vw;
+      object-fit: contain;
       animation-name: zoomIn;
       animation-duration: 200ms;
     }

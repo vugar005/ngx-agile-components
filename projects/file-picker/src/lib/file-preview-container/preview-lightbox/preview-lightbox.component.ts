@@ -10,6 +10,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class PreviewLightboxComponent implements OnInit {
   @Input() file: FilePreviewModel;
   @Output() close = new EventEmitter<void>();
+  loaded: boolean;
   constructor(private sanitizer: DomSanitizer) { }
 
   ngOnInit() {

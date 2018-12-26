@@ -1,9 +1,9 @@
 <div class="ng-modal-backdrop" (click)="onClose($event)">
 
 </div>
-<div class="ng-modal-content">
-  <div class="lightbox-item">
-    <img [src]="getSafeUrl(file.file)">
+<div class="ng-modal-content" >
+  <div class="lightbox-item" >
+    <img [src]="getSafeUrl(file.file)" (load)="loaded = true" [ngStyle]="{'visibility': loaded ? 'visible' : 'hidden'}">
   </div>
  </div>
 

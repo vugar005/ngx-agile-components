@@ -3,6 +3,7 @@ import { FilePreviewModel } from './../../file-preview.model';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
+import { getFileType } from '../../file-upload.utils';
 
 @Component({
   selector: 'file-preview-item',
@@ -12,9 +13,11 @@ import { HttpEvent, HttpEventType } from '@angular/common/http';
 export class FilePreviewItemComponent implements OnInit {
   @Output() public remove = new EventEmitter<FilePreviewModel>();
   @Output() public imageClicked = new EventEmitter<FilePreviewModel>();
-  @Input() fileItem: FilePreviewModel;
+  @Input() public fileItem: FilePreviewModel;
   icon = 'checkmark';
   uploadProgress: number;
+  fileType: string;
+
   constructor(
     private sanitizer: DomSanitizer,
     private fileService: FilePickerService
@@ -22,6 +25,7 @@ export class FilePreviewItemComponent implements OnInit {
 
   ngOnInit() {
     this.uploadFile(this.fileItem);
+    this.fileType = getFileType(this.fileItem.file.type);
   }
   getSafeUrl(file: File) {
     const url = window.URL.createObjectURL(file);
