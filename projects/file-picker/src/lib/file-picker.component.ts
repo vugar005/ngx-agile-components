@@ -1,9 +1,7 @@
 import {
-  AfterViewInit,
   Component,
   Input,
   OnInit,
-  ViewChild,
   Output,
   EventEmitter
 } from '@angular/core';
@@ -13,11 +11,11 @@ import {
   FileSystemFileEntry,
   UploadEvent
 } from 'ngx-file-drop';
-import { CropperComponent } from 'angular-cropperjs';
 import { FilePickerService } from './file-picker.service';
 import { FilePreviewModel } from './file-preview.model';
 import {getFileType} from './file-upload.utils';
 import { ValidationError, FileValidationTypes } from './validation-error.model';
+declare var Cropper;
 @Component({
   selector: 'ngx-file-picker',
   template: `
@@ -39,7 +37,7 @@ import { ValidationError, FileValidationTypes } from './validation-error.model';
 
     <div class="cropperJsOverlay" *ngIf="objectForCropper">
      <div class="cropperJsBox">
-       <angular-cropper #angularCropper [cropperOptions]="cropperOptions" [imageUrl]="objectForCropper.safeUrl"></angular-cropper>
+     <img [src]="objectForCropper.safeUrl" id="cropper-img" (load) = "cropperImgLoaded($event)">
        <button class="saveCropped" (click)="saveCropped()">Crop</button>
       </div>
     </div>
@@ -52,6 +50,13 @@ import { ValidationError, FileValidationTypes } from './validation-error.model';
     `
     * {
       box-sizing: border-box;
+    }
+    #cropper-img {
+      max-width: 60vw;
+    }
+    #cropper-img img {
+      width: 100%;
+      height: 100%;
     }
     .file-drop-wrapper {
       width: 100%;
@@ -169,9 +174,7 @@ import { ValidationError, FileValidationTypes } from './validation-error.model';
     `
   ]
 })
-export class FilePickerComponent implements OnInit, AfterViewInit {
-  @ViewChild('angularCropper')
-  public angularCropper: CropperComponent;
+export class FilePickerComponent implements OnInit {
   @Output() uploaded = new EventEmitter<string>();
   @Output() validationError = new EventEmitter<ValidationError>();
   /** Whether to enable cropper */
@@ -180,27 +183,28 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
   /** Api for uploading files */
   @Input()
   uploadApi: string;
-  /** Single or multiple */
+  /** Single or multiple. Default: multi */
   @Input()
-  uploadType = 'single';
-  /** Max size of file to upload */
+  uploadType = 'multi';
+  /** Max size of file in MB*/
   @Input()
   fileMaxSize: number;
    /** Max count of file in multi-upload */
    @Input()
    fileMaxCount: number;
-   /** Total Max size of files */
+   /** Total Max size limit of files in MB */
   @Input()
   totalMaxSize: number;
   /** Which file types to show on choose file dialog */
   @Input()
   accept: string;
-  /** All file list including image, video and others */
+  /** Files list with name */
   files: FilePreviewModel[] = [];
- /** Photo regular expression to filter photos */
+ /** File extensions filter */
   @Input() fileExtensions: String[];
+  cropper: any;
   /** Cropper options */
-  cropperOptions: any;
+  @Input() cropperOptions: Object;
   /** When defined , the cropper will be shown */
   objectForCropper: {safeUrl: SafeResourceUrl, file: File};
   constructor(private sanitizer: DomSanitizer, private fileService: FilePickerService) {}
@@ -208,21 +212,20 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.setCropperOptions();
   }
-  setCropperOptions() {
-    this.cropperOptions = {
-      dragMode: 'crop',
-      aspectRatio: 1,
-      autoCrop: true,
-      movable: true,
-      zoomable: true,
-      scalable: true,
-      autoCropArea: 0.8
-    };
-  }
-  ngAfterViewInit() {
-    // View a list of images
-  }
 
+  setCropperOptions() {
+    if (!this.cropperOptions) {
+      this.cropperOptions = {
+        dragMode: 'crop',
+        aspectRatio: 1,
+        autoCrop: true,
+        movable: true,
+        zoomable: true,
+        scalable: true,
+        autoCropArea: 0.8
+      };
+    }
+  }
   onChange(e: MSInputMethodContext, fileInput: HTMLInputElement) {
     const file: File = fileInput.files[0];
     this.handleInputFile(file);
@@ -237,7 +240,7 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
     const url = window.URL.createObjectURL(file);
     const safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
     if (type === 'image' && this.enableCropper) {
-     this.openClipper(safeUrl, file);
+     this.openCropper(safeUrl, file);
     } else {
       this.pushFile(file);
     }
@@ -288,15 +291,19 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
   clearOldFiles(): void {
     this.files = [];
   }
-  openClipper(safeUrl: SafeResourceUrl, file: File): void {
+  openCropper(safeUrl: SafeResourceUrl, file: File): void {
+    if (typeof Cropper === 'undefined') {return; }
     this.objectForCropper = {safeUrl: safeUrl, file: file};
   }
-  closeClipper(): void {
+  cropperImgLoaded() {
+    const image = document.getElementById('cropper-img');
+    this.cropper = new Cropper(image, this.cropperOptions);
+  }
+  closeCropper(): void {
     this.objectForCropper = undefined;
+    this.cropper = undefined;
   }
   onRemove(file: FilePreviewModel): void {
- //   this.files = this.files.filter(filePreview => filePreview.file.name !== preview.file.name);
- //   this.cropForm = new FormData();
     this.files = this.files.filter(f =>  f.fileName !== file.fileName);
   }
 
@@ -321,11 +328,11 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
     return parseFloat(size) / 1048576;
   }
   saveCropped(): void {
-    this.angularCropper.cropper.getCroppedCanvas().toBlob(this.blobFallBack.bind(this), 'image/jpeg');
+    this.cropper.getCroppedCanvas().toBlob(this.blobFallBack.bind(this), 'image/jpeg');
   }
   blobFallBack(blob) {
    this.pushFile(blob, this.objectForCropper.file.name);
-  this.closeClipper();
+  this.closeCropper();
   }
 
 
