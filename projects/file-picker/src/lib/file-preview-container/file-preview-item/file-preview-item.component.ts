@@ -1,9 +1,10 @@
 import { FilePickerService } from './../../file-picker.service';
 import { FilePreviewModel } from './../../file-preview.model';
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import { Component, OnInit, Input, Output, EventEmitter, Host } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { getFileType } from '../../file-upload.utils';
+import {  Subscription } from 'rxjs';
 
 @Component({
   selector: 'file-preview-item',
@@ -17,17 +18,20 @@ export class FilePreviewItemComponent implements OnInit {
   icon = 'checkmark';
   uploadProgress: number;
   fileType: string;
-
+  safeUrl: SafeResourceUrl;
+  uploadError: boolean;
+  uploadSubscription: Subscription;
   constructor(
     private sanitizer: DomSanitizer,
-    private fileService: FilePickerService
+    private fileService: FilePickerService,
   ) {}
 
   ngOnInit() {
     this.uploadFile(this.fileItem);
     this.fileType = getFileType(this.fileItem.file.type);
+    this.safeUrl = this.getSafeUrl(this.fileItem.file);
   }
-  getSafeUrl(file: File) {
+  getSafeUrl(file: File | Blob) {
     const url = window.URL.createObjectURL(file);
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
@@ -42,27 +46,30 @@ export class FilePreviewItemComponent implements OnInit {
     // less than ten of KB or greater units
     return n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l];
   }
+  onRetry() {
+    this.uploadFile(this.fileItem);
+  }
   uploadFile(file: FilePreviewModel) {
     const form = new FormData();
     form.append('file', file.file);
-    this.fileService
-      .uploadFile(form)
-      .subscribe((res:any) => this.handleUploadResponse(res, file));
+    this.uploadSubscription =
+          this.fileService.uploadFile(form)
+          .subscribe((res: any) => this.handleUploadResponse(res, file), (er) => {
+            this.uploadError = er;
+            this.uploadProgress = undefined;
+      });
   }
   handleUploadResponse(event: HttpEvent<any>, fileName) {
-    console.log(event)
     switch (event.type) {
       case HttpEventType.Sent:
-        return `Uploading file "${fileName}" of size ${fileName}.`;
+        return ;
 
       case HttpEventType.UploadProgress:
         // Compute and show the % done:
         this.uploadProgress = Math.round((100 * event.loaded) / event.total);
-       console.log( `File "${fileName}" is ${this.uploadProgress}% uploaded.`);
        return;
 
       case HttpEventType.Response:
-        console.log(`File "${fileName}" was completely uploaded!`);
         const body: any = event.body;
         if (body && body.data) {
          // this.uploaded.next(res.data.toString());
@@ -74,14 +81,10 @@ export class FilePreviewItemComponent implements OnInit {
         return `File "${fileName}" surprising upload event: ${event.type}.`;
     }
   }
-  cancelFile(preview): void {
-    //   this.files = this.files.filter(filePreview => filePreview.file.name !== preview.file.name);
-    //   this.cropForm = new FormData();
-      //  this.previewPictures = this.previewPictures.filter(pic => {
-      //    return (
-      //      pic.safeUrl.changingThisBreaksApplicationSecurity !==
-      //      preview.safeUrl.changingThisBreaksApplicationSecurity
-      //    );
-      //  });
-     }
+ onRemove(fileItem: FilePreviewModel): void {
+  if (this.uploadSubscription) {
+    this.uploadSubscription.unsubscribe();
+   }
+   this.remove.next(fileItem);
+ }
 }

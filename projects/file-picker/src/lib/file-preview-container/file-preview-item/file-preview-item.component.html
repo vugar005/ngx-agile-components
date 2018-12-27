@@ -1,10 +1,10 @@
 <div class="file-preview-wrapper" *ngIf="fileItem">
   <div class="file-preview-thumbnail">
     <div class="img-preview-thumbnail" *ngIf="fileType === 'image'" >
-      <img [src]="getSafeUrl(fileItem.file)" (click)="imageClicked.next(fileItem)">
+      <img [src]="safeUrl" (click)="imageClicked.next(fileItem)">
     </div>
     <div class="other-preview-thumbnail"
-      *ngIf="fileType === 'other'"
+      *ngIf="fileType !== 'image'"
       [ngClass]="fileItem.fileName.split('.').pop()"
       >
       {{fileItem.fileName.split('.').pop()}}
@@ -18,15 +18,23 @@
     <div class="file-preview-size">{{niceBytes(fileItem.file.size)}}</div>
   </div>
   <div class="file-preview-actions" >
-      <div class="ngx-checkmark-wrapper"*ngIf="icon === 'checkmark' " (mouseenter)="icon = 'close'">
+      <div class="ngx-checkmark-wrapper"*ngIf="(icon === 'checkmark') && !uploadError" (mouseenter)="icon = 'close'">
         <span class="ngx-checkmark"></span>
       </div>
-      <div class="ngx-close-icon-wrapper" *ngIf= "icon === 'close'" (click)="remove.next(fileItem)"  (mouseleave)="icon = 'checkmark'" >
+      <refresh-icon *ngIf="uploadError" (retry)="onRetry()"></refresh-icon>
+      <a class="ngx-close-icon-wrapper"
+      *ngIf= "(icon === 'close') ||  uploadError"
+      (click)="onRemove(fileItem)"
+       (mouseleave)="icon = 'checkmark'"
+       title="Remove"
+       >
         <div class="ngx-close-icon"></div>
-
-      </div>
+      </a>
   </div>
   <!-- *ngIf="uploadProgress !== 100"-->
+    <a class="file-upload-error-wrapper" *ngIf="uploadError && !uploadProgress" href="javascipt:void(0)" title="Error on Upload">
+    </a>
+
   <ng-container *ngIf="uploadProgress">
   <div class="file-upload-progress-bar-wrapper"  >
     <div class="file-upload-progress-bar"  [ngStyle]="{ 'width': uploadProgress + '%' }">

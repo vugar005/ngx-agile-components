@@ -17,6 +17,7 @@ import { CropperComponent } from 'angular-cropperjs';
 import { FilePickerService } from './file-picker.service';
 import { FilePreviewModel } from './file-preview.model';
 import {getFileType} from './file-upload.utils';
+import { ValidationError, FileValidationTypes } from './validation-error.model';
 @Component({
   selector: 'ngx-file-picker',
   template: `
@@ -35,9 +36,6 @@ import {getFileType} from './file-upload.utils';
            (change)="onChange($event, fileInput)"
            class="file_multi_video"
           >
-   <!-- <div class="actions-template">
-      <button class="upload-btn" [disabled]="!(files?.length >0)" (click)="onUpload()">Upload</button>
-    </div> -->
 
     <div class="cropperJsOverlay" *ngIf="objectForCropper">
      <div class="cropperJsBox">
@@ -48,22 +46,6 @@ import {getFileType} from './file-upload.utils';
     <div class="file-preview-wrapper">
     <file-preview-container [previewFiles]="files" (fileRemove)="onRemove($event)"> </file-preview-container>
     </div>
-   <!--  <div class="preview-container">
-
-      <div id="images" *ngIf="previewPictures">
-        <div *ngFor="let preview of previewPictures" class="image">
-        <span class="cancelArrow" (click)="cancelFile(preview)">x</span>
-        <img [src]="preview.safeUrl" alt="''">
-        </div>
-      </div>
-      <div class="video-co" *ngIf="safeVideoUrl">
-        <video width="400" controls>
-          <source  [src]="safeVideoUrl" id="video_here">
-          Your browser does not support HTML5 video.
-        </video>
-    </div>
-    </div>
-    -->
 
   `,
   styles: [
@@ -191,6 +173,7 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
   @ViewChild('angularCropper')
   public angularCropper: CropperComponent;
   @Output() uploaded = new EventEmitter<string>();
+  @Output() validationError = new EventEmitter<ValidationError>();
   /** Whether to enable cropper */
   @Input()
    enableCropper = true;
@@ -200,30 +183,25 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
   /** Single or multiple */
   @Input()
   uploadType = 'single';
-  /** image ,video or other */
-  @Input()
-  fileType: string;
   /** Max size of file to upload */
   @Input()
-  allowedSize = 10000;
+  fileMaxSize: number;
+   /** Max count of file in multi-upload */
+   @Input()
+   fileMaxCount: number;
+   /** Total Max size of files */
+  @Input()
+  totalMaxSize: number;
   /** Which file types to show on choose file dialog */
   @Input()
   accept: string;
-   /** When defined , the video privewer will be shown */
-  safeVideoUrl: SafeResourceUrl;
   /** All file list including image, video and others */
   files: FilePreviewModel[] = [];
-  /** Pictures list to show in preview */
-  previewPictures = [];
  /** Photo regular expression to filter photos */
-  @Input() photoRegEx = /(\.jpg|\.jpeg|\.png)$/i;
-  /** Video regular expression to filter videos */
-  @Input() videoRegEx = /(\.mp4|\.avi|\.flv|\.mpg)$/i;
-
+  @Input() fileExtensions: String[];
   /** Cropper options */
   cropperOptions: any;
   /** When defined , the cropper will be shown */
-
   objectForCropper: {safeUrl: SafeResourceUrl, file: File};
   constructor(private sanitizer: DomSanitizer, private fileService: FilePickerService) {}
 
@@ -247,20 +225,38 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
 
   onChange(e: MSInputMethodContext, fileInput: HTMLInputElement) {
     const file: File = fileInput.files[0];
-    this.handleFile(file);
+    this.handleInputFile(file);
   }
-  handleFile(file: File) {
+  handleInputFile(file: File) {
     if (!file) {return; }
+    const isValidCondtion = this.checkConditions(file);
+    if (!isValidCondtion) {return; }
+    const type = getFileType(file.type);
+    const isValid = this.validateFile(file);
+    if (!isValid) {return; }
     const url = window.URL.createObjectURL(file);
     const safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-    const type = getFileType(file.type);
-    const isValid = this.validateFile(type, file);
-    if (!isValid) {return; }
     if (type === 'image' && this.enableCropper) {
      this.openClipper(safeUrl, file);
     } else {
       this.pushFile(file);
     }
+  }
+  checkConditions(file: File) {
+    const isValidMaxFileCount: boolean = this.checkMaxFileCount();
+    if (!isValidMaxFileCount) {this.validationError.next({file: file, error: FileValidationTypes.fileMaxCount}); }
+    const isValidTotalSize: boolean = this.checkTotalFileSize(file);
+    if (!isValidTotalSize) {this.validationError.next({file: file, error: FileValidationTypes.totalMaxSize}); }
+    return isValidMaxFileCount && isValidTotalSize;
+  }
+  checkMaxFileCount(): boolean {
+    if (!this.fileMaxCount) {return true; }
+    return this.fileMaxCount < this.files.length + 1;
+  }
+  checkTotalFileSize(file: File): boolean {
+    if (!this.totalMaxSize) {return true; }
+    const totalBits = this.files.map(f => f.file.size).reduce((acc, curr) => acc + curr, 0);
+     return  this.bitsToMb(totalBits + file.size) < this.totalMaxSize;
   }
   dropped(event: UploadEvent) {
     const files = event.files;
@@ -269,18 +265,18 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
       if (droppedFile.fileEntry.isFile) {
         const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
         fileEntry.file((file: File) => {
-         this.handleFile(file);
+         this.handleInputFile(file);
         });
       } else {
         // It was a directory (empty directories are added, otherwise only files)
         const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
-        console.log(droppedFile.relativePath, fileEntry);
+       // console.log(droppedFile.relativePath, fileEntry);
       }
     }
   }
-  validateFile(type: string, file: File): boolean {
-    const isValidType = this.validateFileType(type, file.name);
-    const isValidSize = this.validateSize(file.size);
+  validateFile(file: File): boolean {
+    const isValidType = this.validateExtension(file, file.name);
+    const isValidSize = this.validateSize(file, file.size);
     return isValidType && isValidSize;
   }
   pushFile( file: File, fileName = file.name): void {
@@ -290,7 +286,6 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
       this.files.push({ file: file, fileName: fileName});
   }
   clearOldFiles(): void {
-    this.previewPictures = [];
     this.files = [];
   }
   openClipper(safeUrl: SafeResourceUrl, file: File): void {
@@ -303,57 +298,33 @@ export class FilePickerComponent implements OnInit, AfterViewInit {
  //   this.files = this.files.filter(filePreview => filePreview.file.name !== preview.file.name);
  //   this.cropForm = new FormData();
     this.files = this.files.filter(f =>  f.fileName !== file.fileName);
-    console.log(file);
-    console.log(this.files)
   }
 
-  validateFileType(type: string, value: string): boolean {
-    switch (this.fileType) {
-      case 'image': {
-        if (this.fileType !== type) {
-          console.warn(`${this.fileType} only`);
-          return;
-        }
-        if (!this.photoRegEx.exec(value)) {
-          console.warn('incorrect image format');
-        } else {
-          return true;
-        }
-        break;
-      }
-      case 'video': {
-        if (this.fileType !== type) {
-          console.warn(`${this.fileType} only`);
-          return;
-        }
-        if (!this.videoRegEx.exec(value)) {
-          console.warn('incorrect video format');
-        } else {
-          return true;
-        }
-        break;
-      }
-      default:
-      return true;
-    }
-  }
-  validateSize(size): boolean {
-    const res = this.bytesToMb(size.toString());
-    if (!res) {
-      console.warn('size does not fit');
+  validateExtension(file: File, fileName: string): boolean {
+    if (!this.fileExtensions) {return true; }
+    const extension = fileName.split('.').pop();
+    if (this.fileExtensions && (!this.fileExtensions.includes(extension))) {
+      this.validationError.next({file: file, error: FileValidationTypes.extensions});
       return false;
     }
-    return res;
+       return true;
   }
-  bytesToMb(size): boolean {
-    return parseFloat(size) / 1048576 <= this.allowedSize;
+  validateSize(file: File, size: number): boolean {
+    const res: number = this.bitsToMb(size.toString());
+    if (this.fileMaxSize && !(res < this.fileMaxSize)) {
+      this.validationError.next({file: file, error: FileValidationTypes.fileMaxSize});
+      return false;
+    }
+    return true;
+  }
+  bitsToMb(size): number {
+    return parseFloat(size) / 1048576;
   }
   saveCropped(): void {
     this.angularCropper.cropper.getCroppedCanvas().toBlob(this.blobFallBack.bind(this), 'image/jpeg');
   }
   blobFallBack(blob) {
    this.pushFile(blob, this.objectForCropper.file.name);
-   console.log(this.files);
   this.closeClipper();
   }
 

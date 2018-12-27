@@ -1,7 +1,9 @@
 <div style="position: fixed;width: 100vw;height: 80vh;display: flex;align-items: center;justify-content: center">
   <ngx-file-picker
-    [allowedSize]="100"
+    [totalMaxSize]="15"
+    [fileMaxSize]="1"
     [uploadType]="'multiple'"
-    (uploaded)="onUploaded($event)"
+    [fileExtensions]="['pdf', 'jpg']"
+    (validationError)=onValidationError($event)
   ></ngx-file-picker>
 </div>

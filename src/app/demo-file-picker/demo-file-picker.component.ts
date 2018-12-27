@@ -11,5 +11,8 @@ export class DemoFilePickerComponent implements OnInit {
 
   ngOnInit() {
   }
+  onValidationError(e) {
+    console.log(e)
+  }
 
 }
