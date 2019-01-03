@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FilePreviewModel } from '../../file-preview.model';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'preview-lightbox',
@@ -11,15 +11,17 @@ export class PreviewLightboxComponent implements OnInit {
   @Input() file: FilePreviewModel;
   @Output() close = new EventEmitter<void>();
   loaded: boolean;
+  safeUrl: SafeResourceUrl;
   constructor(private sanitizer: DomSanitizer) { }
 
   ngOnInit() {
+    this.getSafeUrl(this.file.file);
   }
-  getSafeUrl(file: File) {
+  getSafeUrl(file: File | Blob): void {
     const url = window.URL.createObjectURL(file);
-    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
-  onClose(event) {
+  onClose(event): void {
    this.close.next();
   }
 

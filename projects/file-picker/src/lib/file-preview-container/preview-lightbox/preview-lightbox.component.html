@@ -3,7 +3,7 @@
 </div>
 <div class="ng-modal-content" >
   <div class="lightbox-item" >
-    <img [src]="getSafeUrl(file.file)" (load)="loaded = true" [ngStyle]="{'visibility': loaded ? 'visible' : 'hidden'}">
+    <img [src]="safeUrl" (load)="loaded = true" [ngStyle]="{'visibility': loaded ? 'visible' : 'hidden'}">
   </div>
  </div>
 

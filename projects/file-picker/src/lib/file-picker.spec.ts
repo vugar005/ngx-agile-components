@@ -1,14 +1,16 @@
+import { FilePickerModule } from 'projects/file-picker/src/public_api';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FilePickerComponent } from './file-picker.component';
 
-describe('FilePickerComponent', () => {
+fdescribe('FilePickerComponent', () => {
   let component: FilePickerComponent;
   let fixture: ComponentFixture<FilePickerComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FilePickerComponent ]
+      declarations: [ ],
+      imports: [FilePickerModule]
     })
     .compileComponents();
   }));

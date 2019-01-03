@@ -11,10 +11,10 @@ import {
   FileSystemFileEntry,
   UploadEvent
 } from 'ngx-file-drop';
-import { FilePickerService } from './file-picker.service';
 import { FilePreviewModel } from './file-preview.model';
 import {getFileType} from './file-upload.utils';
 import { ValidationError, FileValidationTypes } from './validation-error.model';
+import { FilePickerAdapter } from './file-picker.adapter';
 declare var Cropper;
 @Component({
   selector: 'ngx-file-picker',
@@ -38,151 +38,31 @@ declare var Cropper;
     <div class="cropperJsOverlay" *ngIf="objectForCropper">
      <div class="cropperJsBox">
      <img [src]="objectForCropper.safeUrl" id="cropper-img" (load) = "cropperImgLoaded($event)">
-       <button class="saveCropped" (click)="saveCropped()">Crop</button>
+       <button class="cropSubmit" (click)="onCropSubmit()">Crop</button>
       </div>
     </div>
     <div class="file-preview-wrapper">
-    <file-preview-container [previewFiles]="files" (fileRemove)="onRemove($event)"> </file-preview-container>
+    <file-preview-container
+     [previewFiles]="files"
+     (removeSuccess)="onRemoveSuccess($event)"
+     (uploadSuccess)="onUploadSuccess($event)"
+     [adapter]="adapter"
+     > </file-preview-container>
     </div>
 
   `,
-  styles: [
-    `
-    * {
-      box-sizing: border-box;
-    }
-    #cropper-img {
-      max-width: 60vw;
-    }
-    #cropper-img img {
-      width: 100%;
-      height: 100%;
-    }
-    .file-drop-wrapper {
-      width: 100%;
-      background: #fafbfd;
-      padding-top: 20px;
-    }
-      :host {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        max-width: 440px;
-        padding-bottom: 20px;
-        border-radius: 6px;
-      }
-      .file-preview-wrapper {
-        width: 100%;
-      }
-      .preview-container {
-        display: flex;
-      }
-      .actions-template {
-        display: flex;
-        align-items: center;
-        margin-top: 10px;
-      }
-      .cancelArrow {
-        color: #e74c3c;
-        cursor: pointer;
-      }
-      .cropperJsOverlay {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: fixed;
-        z-index: 999;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.32);
-      }
-      .cropperJsBox {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-      }
-      .cropperJsBox .saveCropped {
-        cursor: pointer;
-        margin: 5px 0 ;
-        padding: 12px 25px;
-        border-radius: 6px;
-        border: 0;
-        color: #ffffff;
-        background: #474787;
-      }
-      /deep/.cropper img {
-        max-height: 300px !important;
-    }
-      #images {
-        display: flex;
-        justify-content: center;
-        width: 500px;
-        overflow-x: auto;
-      }
-      #images .image {
-        flex: 0 0 100px;
-        margin: 0 2px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-      }
-      #images img {
-        width: 100%;
-        cursor: pointer;
-      }
-
-      .video-co {
-        margin-top: 20px;
-      }
-      .carousel-co /deep/ a {
-        color: white !important;
-      }
-      #fileInput {
-        display: none;
-      }
-      .browse-btn {
-        color: #333;
-        padding: 4px 15px;
-        border-radius: 3px;
-        background-image: linear-gradient(to bottom, #e0e0e0, #b7b7b7);
-        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
-        cursor: pointer;
-        margin-right: 7px;
-      }
-      .upload-btn {
-        box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-          0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-        border: none;
-        outline: 0;
-        min-width: 80px;
-        padding: 0 16px;
-        color: #ffeded;
-        background: #27ae60;
-        border-radius: 2px;
-        cursor: pointer;
-      }
-      button:disabled {
-        color: rgba(0,0,0,.26);
-        background: gainsboro;
-      }
-    `
-  ]
+  styleUrls: ['./file-picker.component.scss']
 })
 export class FilePickerComponent implements OnInit {
-  @Output() uploaded = new EventEmitter<string>();
+  /** Emitted when file is uploaded via api successfully. Emitted for every file */
+  @Output() uploadSuccess = new EventEmitter<FilePreviewModel>();
+  /** Emitted when file is removed via api successfully. Emitted for every file */
+  @Output() removeSuccess = new EventEmitter<FilePreviewModel>();
+  /** Emitted on file validation fail */
   @Output() validationError = new EventEmitter<ValidationError>();
   /** Whether to enable cropper */
   @Input()
    enableCropper = true;
-  /** Api for uploading files */
-  @Input()
-  uploadApi: string;
   /** Single or multiple. Default: multi */
   @Input()
   uploadType = 'multi';
@@ -201,13 +81,17 @@ export class FilePickerComponent implements OnInit {
   /** Files list with name */
   files: FilePreviewModel[] = [];
  /** File extensions filter */
-  @Input() fileExtensions: String[];
+  @Input() fileExtensions: String;
   cropper: any;
   /** Cropper options */
   @Input() cropperOptions: Object;
   /** When defined , the cropper will be shown */
   objectForCropper: {safeUrl: SafeResourceUrl, file: File};
-  constructor(private sanitizer: DomSanitizer, private fileService: FilePickerService) {}
+  /** Custom Adapter for uploading/removing files */
+  @Input()
+   adapter: FilePickerAdapter;
+
+  constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit() {
     this.setCropperOptions();
@@ -215,52 +99,46 @@ export class FilePickerComponent implements OnInit {
 
   setCropperOptions() {
     if (!this.cropperOptions) {
-      this.cropperOptions = {
-        dragMode: 'crop',
-        aspectRatio: 1,
-        autoCrop: true,
-        movable: true,
-        zoomable: true,
-        scalable: true,
-        autoCropArea: 0.8
-      };
+    this.setDefaultCropperOptions();
     }
   }
+  setDefaultCropperOptions() {
+    this.cropperOptions = {
+      dragMode: 'crop',
+      aspectRatio: 1,
+      autoCrop: true,
+      movable: true,
+      zoomable: true,
+      scalable: true,
+      autoCropArea: 0.8
+    };
+  }
+  /** On input file selected */
   onChange(e: MSInputMethodContext, fileInput: HTMLInputElement) {
     const file: File = fileInput.files[0];
     this.handleInputFile(file);
   }
   handleInputFile(file: File) {
     if (!file) {return; }
-    const isValidCondtion = this.checkConditions(file);
-    if (!isValidCondtion) {return; }
-    const type = getFileType(file.type);
-    const isValid = this.validateFile(file);
-    if (!isValid) {return; }
+    if (!this.isValidMaxFileCount()) {return; }
+    if (!this.isValidExtension(file, file.name)) {return; }
     const url = window.URL.createObjectURL(file);
     const safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    const type = getFileType(file.type);
     if (type === 'image' && this.enableCropper) {
      this.openCropper(safeUrl, file);
     } else {
-      this.pushFile(file);
+       if (this.isValidSize(file, file.size)) {
+        this.pushFile(file);
+       }
     }
   }
-  checkConditions(file: File) {
-    const isValidMaxFileCount: boolean = this.checkMaxFileCount();
-    if (!isValidMaxFileCount) {this.validationError.next({file: file, error: FileValidationTypes.fileMaxCount}); }
-    const isValidTotalSize: boolean = this.checkTotalFileSize(file);
-    if (!isValidTotalSize) {this.validationError.next({file: file, error: FileValidationTypes.totalMaxSize}); }
-    return isValidMaxFileCount && isValidTotalSize;
-  }
-  checkMaxFileCount(): boolean {
+  /** Validates max file count */
+  isValidMaxFileCount(): boolean {
     if (!this.fileMaxCount) {return true; }
     return this.fileMaxCount < this.files.length + 1;
   }
-  checkTotalFileSize(file: File): boolean {
-    if (!this.totalMaxSize) {return true; }
-    const totalBits = this.files.map(f => f.file.size).reduce((acc, curr) => acc + curr, 0);
-     return  this.bitsToMb(totalBits + file.size) < this.totalMaxSize;
-  }
+  /** On file dropped */
   dropped(event: UploadEvent) {
     const files = event.files;
     for (const droppedFile of event.files) {
@@ -277,25 +155,15 @@ export class FilePickerComponent implements OnInit {
       }
     }
   }
-  validateFile(file: File): boolean {
-    const isValidType = this.validateExtension(file, file.name);
-    const isValidSize = this.validateSize(file, file.size);
-    return isValidType && isValidSize;
-  }
+  /** Add file to file list after succesfull validation */
   pushFile( file: File, fileName = file.name): void {
-    if (this.uploadType === 'single') {
-      this.clearOldFiles();
-      }
       this.files.push({ file: file, fileName: fileName});
-  }
-  clearOldFiles(): void {
-    this.files = [];
   }
   openCropper(safeUrl: SafeResourceUrl, file: File): void {
     if (typeof Cropper === 'undefined') {return; }
     this.objectForCropper = {safeUrl: safeUrl, file: file};
   }
-  cropperImgLoaded() {
+  cropperImgLoaded(e): void {
     const image = document.getElementById('cropper-img');
     this.cropper = new Cropper(image, this.cropperOptions);
   }
@@ -303,11 +171,15 @@ export class FilePickerComponent implements OnInit {
     this.objectForCropper = undefined;
     this.cropper = undefined;
   }
-  onRemove(file: FilePreviewModel): void {
-    this.files = this.files.filter(f =>  f.fileName !== file.fileName);
+  onRemoveSuccess(fileItem: FilePreviewModel): void {
+    this.removeSuccess.next(fileItem);
+    this.files = this.files.filter(f =>  f.fileName !== fileItem.fileName);
   }
-
-  validateExtension(file: File, fileName: string): boolean {
+  onUploadSuccess(fileItem: FilePreviewModel): void {
+    this.uploadSuccess.next(fileItem);
+  }
+  /** Validates file extension */
+  isValidExtension(file: File, fileName: string): boolean {
     if (!this.fileExtensions) {return true; }
     const extension = fileName.split('.').pop();
     if (this.fileExtensions && (!this.fileExtensions.includes(extension))) {
@@ -316,23 +188,38 @@ export class FilePickerComponent implements OnInit {
     }
        return true;
   }
-  validateSize(file: File, size: number): boolean {
+   /** Validates selected file size and total file size */
+  isValidSize(file: File, size: number): boolean {
+    /** Validating selected file size */
     const res: number = this.bitsToMb(size.toString());
-    if (this.fileMaxSize && !(res < this.fileMaxSize)) {
+    let isValidFileSize: boolean;
+    let isValidTotalFileSize: boolean;
+    if  (!this.fileMaxSize || ( this.fileMaxSize && res < this.fileMaxSize)) {
+      isValidFileSize = true;
+    } else {
       this.validationError.next({file: file, error: FileValidationTypes.fileMaxSize});
-      return false;
     }
-    return true;
+    /** Validating Total File Size */
+    const totalBits = this.files.map(f => f.file.size).reduce((acc, curr) => acc + curr, 0);
+      if (!this.totalMaxSize || (this.totalMaxSize && this.bitsToMb(totalBits + file.size) < this.totalMaxSize)) {
+         isValidTotalFileSize = true;
+      } else {
+        this.validationError.next({file: file, error: FileValidationTypes.totalMaxSize});
+      }
+      return isValidFileSize && isValidTotalFileSize;
   }
   bitsToMb(size): number {
     return parseFloat(size) / 1048576;
   }
-  saveCropped(): void {
+  /** when crop button submitted */
+  onCropSubmit(): void {
     this.cropper.getCroppedCanvas().toBlob(this.blobFallBack.bind(this), 'image/jpeg');
   }
-  blobFallBack(blob) {
-   this.pushFile(blob, this.objectForCropper.file.name);
-  this.closeCropper();
+  blobFallBack(blob: Blob): void {
+    if (this.isValidSize(<File>blob, blob.size)) {
+      this.pushFile(<File>blob, this.objectForCropper.file.name);
+    }
+   this.closeCropper();
   }
 
 
