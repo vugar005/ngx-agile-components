@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import {FileComponent} from './file-drop.component';
 
@@ -6,7 +7,7 @@ import {FileComponent} from './file-drop.component';
     FileComponent,
   ],
   exports: [FileComponent],
-  imports: [],
+  imports: [CommonModule],
   providers: [],
   bootstrap: [FileComponent],
 })

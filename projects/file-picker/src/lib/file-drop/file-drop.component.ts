@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, NgZone, OnDestroy, Renderer } from '@angular/core';
+import { Component, Input, Output, EventEmitter, NgZone, OnDestroy, Renderer, TemplateRef } from '@angular/core';
 import { timer, Subscription } from 'rxjs';
 
 import { UploadFile } from './upload-file.model';
@@ -13,7 +13,6 @@ import { FileSystemFileEntry, FileSystemEntry, FileSystemDirectoryEntry } from '
 
 
 export class FileComponent implements OnDestroy {
-
   @Input()
   headertext: string = '';
   @Input()
@@ -31,14 +30,13 @@ export class FileComponent implements OnDestroy {
   stack = [];
   files: UploadFile[] = [];
   subscription: Subscription;
-  dragoverflag: boolean = false;
+  dragoverflag = false;
 
-  globalDisable: boolean = false;
+  globalDisable = false;
   globalStart: Function;
   globalEnd: Function;
 
   numOfActiveReadEntries = 0
-
   constructor(
     private zone: NgZone,
     private renderer: Renderer
@@ -53,7 +51,6 @@ export class FileComponent implements OnDestroy {
       this.globalDisable = false;
     });
   }
-
   public onDragOver(event: Event): void {
     if (!this.globalDisable && !this.disableIf) {
       if (!this.dragoverflag) {

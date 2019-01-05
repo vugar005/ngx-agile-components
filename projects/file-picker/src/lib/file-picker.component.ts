@@ -3,7 +3,8 @@ import {
   Input,
   OnInit,
   Output,
-  EventEmitter
+  EventEmitter,
+  TemplateRef
 } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import {
@@ -25,6 +26,7 @@ declare var Cropper;
         [customstyle]="'custom-drag'"
         [headertext]="'Drag and drop file here'"
       >
+      <ng-content select=".dropzoneTemplate"> </ng-content>
       </file-drop>
     </div>
 
@@ -41,13 +43,13 @@ declare var Cropper;
        <button class="cropSubmit" (click)="onCropSubmit()">Crop</button>
       </div>
     </div>
-    <div class="file-preview-wrapper">
-    <file-preview-container
-     [previewFiles]="files"
-     (removeSuccess)="onRemoveSuccess($event)"
-     (uploadSuccess)="onUploadSuccess($event)"
-     [adapter]="adapter"
-     > </file-preview-container>
+    <div class="files-preview-wrapper">
+      <file-preview-container
+      [previewFiles]="files"
+      (removeSuccess)="onRemoveSuccess($event)"
+      (uploadSuccess)="onUploadSuccess($event)"
+      [adapter]="adapter"
+      > </file-preview-container>
     </div>
 
   `,
@@ -90,7 +92,8 @@ export class FilePickerComponent implements OnInit {
   /** Custom Adapter for uploading/removing files */
   @Input()
    adapter: FilePickerAdapter;
-
+  /**  Custome template for dropzone */
+   @Input() dropzoneTemplate: TemplateRef<any>;
   constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit() {
@@ -199,7 +202,7 @@ export class FilePickerComponent implements OnInit {
     } else {
       this.validationError.next({file: file, error: FileValidationTypes.fileMaxSize});
     }
-    /** Validating Total File Size */
+    /** Validating Total Files Size */
     const totalBits = this.files.map(f => f.file.size).reduce((acc, curr) => acc + curr, 0);
       if (!this.totalMaxSize || (this.totalMaxSize && this.bitsToMb(totalBits + file.size) < this.totalMaxSize)) {
          isValidTotalFileSize = true;

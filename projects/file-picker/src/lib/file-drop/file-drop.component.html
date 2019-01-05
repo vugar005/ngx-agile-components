@@ -1,20 +1,23 @@
 <div id="dropZone"  [className]="customstyle" [class.over]="dragoverflag"
     (drop)="dropFiles($event)"
     (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)">
-    <div class="content">
-        <ng-content></ng-content>
-        <div class="cloud-icon-wrapper">
-        <div class="cloud-upload-icon"><i></i></div>
-        </div>
-        <div class="content-top-text">
-          {{headertext}}
-        </div>
-        <div class="content-center-text">
-          or
-        </div>
-        <button class="file-browse-button">
-           Browse Files
-        </button>
 
+    <div #ref class="custom-dropzone" >
+      <ng-content></ng-content>
+      </div>
+
+    <div class="content" *ngIf="ref.children?.length == 0">
+          <div class="cloud-icon-wrapper">
+              <div class="cloud-upload-icon"><i></i></div>
+              </div>
+              <div class="content-top-text">
+                {{headertext}}
+              </div>
+              <div class="content-center-text">
+                or
+              </div>
+              <button class="file-browse-button">
+                 Browse Files
+              </button>
     </div>
 </div>
