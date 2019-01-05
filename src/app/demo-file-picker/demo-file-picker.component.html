@@ -1,6 +1,7 @@
 <div style="position: fixed;width: 100vw;height: 80vh;display: flex;align-items: center;justify-content: center">
-  <ngx-file-picker
+  <ngx-file-picker #uploader
     [totalMaxSize]="3"
+    [fileMaxCount]="1"
     [fileMaxSize]="2"
     [uploadType]="'multiple'"
     (validationError)= "onValidationError($event)"
@@ -14,5 +15,3 @@
   >
 </ngx-file-picker>
 </div>
-
-

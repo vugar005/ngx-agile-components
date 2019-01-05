@@ -1,3 +1,5 @@
+import { ValidationError } from './../../../../dist/file-picker/lib/validation-error.model.d';
+import { FilePickerService } from './file-picker.service';
 import {
   Component,
   Input,
@@ -6,7 +8,7 @@ import {
   EventEmitter,
   TemplateRef
 } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { SafeResourceUrl } from '@angular/platform-browser';
 import {
   FileSystemDirectoryEntry,
   FileSystemFileEntry,
@@ -14,7 +16,7 @@ import {
 } from 'ngx-file-drop';
 import { FilePreviewModel } from './file-preview.model';
 import {getFileType} from './file-upload.utils';
-import { ValidationError, FileValidationTypes } from './validation-error.model';
+import { FileValidationTypes } from './validation-error.model';
 import { FilePickerAdapter } from './file-picker.adapter';
 declare var Cropper;
 @Component({
@@ -86,8 +88,7 @@ export class FilePickerComponent implements OnInit {
   /** Which file types to show on choose file dialog */
   @Input()
   accept: string;
-  /** Files list with name. Can also be imported externally */
-  @Input() files: FilePreviewModel[] = [];
+   files: FilePreviewModel[] = [];
  /** File extensions filter */
   @Input() fileExtensions: String;
   cropper: any;
@@ -100,7 +101,7 @@ export class FilePickerComponent implements OnInit {
    adapter: FilePickerAdapter;
   /**  Custome template for dropzone */
    @Input() dropzoneTemplate: TemplateRef<any>;
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(private fileService: FilePickerService) {}
 
   ngOnInit() {
     this.setCropperOptions();
@@ -129,23 +130,35 @@ export class FilePickerComponent implements OnInit {
   }
   handleInputFile(file: File) {
     if (!file) {return; }
-    if (!this.isValidMaxFileCount()) {return; }
+    if (!this.isValidUploadType(file)) {return; }
+    if (!this.isValidMaxFileCount(file)) {return; }
     if (!this.isValidExtension(file, file.name)) {return; }
-    const url = window.URL.createObjectURL(file);
-    const safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
     const type = getFileType(file.type);
     if (type === 'image' && this.enableCropper) {
-     this.openCropper(safeUrl, file);
+     this.openCropper(file);
     } else {
        if (this.isValidSize(file, file.size)) {
         this.pushFile(file);
        }
     }
   }
+  /** Validates if upload type is single so another file cannot be added */
+  isValidUploadType(file): boolean {
+    if (this.uploadType === 'single' && this.files.length >= 0) {
+      this.validationError.next({file: file, error: FileValidationTypes.uploadType});
+      return false;
+    } else {
+      return true;
+    }
+  }
   /** Validates max file count */
-  isValidMaxFileCount(): boolean {
-    if (!this.fileMaxCount) {return true; }
-    return this.fileMaxCount < this.files.length + 1;
+  isValidMaxFileCount(file: File): boolean {
+    if (!this.fileMaxCount || this.fileMaxCount >= this.files.length + 1 ) {
+      return true;
+     } else {
+       this.validationError.next({file: file, error: FileValidationTypes.fileMaxCount});
+      return false;
+     }
   }
   /** On file dropped */
   dropped(event: UploadEvent) {
@@ -169,8 +182,9 @@ export class FilePickerComponent implements OnInit {
       this.files.push({ file: file, fileName: fileName});
       this.fileAdded.next({ file: file, fileName: fileName});
   }
-  openCropper(safeUrl: SafeResourceUrl, file: File): void {
+  openCropper(file: File): void {
     if (typeof Cropper === 'undefined') {return; }
+    const safeUrl = this.fileService.createSafeUrl(file);
     this.objectForCropper = {safeUrl: safeUrl, file: file};
   }
   /** On img load event */
@@ -184,7 +198,10 @@ export class FilePickerComponent implements OnInit {
   }
   onRemoveSuccess(fileItem: FilePreviewModel): void {
     this.removeSuccess.next(fileItem);
-    this.files = this.files.filter(f =>  f.fileName !== fileItem.fileName);
+    this.removeFileFromList(fileItem.fileName);
+  }
+  removeFileFromList(fileName: string): void {
+    this.files = this.files.filter(f =>  f.fileName !== fileName);
   }
   onUploadSuccess(fileItem: FilePreviewModel): void {
     this.uploadSuccess.next(fileItem);

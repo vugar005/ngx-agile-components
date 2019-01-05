@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Injectable()
 export class FilePickerService {
-  constructor() { }
+  constructor(private sanitizer: DomSanitizer) { }
   mockUploadFile(formData) {
     const event = new CustomEvent('customevent', {
       detail: {
@@ -11,5 +12,15 @@ export class FilePickerService {
       }
     });
     return of (event.detail);
+  }
+  createSafeUrl(file): SafeResourceUrl {
+    try {
+      const url = window.URL.createObjectURL(file);
+    const safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    return safeUrl;
+
+    } catch (er) {
+      console.log(er);
+    }
   }
 }

@@ -3,7 +3,7 @@ import { FilePreviewModel } from './../../file-preview.model';
 import { Component, OnInit, Input, Output, EventEmitter, Host } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
-import { getFileType } from '../../file-upload.utils';
+import { getFileType} from '../../file-upload.utils';
 import {  Subscription } from 'rxjs';
 import { FilePickerAdapter } from '../../file-picker.adapter';
 
@@ -26,7 +26,6 @@ export class FilePreviewItemComponent implements OnInit {
   uploadSubscription: Subscription;
   fileId: string;
   constructor(
-    private sanitizer: DomSanitizer,
     private fileService: FilePickerService,
   ) {}
 
@@ -36,8 +35,7 @@ export class FilePreviewItemComponent implements OnInit {
     this.safeUrl = this.getSafeUrl(this.fileItem.file);
   }
   getSafeUrl(file: File | Blob) {
-    const url = window.URL.createObjectURL(file);
-    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    return this.fileService.createSafeUrl(file);
   }
   niceBytes(x) {
     const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];

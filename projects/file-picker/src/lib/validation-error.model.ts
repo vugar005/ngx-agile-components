@@ -3,8 +3,9 @@ export interface ValidationError {
   error: string;
 }
 export enum FileValidationTypes {
-  fileMaxSize = 'FILE MAX SIZE',
-  fileMaxCount = 'FILE MAX COUNT',
-  totalMaxSize = 'TOTAL MAX SIZE',
+  fileMaxSize = 'FILE_MAX_SIZE',
+  fileMaxCount = 'FILE_MAX_COUNT',
+  totalMaxSize = 'TOTAL_MAX_SIZE',
   extensions = 'EXTENSIONS',
+  uploadType = 'UPLOAD_TYPE'
 }

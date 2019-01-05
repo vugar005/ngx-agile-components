@@ -10,6 +10,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DemoFilePickerComponent implements OnInit {
   adapter = new DemoFilePickerAdapter(this.http);
+  myFiles: any;
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
@@ -19,6 +20,7 @@ export class DemoFilePickerComponent implements OnInit {
   }
   onUploadSuccess(e: FilePreviewModel) {
    console.log(e);
+   console.log(this.myFiles)
   }
   onRemoveSuccess(e: FilePreviewModel) {
     console.log(e);
