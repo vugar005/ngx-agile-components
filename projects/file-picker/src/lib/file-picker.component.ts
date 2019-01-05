@@ -20,7 +20,7 @@ declare var Cropper;
 @Component({
   selector: 'ngx-file-picker',
   template: `
-   <div (click)="fileInput.click()" class="file-drop-wrapper">
+   <div (click)="fileInput.click()" class="file-drop-wrapper" *ngIf="showeDragDropZone">
       <file-drop
         (onFileDrop)="dropped($event)"
         [customstyle]="'custom-drag'"
@@ -33,8 +33,8 @@ declare var Cropper;
 
     <input type="file" name="file[]" id="fileInput"
            #fileInput
-           (change)="onChange($event, fileInput)"
-           class="file_multi_video"
+           (change)="onChange(fileInput)"
+           class="file-input"
           >
 
     <div class="cropperJsOverlay" *ngIf="objectForCropper">
@@ -43,7 +43,7 @@ declare var Cropper;
        <button class="cropSubmit" (click)="onCropSubmit()">Crop</button>
       </div>
     </div>
-    <div class="files-preview-wrapper">
+    <div class="files-preview-wrapper" *ngIf="showPreviewContainer">
       <file-preview-container
       [previewFiles]="files"
       (removeSuccess)="onRemoveSuccess($event)"
@@ -62,9 +62,15 @@ export class FilePickerComponent implements OnInit {
   @Output() removeSuccess = new EventEmitter<FilePreviewModel>();
   /** Emitted on file validation fail */
   @Output() validationError = new EventEmitter<ValidationError>();
+  /** Emitted when file is added and passed validations. */
+  @Output() fileAdded = new EventEmitter<FilePreviewModel>();
   /** Whether to enable cropper */
   @Input()
    enableCropper = true;
+  /** Whether to show drag and drop zone */
+  @Input() showeDragDropZone = true;
+   /** Whether to show files preview container */
+  @Input() showPreviewContainer = true;
   /** Single or multiple. Default: multi */
   @Input()
   uploadType = 'multi';
@@ -80,8 +86,8 @@ export class FilePickerComponent implements OnInit {
   /** Which file types to show on choose file dialog */
   @Input()
   accept: string;
-  /** Files list with name */
-  files: FilePreviewModel[] = [];
+  /** Files list with name. Can also be imported externally */
+  @Input() files: FilePreviewModel[] = [];
  /** File extensions filter */
   @Input() fileExtensions: String;
   cropper: any;
@@ -117,7 +123,7 @@ export class FilePickerComponent implements OnInit {
     };
   }
   /** On input file selected */
-  onChange(e: MSInputMethodContext, fileInput: HTMLInputElement) {
+  onChange( fileInput: HTMLInputElement) {
     const file: File = fileInput.files[0];
     this.handleInputFile(file);
   }
@@ -161,11 +167,13 @@ export class FilePickerComponent implements OnInit {
   /** Add file to file list after succesfull validation */
   pushFile( file: File, fileName = file.name): void {
       this.files.push({ file: file, fileName: fileName});
+      this.fileAdded.next({ file: file, fileName: fileName});
   }
   openCropper(safeUrl: SafeResourceUrl, file: File): void {
     if (typeof Cropper === 'undefined') {return; }
     this.objectForCropper = {safeUrl: safeUrl, file: file};
   }
+  /** On img load event */
   cropperImgLoaded(e): void {
     const image = document.getElementById('cropper-img');
     this.cropper = new Cropper(image, this.cropperOptions);

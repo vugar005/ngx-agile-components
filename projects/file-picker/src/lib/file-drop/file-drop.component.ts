@@ -14,11 +14,11 @@ import { FileSystemFileEntry, FileSystemEntry, FileSystemDirectoryEntry } from '
 
 export class FileComponent implements OnDestroy {
   @Input()
-  headertext: string = '';
+  headertext = '';
   @Input()
   customstyle: string = null;
   @Input()
-  disableIf: boolean = false;
+  disableIf = false;
 
   @Output()
   public onFileDrop: EventEmitter<UploadEvent> = new EventEmitter<UploadEvent>();
@@ -36,7 +36,7 @@ export class FileComponent implements OnDestroy {
   globalStart: Function;
   globalEnd: Function;
 
-  numOfActiveReadEntries = 0
+  numOfActiveReadEntries = 0;
   constructor(
     private zone: NgZone,
     private renderer: Renderer
