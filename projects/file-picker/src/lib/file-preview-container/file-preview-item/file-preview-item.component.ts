@@ -30,14 +30,14 @@ export class FilePreviewItemComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.uploadFile(this.fileItem);
+      this.uploadFile(this.fileItem);
     this.fileType = getFileType(this.fileItem.file.type);
     this.safeUrl = this.getSafeUrl(this.fileItem.file);
   }
-  getSafeUrl(file: File | Blob) {
+  getSafeUrl(file: File | Blob): SafeResourceUrl {
     return this.fileService.createSafeUrl(file);
   }
-  niceBytes(x) {
+  niceBytes(x): string {
     const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     let l = 0,
       n = parseInt(x, 10) || 0;
@@ -48,11 +48,12 @@ export class FilePreviewItemComponent implements OnInit {
     // less than ten of KB or greater units
     return n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l];
   }
-  onRetry() {
+  onRetry(): void {
     this.uploadFile(this.fileItem);
   }
-  uploadFile(fileItem: FilePreviewModel) {
+  uploadFile(fileItem: FilePreviewModel): void {
     if (this.adapter) {
+      console.log(this.adapter)
       this.uploadSubscription =
       this.adapter.uploadFile(fileItem)
       .subscribe((res: HttpEvent<any> | string) => {
@@ -68,7 +69,10 @@ export class FilePreviewItemComponent implements OnInit {
   });
     }
   }
-  onUploadSuccess(id: string, fileItem: FilePreviewModel) {
+  handleUploadResponse(res) {
+
+  }
+  onUploadSuccess(id: string, fileItem: FilePreviewModel): void {
     console.log('success');
     this.fileId = id;
     this.uploadSuccess.next(fileItem);
@@ -99,12 +103,12 @@ export class FilePreviewItemComponent implements OnInit {
   this.uploadUnsubscribe();
   this.removeFile(fileItem);
  }
- uploadUnsubscribe() {
+ uploadUnsubscribe(): void {
   if (this.uploadSubscription) {
     this.uploadSubscription.unsubscribe();
    }
  }
- removeFile(fileItem: FilePreviewModel) {
+ removeFile(fileItem: FilePreviewModel): void {
   if (this.adapter) {
     this.adapter.removeFile(this.fileId, this.fileItem)
     .subscribe(res => {

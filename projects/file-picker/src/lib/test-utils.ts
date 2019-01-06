@@ -1,5 +1,8 @@
 import { FilePreviewModel } from './file-preview.model';
+import { FilePickerAdapter } from './file-picker.adapter';
+import { of } from 'rxjs';
 // image/png
+
 export function createMockFile(name: string, type: string, sizeInMb = 1) {
   return {
     name: name,
@@ -14,7 +17,7 @@ export function createMockFile(name: string, type: string, sizeInMb = 1) {
   };
 }
 
-export function createMockPreviewFileModel(name: string, type: string, sizeInMb = 1): FilePreviewModel {
+export function createMockPreviewFile(name: string, type: string, sizeInMb = 1): FilePreviewModel {
   const file =  {
     name: name,
     type: type,

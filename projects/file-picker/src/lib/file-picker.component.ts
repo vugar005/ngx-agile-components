@@ -35,6 +35,7 @@ declare var Cropper;
 
     <input type="file" name="file[]" id="fileInput"
            #fileInput
+           (click)="fileInput.value= null"
            (change)="onChange(fileInput)"
            class="file-input"
           >
@@ -46,7 +47,7 @@ declare var Cropper;
       </div>
     </div>
     <div class="files-preview-wrapper" *ngIf="showPreviewContainer">
-      <file-preview-container
+      <file-preview-container *ngIf="files"
       [previewFiles]="files"
       (removeSuccess)="onRemoveSuccess($event)"
       (uploadSuccess)="onUploadSuccess($event)"
@@ -234,7 +235,7 @@ export class FilePickerComponent implements OnInit {
       } else {
         this.validationError.next({file: file, error: FileValidationTypes.totalMaxSize});
       }
-      return isValidFileSize && isValidTotalFileSize;
+      return !!isValidFileSize && isValidTotalFileSize;
   }
   bitsToMb(size): number {
     return parseFloat(size) / 1048576;
