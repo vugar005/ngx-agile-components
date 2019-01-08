@@ -1,4 +1,3 @@
-import { ValidationError } from './../../../../dist/file-picker/lib/validation-error.model.d';
 import { FilePickerService } from './file-picker.service';
 import {
   Component,
@@ -16,7 +15,7 @@ import {
 } from 'ngx-file-drop';
 import { FilePreviewModel } from './file-preview.model';
 import {getFileType} from './file-upload.utils';
-import { FileValidationTypes } from './validation-error.model';
+import { FileValidationTypes, ValidationError } from './validation-error.model';
 import { FilePickerAdapter } from './file-picker.adapter';
 declare var Cropper;
 @Component({

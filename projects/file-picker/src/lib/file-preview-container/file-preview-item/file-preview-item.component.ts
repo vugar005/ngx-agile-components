@@ -53,7 +53,6 @@ export class FilePreviewItemComponent implements OnInit {
   }
   uploadFile(fileItem: FilePreviewModel): void {
     if (this.adapter) {
-      console.log(this.adapter)
       this.uploadSubscription =
       this.adapter.uploadFile(fileItem)
       .subscribe((res: HttpEvent<any> | string) => {
@@ -75,7 +74,8 @@ export class FilePreviewItemComponent implements OnInit {
   onUploadSuccess(id: string, fileItem: FilePreviewModel): void {
     console.log('success');
     this.fileId = id;
-    this.uploadSuccess.next(fileItem);
+
+    this.uploadSuccess.next({...fileItem, fileId: id});
   }
   handleProgressResponse(event: HttpEvent<any> , fileName) {
     switch (event.type) {

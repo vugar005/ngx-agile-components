@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { of } from 'rxjs';
+import { of, Observable } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Injectable()
 export class FilePickerService {
   constructor(private sanitizer: DomSanitizer) { }
-  mockUploadFile(formData) {
+  mockUploadFile(formData): Observable<any> {
     const event = new CustomEvent('customevent', {
       detail: {
         type: 'UploadProgreess'
