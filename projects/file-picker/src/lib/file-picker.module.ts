@@ -1,3 +1,4 @@
+import { CloseIconComponent } from './icons/close-icon/close-icon.component';
 import { FilePreviewItemComponent } from './file-preview-container/file-preview-item/file-preview-item.component';
 import { FilePreviewContainerComponent } from './file-preview-container/file-preview-container.component';
 import { NgModule } from '@angular/core';
@@ -19,7 +20,8 @@ import { RefreshIconComponent } from './file-preview-container/file-preview-item
     FilePreviewContainerComponent,
     FilePreviewItemComponent,
     PreviewLightboxComponent,
-    RefreshIconComponent
+    RefreshIconComponent,
+    CloseIconComponent
   ],
   exports: [FilePickerComponent],
   providers: [FilePickerService]

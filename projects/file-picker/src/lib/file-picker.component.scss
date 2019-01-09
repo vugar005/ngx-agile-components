@@ -51,15 +51,24 @@
     align-items: center;
     max-height: calc(100vh - 38px - 50px);
     max-width: 90vw;
-    .cropSubmit {
-      cursor: pointer;
-      margin: 5px 0 ;
+   .cropper-actions {
+     display: flex;
+     button {
+      margin: 5px;
       padding: 12px 25px;
       border-radius: 6px;
       border: 0;
+      cursor: pointer;
+     }
+    .cropSubmit {
       color: #ffffff;
-      background: #474787;
+      background: #16a085;
   }
+  .cropCancel {
+   // color: #ffffff;
+   // background: #474787;
+  }
+   }
 }
   /deep/.cropper img {
     max-height: 300px !important;

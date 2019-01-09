@@ -27,12 +27,18 @@
   align-items: center;
   color: rgba(0,0,0,.87);
   z-index: 1041;
-  position: relative;
+  .close-icon-wrapper {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 20px;
+  }
   .lightbox-item {
     max-width: calc(100vw - 30px);
+    max-height: calc(100vh - 30px);
     img {
       width: 100%;
-      height: 56.25vw;
+      height: auto;
       object-fit: contain;
       animation-name: zoomIn;
       animation-duration: 200ms;

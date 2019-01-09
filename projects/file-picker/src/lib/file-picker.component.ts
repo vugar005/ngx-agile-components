@@ -42,7 +42,9 @@ declare var Cropper;
     <div class="cropperJsOverlay" *ngIf="objectForCropper">
      <div class="cropperJsBox">
      <img [src]="objectForCropper.safeUrl" id="cropper-img" (load) = "cropperImgLoaded($event)">
-       <button class="cropSubmit" (click)="onCropSubmit()">Crop</button>
+        <div class="cropper-actions">
+        <button class="cropSubmit" (click)="onCropSubmit()">Crop</button>
+        <button class="cropCancel" (click)="closeCropper()">Cancel</button> </div>
       </div>
     </div>
     <div class="files-preview-wrapper" *ngIf="showPreviewContainer">
@@ -68,7 +70,7 @@ export class FilePickerComponent implements OnInit {
   @Output() fileAdded = new EventEmitter<FilePreviewModel>();
   /** Whether to enable cropper */
   @Input()
-   enableCropper = true;
+   enableCropper = false;
   /** Whether to show drag and drop zone */
   @Input() showeDragDropZone = true;
    /** Whether to show files preview container */
@@ -183,7 +185,10 @@ export class FilePickerComponent implements OnInit {
       this.fileAdded.next({ file: file, fileName: fileName});
   }
   openCropper(file: File): void {
-    if (typeof Cropper === 'undefined') {return; }
+    if (typeof Cropper === 'undefined') {
+      console.warn('please import cropperjs script and styles to use cropper feature or disable it by setting [enableCropper]="false"');
+      return;
+    }
     const safeUrl = this.fileService.createSafeUrl(file);
     this.objectForCropper = {safeUrl: safeUrl, file: file};
   }
@@ -192,10 +197,12 @@ export class FilePickerComponent implements OnInit {
     const image = document.getElementById('cropper-img');
     this.cropper = new Cropper(image, this.cropperOptions);
   }
+  /** Close or cancel cropper */
   closeCropper(): void {
     this.objectForCropper = undefined;
     this.cropper = undefined;
   }
+  /** Emits event when file remove api returns success  */
   onRemoveSuccess(fileItem: FilePreviewModel): void {
     this.removeSuccess.next(fileItem);
     this.removeFileFromList(fileItem.fileName);
@@ -203,6 +210,7 @@ export class FilePickerComponent implements OnInit {
   removeFileFromList(fileName: string): void {
     this.files = this.files.filter(f =>  f.fileName !== fileName);
   }
+  /** Emits event when file upload api returns success  */
   onUploadSuccess(fileItem: FilePreviewModel): void {
     this.uploadSuccess.next(fileItem);
   }

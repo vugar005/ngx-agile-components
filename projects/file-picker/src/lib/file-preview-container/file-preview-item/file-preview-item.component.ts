@@ -37,6 +37,7 @@ export class FilePreviewItemComponent implements OnInit {
   getSafeUrl(file: File | Blob): SafeResourceUrl {
     return this.fileService.createSafeUrl(file);
   }
+  /** Converts bytes to nice size */
   niceBytes(x): string {
     const units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     let l = 0,
@@ -48,6 +49,7 @@ export class FilePreviewItemComponent implements OnInit {
     // less than ten of KB or greater units
     return n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l];
   }
+  /** Retry file upload when upload was unsuccessfull */
   onRetry(): void {
     this.uploadFile(this.fileItem);
   }
@@ -66,15 +68,13 @@ export class FilePreviewItemComponent implements OnInit {
         this.uploadError = er;
         this.uploadProgress = undefined;
   });
+    } else {
+      console.warn('no adapter was provided');
     }
   }
-  handleUploadResponse(res) {
-
-  }
+  /** Emits event when file upload api returns success  */
   onUploadSuccess(id: string, fileItem: FilePreviewModel): void {
-    console.log('success');
     this.fileId = id;
-
     this.uploadSuccess.next({...fileItem, fileId: id});
   }
   handleProgressResponse(event: HttpEvent<any> , fileName) {
@@ -101,19 +101,25 @@ export class FilePreviewItemComponent implements OnInit {
   }
  onRemove(fileItem: FilePreviewModel): void {
   this.uploadUnsubscribe();
-  this.removeFile(fileItem);
+  this.removeFile();
  }
+ /** Cancel upload. Cancels request  */
  uploadUnsubscribe(): void {
   if (this.uploadSubscription) {
     this.uploadSubscription.unsubscribe();
    }
  }
- removeFile(fileItem: FilePreviewModel): void {
+ removeFile(): void {
   if (this.adapter) {
     this.adapter.removeFile(this.fileId, this.fileItem)
     .subscribe(res => {
-      this.removeSuccess.next(fileItem);
+      this.onRemoveSuccess(this.fileItem);
     });
+   } else {
+    console.warn('no adapter was provided');
    }
+ }
+ onRemoveSuccess(fileItem: FilePreviewModel) {
+  this.removeSuccess.next(fileItem);
  }
 }

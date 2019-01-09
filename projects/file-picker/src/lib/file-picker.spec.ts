@@ -160,6 +160,9 @@ it('should have default dragDropZone and preview container', () => {
  expect(component.showeDragDropZone).toBe(true);
  expect(component.showPreviewContainer).toBe(true);
 });
+it('cropper feature should be disabled by default', () => {
+ expect(component.enableCropper).toBe(false);
+});
 it('should upload type be multi by default', () => {
  expect(component.uploadType).toBe('multi');
 });
