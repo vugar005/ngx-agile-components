@@ -66,35 +66,35 @@ export class FilePickerComponent implements OnInit {
   @Output() removeSuccess = new EventEmitter<FilePreviewModel>();
   /** Emitted on file validation fail */
   @Output() validationError = new EventEmitter<ValidationError>();
-  /** Emitted when file is added and passed validations. */
+  /** Emitted when file is added and passed validations. Not uploaded yet */
   @Output() fileAdded = new EventEmitter<FilePreviewModel>();
-  /** Whether to enable cropper */
+  /** Whether to enable cropper. Default: disabled */
   @Input()
    enableCropper = false;
-  /** Whether to show drag and drop zone */
+  /** Whether to show default drag and drop zone. Default:true */
   @Input() showeDragDropZone = true;
-   /** Whether to show files preview container */
+   /** Whether to show default files preview container. Default: true */
   @Input() showPreviewContainer = true;
   /** Single or multiple. Default: multi */
   @Input()
-  uploadType = 'multi';
-  /** Max size of file in MB*/
+   uploadType = 'multi';
+  /** Max size of selected file in MB. Default: no limit */
   @Input()
-  fileMaxSize: number;
-   /** Max count of file in multi-upload */
-   @Input()
+   fileMaxSize: number;
+  /** Max count of file in multi-upload. Default: no limit */
+  @Input()
    fileMaxCount: number;
-   /** Total Max size limit of files in MB */
+  /** Total Max size limit of all files in MB. Default: no limit */
   @Input()
-  totalMaxSize: number;
-  /** Which file types to show on choose file dialog */
+   totalMaxSize: number;
+  /** Which file types to show on choose file dialog. Default: show all */
   @Input()
   accept: string;
-   files: FilePreviewModel[] = [];
+  files: FilePreviewModel[] = [];
  /** File extensions filter */
   @Input() fileExtensions: String;
   cropper: any;
-  /** Cropper options */
+  /** Cropper options. */
   @Input() cropperOptions: Object;
   /** When defined , the cropper will be shown */
   objectForCropper: {safeUrl: SafeResourceUrl, file: File};
