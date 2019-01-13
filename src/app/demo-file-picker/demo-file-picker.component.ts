@@ -1,7 +1,9 @@
+import { FilePickerComponent } from './../../../projects/file-picker/src/lib/file-picker.component';
+import { ValidationError } from './../../../projects/file-picker/src/lib/validation-error.model';
 import { FilePreviewModel } from './../../../projects/file-picker/src/lib/file-preview.model';
 import { HttpClient } from '@angular/common/http';
 import { DemoFilePickerAdapter } from './demo-file-picker.adapter';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'demo-file-picker',
@@ -9,13 +11,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./demo-file-picker.component.scss']
 })
 export class DemoFilePickerComponent implements OnInit {
+  @ViewChild('uploader') uploader: FilePickerComponent;
   adapter = new DemoFilePickerAdapter(this.http);
-  myFiles: any;
+  myFiles: FilePreviewModel[] = [];
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
   }
-  onValidationError(e) {
+  onValidationError(e: ValidationError) {
     console.log(e);
   }
   onUploadSuccess(e: FilePreviewModel) {
@@ -24,6 +27,12 @@ export class DemoFilePickerComponent implements OnInit {
   }
   onRemoveSuccess(e: FilePreviewModel) {
     console.log(e);
+  }
+  onFileAdded(file: FilePreviewModel) {
+    this.myFiles.push(file);
+  }
+  removeFile() {
+  this.uploader.removeFileFromList(this.myFiles[0].fileName);
   }
 
 }

@@ -1,6 +1,6 @@
 export interface ValidationError {
   file: File;
-  error: string;
+  error: string; // is FileValidationType enum type
 }
 export enum FileValidationTypes {
   fileMaxSize = 'FILE_MAX_SIZE',

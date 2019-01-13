@@ -6,12 +6,18 @@
     [uploadType]="'multi'"
     (validationError)= "onValidationError($event)"
     [adapter]="adapter"
-    [fileExtensions]="['pdf', 'jpg', 'png', 'mp4', 'css']"
+    [fileExtensions]="['pdf', 'jpg', 'png', 'mp4', 'css', 'docx']"
     [enableCropper]="true"
     (uploadSuccess)="onUploadSuccess($event)"
     (removeSuccess)="onRemoveSuccess($event)"
     [showeDragDropZone]="true"
     [showPreviewContainer]="true"
+    (fileAdded)="onFileAdded($event)"
   >
+  <!-- <div class="dropzoneTemplate">
+    <button>Custom</button>
+  </div> -->
 </ngx-file-picker>
+<!-- <button (click)="removeFile()">Remove First File</button> -->
+
 </div>
