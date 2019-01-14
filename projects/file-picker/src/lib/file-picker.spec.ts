@@ -1,9 +1,8 @@
 import { FilePickerAdapter } from 'projects/file-picker/src/lib/file-picker.adapter';
-import { FilePreviewModel } from './../../../../dist/file-picker/lib/file-preview.model.d';
 import { FilePreviewContainerComponent } from './file-preview-container/file-preview-container.component';
 import { FileValidationTypes } from './validation-error.model';
 import { FilePickerService } from './file-picker.service';
-import { FilePickerModule } from 'projects/file-picker/src/public_api';
+import { FilePickerModule, FilePreviewModel } from 'projects/file-picker/src/public_api';
 import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 
 import { FilePickerComponent } from './file-picker.component';

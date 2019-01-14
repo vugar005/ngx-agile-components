@@ -1,16 +1,25 @@
 # Anguar File Uploader
 
-This is an Angular Library for uploading files. It supports:
-* File Upload
-* File Preview (additionally preview images with lightbox)
-* File Validation
-* Image cropper
-* Custom template
-* Real-Time Progress bar
-* Drag and Drop
+<p align="center">
+ <img src="https://d2eip9sf3oo6c2.cloudfront.net/tags/images/000/000/962/square_256/angularcli.png">
+ <p>
 
-## Quick links
-## Installing  and usage
+This is an Angular Library for uploading files. It supports: File Upload and  Preview (additionally preview images with lightbox),  validation, image cropper , drag and drop.
+Tested on Angular 4.3/5/6/7
+
+* [Install](#install)
+* [Usage](#usage)
+* [Configuration](#api)
+* [File Validation](#file-validation)
+* [Cropper](#cropper)
+* [Custom template](#custom-template)
+
+
+## Quick-links
+[Example Application](https://angular-demo-file-picker.stackblitz.io/) [StackBlitzDemo](
+https://stackblitz.com/edit/angular-demo-file-picker
+)
+## Install
      npm install ngx-awesome-uploader --save
 
 #####  Load the module for your app:
@@ -24,17 +33,20 @@ import { FilePickerModule } from 'ngx-awesome-uploader';
 })
 ```
 
-##  Using guide
-In order to make library maximum compatible with apis you need to create and provide custom adapter which implements upload and remove requests. That's because I have no idea how to get file id in upload response json :) .
+##  Usage
+In order to make library maximum compatible with apis you need to create and provide <b>
+custom adapter </b> which implements upload and remove requests. That's because I have no idea how to get file id in upload response json :) .
 
 So this libray exposes a FilePickerAdapter abstract class which you can import on your new class file definition:
+
 ``` import { FilePickerAdapter } from  'ngx-awesome-uploader';```
+
 After importing it to your custom adapter implementation (EG: CustomAdapter.ts), you must implement those 2 methods which are abstract in the FilePickerAdapter base class which are:
 ```
 public  abstract  uploadFile(fileItem: FilePreviewModel): Observable<HttpEvent<any>  | string>;
 public  abstract  removeFile(id: string, fileItem: FilePreviewModel): Observable<any>;
 ```
-**Note:**  Since uploadFile method will use http progress event, it has to return **id** of file in HttpEventType.Response type, otherwise return request.
+**Note:**  Since uploadFile method will use http progress event, it has to return **id** of file in HttpEventType.Response type, otherwise return request.  You will receive this id on removeFile method when you click remove.
 You can check DEMO adapter [here](https://github.com/vugar005/ngx-agile-components/blob/master/src/app/demo-file-picker/demo-file-picker.adapter.ts)
 ####  Now you can use it in your template
 
@@ -63,7 +75,8 @@ constructor(private  http: HttpClient) { }
 }
  ```
 **Note:** As you see you should provide http instance to adapter.
-## API
+Still in Doubt? Check [Minimal Setup Demo](https://stackblitz.com/edit/angular-demo-file-picker?file=src%2Fapp%2Fsimple-demo%2Fsimple-demo.component.html)
+## api
 ```typescript
 /** Whether to enable cropper. Default: disabled */
 @Input() enableCropper  =  false;
@@ -103,7 +116,7 @@ constructor(private  http: HttpClient) { }
  */
 @Input() cropperOptions: Object;
 
-/** Custom Adapter for uploading/removing files */
+/** Custom Adapter for uploading/removing files. Required */
 @Input() adapter: FilePickerAdapter;
 
 /** Custom template for dropzone. Optional */
@@ -125,10 +138,26 @@ constructor(private  http: HttpClient) { }
 /** Emitted when file is added and passed validations. Not uploaded yet */
 @Output() fileAdded  =  new  EventEmitter<FilePreviewModel>();
 ```
+## File-Validation
 
-To listen to validation errors (in case you provided validations), validationError event ( which implements interface [ValidationError](https://github.com/vugar005/ngx-agile-components/blob/master/projects/file-picker/src/lib/validation-error.model.ts)) is emitted.
-You can check demo here.
-## Using Cropper
+All validations are emitted through <b> ValidationError </b>event.
+To listen to validation errors (in case you provided validations), validationError event is emitted. validationError event implements interface [ValidationError](https://github.com/vugar005/ngx-agile-components/blob/master/projects/file-picker/src/lib/validation-error.model.ts)
+ and which emites failed file and error type.
+Supported validations:
+
+
+| **Validation Type**                | **Description**                                                                                                                                                                       | **Default** |
+|----------------------------|---------------------------------------------------------------------------------------|----------------------------------------|
+| fileMaxCount: number       | Max size of selected file in MB.   | No limit
+| fileExtensions: String        |  Emitted when file does not satisfy provided extension   | Any extension
+| uploadType: String      | Upload type. Values: 'single' and 'multi'.  |multi
+| totalMaxSize: number       | Total Max size of files in MB. If cropper is enabled, the cropped image size is considered.| No limit
+| fileMaxCount: number       | Limit total files to upload by count  | No limit
+
+
+Check [Demo](https://stackblitz.com/edit/angular-demo-file-picker?file=src%2Fapp%2Fadvanced-demo%2Fadvanced-demo.component.ts)
+
+## Cropper
 Library uses cropperjs to crop images but you need  import it to use it. Example: in index html
 ```html
 <script  src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.4.3/cropper.min.js"  async>  </script>
@@ -136,7 +165,7 @@ Library uses cropperjs to crop images but you need  import it to use it. Example
 ```
 To use cropper, you should enableCropper. Look at API section above.
 You can also provide your custom cropper options.
-## Custom Template
+## Custom-Template
 You can provide custom template to library.
 I) To provide custom template for drag and drop zone, use content projection. Example:
 ```html
@@ -149,6 +178,8 @@ I) To provide custom template for drag and drop zone, use content projection. Ex
 </ngx-file-picker>
  ````
  **Note:** The wrapper of your custom template must have class **dropzoneTemplate**.
+ [Checkout Demo](https://stackblitz.com/edit/angular-demo-file-picker?file=src%2Fapp%2Fadvanced-demo%2Fadvanced-demo.component.html)
+
  II) To use custom file preview template, library emits fileAdded output event which you can listen and pickup file so you can build your own template. Library also exposes removeFileFromList method which removes files from fileList in library. To use it you need to give a reference to library:
  ```html
  <ngx-file-picker #uploader

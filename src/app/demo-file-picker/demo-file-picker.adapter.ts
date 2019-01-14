@@ -12,8 +12,6 @@ export class DemoFilePickerAdapter extends FilePickerAdapter {
     const form = new FormData();
     form.append('file', fileItem.file);
     const api = 'https://file-picker-demo.free.beeceptor.com';
-   // const api = 'https://sample-upload.free.beeceptor.com';
-   // const api = 'http://opendata.neuron.az/DispatcherRest/api/post/uploadFile';
     const req = new HttpRequest('POST', api, form, {reportProgress: true});
     return this.http.request(req)
     .pipe(
@@ -26,9 +24,9 @@ export class DemoFilePickerAdapter extends FilePickerAdapter {
       })
       );
   }
-    public removeFile(id: string, fileItem): Observable<any> {
-      console.log(id);
+    public removeFile(id: string, fileItem: FilePreviewModel): Observable<any> {
+      console.log(fileItem.fileId);
     const removeApi = 'https://file-remove-demo.free.beeceptor.com';
-    return this.http.post(removeApi, {});
+    return this.http.post(removeApi, {id: fileItem.fileId});
     }
 }
