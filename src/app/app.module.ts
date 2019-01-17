@@ -20,8 +20,6 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import { FormUtilsModule } from 'projects/form-utils/src/lib/form-utils.module';
 import {MatSelectModule} from '@angular/material/select';
-import { DemoFilePickerComponent } from './demo-file-picker/demo-file-picker.component';
-import { FilePickerModule } from 'projects/file-picker/src/public_api';
 
 @NgModule({
    declarations: [
@@ -29,7 +27,6 @@ import { FilePickerModule } from 'projects/file-picker/src/public_api';
       DemoDropdownComponent,
       DemoNativeTableComponent,
       TableDataInsertComponent,
-      DemoFilePickerComponent
    ],
    imports: [
       BrowserModule,
@@ -37,7 +34,6 @@ import { FilePickerModule } from 'projects/file-picker/src/public_api';
       NgxDropdownModule,
       FormUtilsModule,
       NgxNativeTableModule,
-      FilePickerModule,
       AppRoutingModule,
       HttpClientModule,
       MatMenuModule,
