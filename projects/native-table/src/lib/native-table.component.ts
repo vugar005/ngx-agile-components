@@ -63,6 +63,7 @@ import { isArray } from 'util';
         <tr
           *ngFor="let row of rowData; let i = index"
           [attr.row-id]="row?.id"
+          [data]="row"
           rowCheckbox
         >
           <td
@@ -416,15 +417,15 @@ export class NgxNativeTableComponent
     );
   }
   removeData(data) {
-    const dataArray = [];
+    const dataArray: RowCheckboxDirective[] = [];
     console.log(data);
     if (isArray(data)) {
       dataArray.push(...data);
     } else {
       dataArray.push(data);
     }
-    dataArray.forEach(row => {
-              this.tableService.removeRow(row, this.config).subscribe(
+    dataArray.forEach((row: RowCheckboxDirective) => {
+              this.tableService.removeRow(row.data, this.config).subscribe(
                 res => {
                   this.rowRemoved.next(row);
                   this.tableService.getTableData$.next();

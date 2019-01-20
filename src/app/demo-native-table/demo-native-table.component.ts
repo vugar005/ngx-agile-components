@@ -11,10 +11,10 @@ import { TableDataInsertComponent } from './table-data-insert/table-data-insert.
 })
 export class DemoNativeTableComponent  {
  config: ApiConfig = {
-  getApi: 'api/post/Permission/Applications/GetApplicationList',
-  insertApi: 'api/post/Permission/Applications/InsertNewApplication',
-  updateApi: 'api/post/Permission/Applications/UpdateApplication',
-  deleteApi: 'api/post/Permission/Applications/DeleteApplication',
+  getApi: 'api/post/Permission/Datasets/GetDatasetList',
+  insertApi: 'api/post/Permission/Datasets/InsertNewApplication',
+  updateApi: 'api/post/Permission/Datasets/UpdateApplication',
+  deleteApi: 'api/post/Permission/Datasets/DeleteDataset',
  };
  @ViewChild('table') table: NgxNativeTableModule;
   constructor(public dialog: MatDialog) { }

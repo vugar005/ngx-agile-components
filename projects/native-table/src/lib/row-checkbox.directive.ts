@@ -1,10 +1,11 @@
-import { Directive, HostListener, HostBinding } from '@angular/core';
+import { Directive, HostListener, HostBinding, Input } from '@angular/core';
 import { CheckboxStatus } from './checkbox-status';
 
 @Directive({
   selector: '[rowCheckbox]'
 })
 export class RowCheckboxDirective {
+  @Input() data: any;
   checkBoxStatus = CheckboxStatus.unchecked;
   @HostBinding('class') get classList() {return this.getClass(); }
   @HostListener('click') onClick(): void {this.toggleCheckbox(); }
@@ -31,5 +32,4 @@ toggleCheckbox(): void {
    this.checkBoxStatus = CheckboxStatus.unchecked;
  }
 }
-
 }

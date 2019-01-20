@@ -45,8 +45,8 @@ import {MatSelectModule} from '@angular/material/select';
       MatSelectModule
    ],
    providers: [
-    // {provide: HTTP_INTERCEPTORS, useClass: APIInterceptor, multi: true},
-  //   {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}
+     {provide: HTTP_INTERCEPTORS, useClass: APIInterceptor, multi: true},
+     {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}
    ],
    entryComponents: [
       TableDataInsertComponent
