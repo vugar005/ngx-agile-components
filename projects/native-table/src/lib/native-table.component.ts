@@ -82,7 +82,7 @@ import { isArray } from 'util';
             [attr.col-key]="col?.i"
 
           >
-           <div class="data-cell"> {{ row[col.i] }} </div>
+           <div class="data-cell"> <a [title] ="row[col.i]"> {{ row[col.i] }} </a></div>
           </td>
           <td
             *ngIf="editTemplate"
@@ -126,7 +126,7 @@ import { isArray } from 'util';
       .ngx-native-table {
         display: table;
         table-layout: auto;
-        max-width: 100%;
+        width: 100%;
         border-collapse: seperate;
         background: #ffffff;
         border-spacing: 0;
@@ -216,13 +216,16 @@ import { isArray } from 'util';
         background-color: #fafafa;
       }
       .ngx-native-table td {
-        height: 48px;
+       // height: 48px;
         border-bottom: 1px solid #e0e0e0;
       }
       .ngx-native-table td .data-cell {
-        padding: 0.7rem;
+        margin: 0.7em;
         text-align: left;
-        height: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        max-width: 175px;
+        text-overflow: ellipsis;
       }
       .ngx-native-table th {
         border-bottom: 1px solid #e0e0e0;
