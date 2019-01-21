@@ -1,3 +1,4 @@
+import { SharedService } from './../shared.service';
 import { ApiConfig } from './../../../projects/native-table/src/lib/api-config.model';
 import { Component, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -17,15 +18,8 @@ export class DemoNativeTableComponent  {
   deleteApi: 'api/post/Permission/Datasets/DeleteDataset',
  };
  @ViewChild('table') table: NgxNativeTableModule;
-  constructor(public dialog: MatDialog) { }
-
-  initDialog(table, row = null) {
-    console.log(row)
-    this.dialog.open(TableDataInsertComponent, {
-      data: { table: table, row: row || undefined}
-    });
-  }
+  constructor(public dialog: MatDialog, private sharedService: SharedService) { }
   onOptClick(event) {
-   console.log(event)
+   this.sharedService.tableActionImplement(event, TableDataInsertComponent, this.table);
   }
 }

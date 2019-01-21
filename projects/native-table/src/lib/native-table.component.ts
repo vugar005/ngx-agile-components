@@ -253,11 +253,9 @@ export class NgxNativeTableComponent
   @Input() editTemplate: TemplateRef<any>;
   @Input() dialogRef: any;
   @Input() enableCheckboxSelection = true;
-  @Output() rowAdd = new EventEmitter();
-  @Output() rowEdit = new EventEmitter();
   @Output() rowRemoved = new EventEmitter();
   @Output()
-  optClick = new EventEmitter<any>();
+  actionClick = new EventEmitter<any>();
   @ContentChild('', { read: ElementRef }) editerComponent: any;
   rowData: any;
   allColumnDefs: any;
@@ -387,8 +385,7 @@ export class NgxNativeTableComponent
     this.visibleColumnDefs = [];
   }
   addData(): void {
-    this.rowAdd.next();
-    this.optClick.next('insert');
+    this.actionClick.next({attribute: 'insert'});
   }
   onRemove(data): void {
     this.shConfirmModal = true;

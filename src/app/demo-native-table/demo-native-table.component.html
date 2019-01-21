@@ -23,9 +23,7 @@
     [config]="config"
     [editTemplate]="editer"
     [dialogRef]="dialog"
-    (rowAdd)="initDialog(table)"
-    (rowEdit)="initDialog(table, $event)"
-    (optClick)="onOptClick($event)"
+    (actionClick)="onOptClick($event)"
 >
 </ngx-native-table>
 </div>

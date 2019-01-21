@@ -44,22 +44,15 @@ export class RowEditerComponent  {
     const attribute = el.srcElement.getAttribute('t-btn');
     const obj = {
       attribute: attribute,
-      row: this.row
+      data: this.row
     };
     switch (attribute) {
-      case 'edit':
-        this.tableComponent.rowEdit.next(this.row);
-        break;
       case 'remove':
         this.tableComponent.onRemove(this.row);
         break;
-      case 'confirm':
-     //   this.onConfirm();
-        break;
-      case'unConfirm':
-      //  this.onUnConfirm();
+        default:
+        this.tableComponent.actionClick.next(obj);
         break;
     }
-    this.tableComponent.optClick.next(obj);
   }
 }
