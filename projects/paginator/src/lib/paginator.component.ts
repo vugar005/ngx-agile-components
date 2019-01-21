@@ -21,6 +21,16 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
         </ngx-simple-dropdown>
       </div>
         <div class="ngx-paginator-range-actions-btns">
+
+        <button  type="button"
+        (click)="firstPage()"
+        [disabled]="!hasPreviousPage()"
+        >
+          <svg class="ngx-paginator-icon first" viewBox="0 0 24 24" focusable="false">
+          <path d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6 6 6zM6 6h2v12H6z" fill="rgba(0, 0, 0, 0.54)"/>
+        </svg>
+        </button>
+
          <button [disabled]="!hasPreviousPage()" (click)="previousPage()">
           <svg class="ngx-paginator-icon left" focusable="false" viewBox="0 0 24 24">
           <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="rgba(0, 0, 0, 0.54)"></path></svg>
@@ -29,6 +39,14 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
           <svg class="ngx-paginator-icon right" focusable="false" viewBox="0 0 24 24">
           <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="rgba(0, 0, 0, 0.54)"></path></svg>
          </button>
+         <button  type="button"
+          (click)="lastPage()"
+          [disabled]="!hasNextPage()"
+          >
+            <svg class="ngx-paginator-icon last" viewBox="0 0 24 24" focusable="false">
+              <path d="M5.59 7.41L10.18 12l-4.59 4.59L7 18l6-6-6-6zM16 6h2v12h-2z" fill="rgba(0, 0, 0, 0.54)"/>
+            </svg>
+          </button>
         </div>
      </div>
   </div>
@@ -94,6 +112,22 @@ export class PaginatorComponent implements OnInit {
     this.pageIndex--;
     this._emitPageEvent(previousPageIndex);
   }
+   /** Move to the last page if not already there. */
+  lastPage(): void {
+    // hasNextPage being false implies at the end
+    if (!this.hasNextPage()) { return; }
+
+    const previousPageIndex = this.pageIndex;
+    this.pageIndex = this.getNumberOfPages();
+    this._emitPageEvent(previousPageIndex);
+  }
+    /** Move to the first page if not already there. */
+    firstPage(): void {
+      if (!this.hasPreviousPage()) { return; }
+      const previousPageIndex = this.pageIndex;
+      this.pageIndex = 0;
+      this._emitPageEvent(previousPageIndex);
+    }
  private  _emitPageEvent(previousPageIndex: number) {
     this.page.emit({
       previousPageIndex,

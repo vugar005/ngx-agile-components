@@ -26,6 +26,12 @@
         background: transparent;
         border: 0;
         outline: 0;
+        .ngx-paginator-icon {
+        }
+        .ngx-paginator-icon.last {
+          width: 28px;
+          cursor: pointer;
+        }
         svg.ngx-paginator-icon {
           width: 28px;
           cursor: pointer;
