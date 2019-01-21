@@ -1,0 +1,50 @@
+:host {
+  display: block;
+}
+.ngx-paginator-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 56px;
+  padding: 0 8px;
+  color: rgba(0, 0, 0, 0.54);
+  .ngx-paginator-page-size {
+    display: flex;
+    align-items: baseline;
+    margin-right: 8px;
+  }
+  .ngx-paginator-range-actions {
+    display: flex;
+    align-items: center;
+    .ngx-paginator-range-label {
+      font-size: 12px;
+      margin: 0 32px 0 24px;
+    }
+    .ngx-paginator-range-actions-btns {
+      display: flex;
+      button {
+        background: transparent;
+        border: 0;
+        outline: 0;
+        .ngx-paginator-icon {
+        }
+        .ngx-paginator-icon.last {
+          width: 28px;
+          cursor: pointer;
+        }
+        svg.ngx-paginator-icon {
+          width: 28px;
+          cursor: pointer;
+        }
+        .ngx-paginator-icon.right {
+          transform: rotateY(-180deg);
+        }
+        &:disabled {
+          svg.ngx-paginator-icon path {
+            fill: #c1c1c1;
+          }
+        }
+      }
+    }
+  }
+}

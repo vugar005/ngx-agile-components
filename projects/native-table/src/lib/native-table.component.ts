@@ -277,7 +277,7 @@ export class NgxNativeTableComponent
     this.getTableData(this.pageQuery, true);
     this.listenToGetDataEvent();
   }
-  listenToGetDataEvent() {
+  listenToGetDataEvent(): void {
     this.tableService.getTableData$
       .pipe(takeUntil(this._onDestroy$))
       .subscribe(res => {
@@ -288,8 +288,7 @@ export class NgxNativeTableComponent
         }
       });
   }
-  onPageChange(e) {
-    console.log(e.pageIndex)
+  onPageChange(e): void {
     this.pageQuery.pageIndex = e.pageIndex;
     this.pageQuery.pageSize = e.pageSize;
     this.getTableData(this.pageQuery);
@@ -298,11 +297,11 @@ export class NgxNativeTableComponent
   ngOnDestroy() {
     this._onDestroy$.next();
   }
- get isRowSelected() {
+ get isRowSelected(): boolean {
    if (!this.getCheckedRows() ) {return; }
    return this.getCheckedRows().length > 0;
   }
-  getCheckedRows() {
+  getCheckedRows(): RowCheckboxDirective[] {
     if (!this.rowCheckboxes) {return; }
     const checkedRows = this.rowCheckboxes
       .toArray()
@@ -377,21 +376,21 @@ export class NgxNativeTableComponent
     /** determines which columns to display on table view */
  //   this.toggleColumns(this.visibleColumnDefs);
   }
-  toggleColumns() {
+  toggleColumns(): void {
    this.visibleColumnDefs = [...this.defaultColumnDefs].
    filter(colDef => this.visibleColumnDefs.map(col => col.n).includes(colDef.n));
   }
-  showAllColumns() {
+  showAllColumns(): void {
     this.visibleColumnDefs = [...this.defaultColumnDefs];
   }
-  hideAllColumns() {
+  hideAllColumns(): void {
     this.visibleColumnDefs = [];
   }
   addData(): void {
     this.rowAdd.next();
     this.optClick.next('insert');
   }
-  onRemove(data) {
+  onRemove(data): void {
     this.shConfirmModal = true;
     setTimeout(
       () =>
@@ -404,7 +403,7 @@ export class NgxNativeTableComponent
       0
     );
   }
-  onRemoveSelected() {
+  onRemoveSelected(): void {
     this.shConfirmModal = true;
     const rows = this.getCheckedRows();
     console.log(rows)
@@ -419,7 +418,7 @@ export class NgxNativeTableComponent
       0
     );
   }
-  removeData(data) {
+  removeData(data): void {
     const dataArray: RowCheckboxDirective[] = [];
     console.log(data);
     if (isArray(data)) {
