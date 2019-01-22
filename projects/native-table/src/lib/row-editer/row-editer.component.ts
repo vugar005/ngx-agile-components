@@ -1,6 +1,7 @@
 import { Component, OnInit, Host, Input, EventEmitter, Output, HostBinding } from '@angular/core';
 import { NgxNativeTableComponent } from '../native-table.component';
 import { trigger, transition, animate, keyframes, style } from '@angular/animations';
+import { TableEditerAction } from '../table-action.model';
 
 @Component({
   selector: 'row-editer',
@@ -42,13 +43,13 @@ export class RowEditerComponent  {
   }
   handleOpClick(el: MouseEvent): void {
     const attribute = el.srcElement.getAttribute('t-btn');
-    const obj = {
-      attribute: attribute,
+    const obj: TableEditerAction = {
+      type: attribute,
       data: this.row
     };
     switch (attribute) {
       case 'remove':
-        this.tableComponent.onRemove(this.row);
+        this.tableComponent.onRemove(obj);
         break;
         default:
         this.tableComponent.actionClick.next(obj);

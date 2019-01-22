@@ -2,7 +2,7 @@ import { SharedService } from './../shared.service';
 import { ApiConfig } from './../../../projects/native-table/src/lib/api-config.model';
 import { Component, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { NgxNativeTableModule } from 'projects/native-table/src/public_api';
+import { NgxNativeTableComponent } from 'projects/native-table/src/public_api';
 import { TableDataInsertComponent } from './table-data-insert/table-data-insert.component';
 
 @Component({
@@ -12,14 +12,14 @@ import { TableDataInsertComponent } from './table-data-insert/table-data-insert.
 })
 export class DemoNativeTableComponent  {
  config: ApiConfig = {
-  getApi: 'api/post/Permission/Datasets/GetDatasetList',
-  insertApi: 'api/post/Permission/Datasets/InsertNewApplication',
-  updateApi: 'api/post/Permission/Datasets/UpdateApplication',
-  deleteApi: 'api/post/Permission/Datasets/DeleteDataset',
+  getApi: 'api/post/Permission/Comments/GetDatasetCommentList',
+  insertApi: 'api/post/Permission/Comments/InsertDatasetComment',
+  updateApi: 'api/post/Permission/Comments/UpdateDatasetComment',
+  deleteApi: 'api/post/Permission/Comments/DeleteDatasetComment',
  };
- @ViewChild('table') table: NgxNativeTableModule;
+ @ViewChild('table') table: NgxNativeTableComponent;
   constructor(public dialog: MatDialog, private sharedService: SharedService) { }
   onOptClick(event) {
-   this.sharedService.tableActionImplement(event, TableDataInsertComponent, this.table);
+   this.sharedService.tableActionImplement(event, this.table, TableDataInsertComponent);
   }
 }

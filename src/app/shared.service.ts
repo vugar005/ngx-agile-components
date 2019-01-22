@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ApiConfig } from 'projects/native-table/src/lib/api-config.model';
+import { NgxNativeTableComponent } from 'projects/native-table/src/public_api';
+import { TableEditerAction } from 'projects/native-table/src/lib/table-action.model';
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +11,8 @@ import { ApiConfig } from 'projects/native-table/src/lib/api-config.model';
 export class SharedService {
 
 constructor(private http: HttpClient, private dialog: MatDialog) { }
-  tableActionImplement(actionObject, table, templateComponent) {
-  switch (actionObject.attribute) {
+  tableActionImplement(actionObject: TableEditerAction, table: NgxNativeTableComponent, templateComponent) {
+  switch (actionObject.type) {
     case 'insert':
     this.dialog.open(templateComponent, {
       data: { table: table, row: undefined}
@@ -25,6 +27,7 @@ constructor(private http: HttpClient, private dialog: MatDialog) { }
       break;
     case 'confirm':
    //   this.onConfirm();
+   console.log(actionObject.data)
    console.log('on confirm');
       break;
     case'unConfirm':

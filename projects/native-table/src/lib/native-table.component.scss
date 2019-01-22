@@ -1,0 +1,128 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+.ngx-table-element-wrapper {
+  width: 100%;
+  flex: 1;
+  overflow: auto;
+}
+.ngx-native-table {
+  display: table;
+  table-layout: auto;
+  width: 100%;
+  border-collapse: seperate;
+  background: #ffffff;
+  border-spacing: 0;
+}
+th.ngx-index-number {
+  z-index: 3 !important;
+}
+.ngx-index-number {
+  position: sticky;
+  left: 0;
+  background: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: center;
+}
+tr.checked {
+  background-color: #eee;
+}
+tr.checked td {
+  background-color: #eee !important;
+}
+tr.checked .ngx-checkmark:after {
+  display: block;
+}
+td.ngx-native-checkmark-cell {
+  cursor: pointer;
+  border-bottom: 1px solid #e0e0e0;
+}
+td.ngx-native-checkmark-cell > * {
+  pointer-events: none;
+}
+.ngx-checkmark-container {
+  position: relative;
+  cursor: pointer;
+  pointer-events: none;
+  font-size: 22px;
+  height: 25px;
+  width: 25px;
+}
+.ngx-checkmark-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+.ngx-checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 19px;
+  width: 19px;
+  background-color: #ffffff;
+  border: 1px solid #eee;
+}
+.ngx-checkmark:after {
+  content: '';
+  position: absolute;
+  display: none;
+  left: 7px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid #9b9b9b;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+.ngx-native-table thead {
+  color: rgba(0, 0, 0, 0.54);
+}
+.ngx-native-table th {
+  padding: 0.8rem;
+  border-bottom: 1px solid #e0e0e0;
+  position: sticky;
+  top: 0;
+  background: #ffffff;
+  z-index: 10;
+}
+.ngx-native-table tr {
+  transition: background-color 0.1s ease-in-out;
+}
+.ngx-native-table tr:hover {
+  background-color: #fafafa;
+}
+.ngx-native-table tr:hover td {
+  background-color: #fafafa;
+}
+.ngx-native-table td {
+  // height: 48px;
+  border-bottom: 1px solid #e0e0e0;
+}
+.ngx-native-table td .data-cell {
+  margin: 0.7em;
+  text-align: left;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 175px;
+  text-overflow: ellipsis;
+}
+.ngx-native-table th {
+  border-bottom: 1px solid #e0e0e0;
+}
+.ngx-native-table th.data-cell {
+  padding: 0.7rem;
+}
+.ngx-native-table-editTemplate {
+  position: sticky;
+  right: 0;
+  background: #ffffff;
+  border-left: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+}
