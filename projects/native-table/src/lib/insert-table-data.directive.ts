@@ -38,6 +38,7 @@ export class InsertTableDataDirective implements AfterViewInit, OnChanges {
   }
 
   tryInsertTableData() {
+    console.log('tryInsertData')
     if (!this.form) {
       return console.warn('form reference is not provided');
     }

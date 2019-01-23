@@ -42,7 +42,7 @@ import { TableEditerAction } from './table-action.model';
       </colgroup>
       <thead>
         <th
-          *ngIf="enableCheckboxSelection"
+          *ngIf="rowSelection"
           rowsToggleAllCheckbox
           [(rowCheckboxes)]="rowCheckboxes"
           class="data-cell"
@@ -68,7 +68,7 @@ import { TableEditerAction } from './table-action.model';
           rowCheckbox
         >
           <td
-            *ngIf="enableCheckboxSelection"
+            *ngIf="rowSelection"
             valign="middle"
             class="ngx-native-checkmark-cell"
           >
@@ -102,7 +102,7 @@ import { TableEditerAction } from './table-action.model';
       </tbody>
   </table>
   </div>
-  <ngx-simple-paginator
+  <ngx-simple-paginator *ngIf="pagination"
   [length] = "rowCount"
   [pageSize]="10"
   (page)="onPageChange($event)"
@@ -117,19 +117,20 @@ import { TableEditerAction } from './table-action.model';
 export class NgxNativeTableComponent
   implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(RowCheckboxDirective) public rowCheckboxes: QueryList<any>;
-  @Input() config: ApiConfig;
+  @Input() config: any;
+  @Input() pagination = true;
+  @Input() rowSelection = true;
   @ViewChild(ConfirmModalComponent) confirmRef: ConfirmModalComponent;
   @Input() indexNumber = true;
   @Input() editTemplate: TemplateRef<any>;
   @Input() dialogRef: any;
-  @Input() enableCheckboxSelection = true;
   @Output() rowRemoved = new EventEmitter();
   @Output()
   actionClick = new EventEmitter<TableEditerAction>();
   @ContentChild('', { read: ElementRef }) editerComponent: any;
   rowData: any;
   allColumnDefs: any;
-  visibleColumnDefs: any;
+  visibleColumnDefs = [];
   hiddenColumnNames: string;
   defaultColumnDefs: any;
   pageLength: number;
@@ -181,6 +182,7 @@ export class NgxNativeTableComponent
   }
   getTableData(pageQuery: PageQuery, newColumns = false): void {
     this.loading = true;
+    this.rowData = null;
     this.tableService.getTableData(pageQuery, this.config).subscribe(
       res => {
         this.buildTableData(res, newColumns);
@@ -196,10 +198,9 @@ export class NgxNativeTableComponent
   buildTableData(res, newColumns): void {
     try {
       if (res && res.tbl[0] && res.tbl[0].c) {
-        if (newColumns) {
+      //  if (newColumns && !this.rowData) {
           this.buildColumns(res);
           this.setColumnsView(res);
-        }
         this.rowCount = res.tbl[0].rowCount;
         this.buildRows(res);
       }
@@ -245,8 +246,10 @@ export class NgxNativeTableComponent
  //   this.toggleColumns(this.visibleColumnDefs);
   }
   toggleColumns(): void {
+    console.log( [...this.defaultColumnDefs].filter(colDef => (this.visibleColumnDefs.map(col => col.n))));
+    console.log((this.visibleColumnDefs.map(col => col.n).join(',')));
    this.visibleColumnDefs = [...this.defaultColumnDefs].
-   filter(colDef => this.visibleColumnDefs.map(col => col.n).includes(colDef.n));
+   filter(colDef => ( this.visibleColumnDefs.map(col => col.n).join(',')).includes(colDef.n));
   }
   showAllColumns(): void {
     this.visibleColumnDefs = [...this.defaultColumnDefs];
@@ -271,6 +274,7 @@ export class NgxNativeTableComponent
     );
   }
   onMultiRemove(): void {
+  try {
     this.shConfirmModal = true;
     const rows = this.getCheckedRows();
     console.log(rows)
@@ -284,6 +288,9 @@ export class NgxNativeTableComponent
         }),
       0
     );
+  } catch (er) {
+    console.log(er);
+  }
   }
   removeData(data): void {
     const dataArray: RowCheckboxDirective[] = [];

@@ -1,16 +1,88 @@
 <form #f="ngForm" patch-form [form]="f" [data]="data?.row" class="nt-form" >
 
   <div class="inputs">
-   <div class="row-1">
-      <div class="left">
-        <mat-form-field class="example-full-width">
-          <textarea matInput placeholder="Comment" class="nt-form-input input-textarea" name="comment" ngModel  required> </textarea>
-          <mat-error>{{getErrors('comment')}}</mat-error>
+    <div class="left">
+
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="orderBy" class="nt-form-input" name="orderBy" ngModel>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="nameKg" class="nt-form-input" name="nameKg" ngModel    required>
+        <mat-error>{{getErrors('nameAz')}}</mat-error>
+
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="name (En)" class="nt-form-input" name="nameEn" ngModel required>
+        <mat-error>{{getErrors('nameEn')}}</mat-error>
+
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="name (Ru)" class="nt-form-input" name="nameRu" ngModel  required >
+        <mat-error>{{getErrors('nameRu')}}</mat-error>
+
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="app url" class="nt-form-input" name="appUrl" ngModel required>
+        <mat-error>{{getErrors('appUrl')}}</mat-error>
+
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="iconPath" class="nt-form-input" name="iconPath" ngModel required >
+        <mat-error>{{getErrors('iconPath')}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="code" class= "nt-form-input" name="code" ngModel >
+      </mat-form-field>
+     </div>
+
+          <div class="right">
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="shortName (Kg)" class="nt-form-input" name="shortNameKg" ngModel required>
+              <mat-error>{{getErrors('shortNameAz')}}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="shortName (En)" class="nt-form-input" name="shortNameEn" ngModel  required>
+              <mat-error>{{getErrors('shortNameEn')}}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="Shortname (Ru)" class="nt-form-input" name="shortNameRu" ngModel required>
+              <mat-error>{{getErrors('shortNameRu')}}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="about (Kg)" class="nt-form-input" name="aboutKg" ngModel >
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="about (En)" class="nt-form-input" name="aboutEn" ngModel >
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="about (Ru)" class="nt-form-input" name="aboutRu" ngModel >
+            </mat-form-field>
+
+
+      <mat-form-field>
+          <mat-select placeholder="parent Id" class="nt-form-input" name="parentId" ngModel>
+            <mat-option value="">Choose</mat-option>
+            <mat-option value="0">0</mat-option>
+            <mat-option *ngFor="let item of (apps$ | async)" [value]="item.value">
+              {{item.label}}
+            </mat-option>
+          </mat-select>
+          <mat-error>{{getErrors('parentId')}}</mat-error>
         </mat-form-field>
-        <input [hidden]="true" name="sharingId" ngModel>
-        <input [hidden]="true" name="id" ngModel>
-       </div>
-   </div>
+
+             <input [hidden]="true" name="id" ngModel>
+          </div>
   </div>
   <div class="actions">
     <button mat-raised-button color="primary"  type="submit"  insertTableData [form]="f"
@@ -24,7 +96,8 @@
     [disabled]="f?.dirty && !f?.valid"
     (onClose)="dialogRef.close()"
     [table]="data?.table"
-    >Update</button>
-    <button mat-raised-button (click)="dialogRef.close()" type="reset">Cancel</button>
+    >Update </button>
+    <button mat-raised-button (click)="dialogRef.close()" type="reset">Cancel </button>
   </div>
+
 </form>

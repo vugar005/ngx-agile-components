@@ -22,6 +22,8 @@
   <ngx-native-table #table
     [config]="config"
     [editTemplate]="editer"
+    [pagination]="false"
+    [rowSelection]="false"
     [dialogRef]="dialog"
     (actionClick)="onOptClick($event)"
 >
