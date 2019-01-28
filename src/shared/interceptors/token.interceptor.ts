@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 export class TokenInterceptor implements HttpInterceptor {
   constructor() {}
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = localStorage.getItem('kg-token');
+    const token = localStorage.getItem('kg_token');
     console.log(token)
     const authReq = !!token ? request.clone({
       setHeaders: {

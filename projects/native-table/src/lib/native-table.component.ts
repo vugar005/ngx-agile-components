@@ -19,8 +19,8 @@ import {
 import { NativeTableService } from './native-table.service';
 import { PageQuery } from './page-query.model';
 import { RowCheckboxDirective } from './row-checkbox.directive';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Subject, combineLatest } from 'rxjs';
+import { takeUntil, delay } from 'rxjs/operators';
 import { isArray } from 'util';
 import { TableEditerAction } from './table-action.model';
 
@@ -239,9 +239,6 @@ export class NgxNativeTableComponent
     this.visibleColumnDefs = this.defaultColumnDefs
       .slice()
       .filter(col => !this.hiddenColumnNames.includes(col.i));
-      console.log('allCol', this.allColumnDefs)
-     console.log('defaultCol', this.defaultColumnDefs)
-     console.log('visibCols', this.visibleColumnDefs)
     /** determines which columns to display on table view */
  //   this.toggleColumns(this.visibleColumnDefs);
   }
@@ -294,20 +291,22 @@ export class NgxNativeTableComponent
   }
   removeData(data): void {
     const dataArray: RowCheckboxDirective[] = [];
-    console.log(data);
+    const combinedObsArray = [];
     if (isArray(data)) {
       dataArray.push(...data);
     } else {
       dataArray.push(data);
     }
-    dataArray.forEach((row: RowCheckboxDirective) => {
-              this.tableService.removeRow(row.data, this.config).subscribe(
-                res => {
-                  this.rowRemoved.next(row);
-                  this.tableService.getTableData$.next();
-      console.log('removeing --', dataArray);
-    });
+    dataArray.forEach((row: RowCheckboxDirective, i) => {
+        combinedObsArray.push(this.tableService.removeRow(row.data, this.config));
   });
+  console.log(dataArray);
+   combineLatest(...combinedObsArray).subscribe(
+         res => {
+    //  this.rowRemoved.next(row);
+      this.tableService.getTableData$.next();
+      console.log('removeing --', dataArray);
+         });
 }
 onPrint() {
   console.log('on print');
