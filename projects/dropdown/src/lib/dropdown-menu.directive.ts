@@ -10,6 +10,7 @@ import {
   ViewContainerRef,
   HostBinding,
   AfterViewInit,
+  HostListener,
 } from '@angular/core';
 
 import { TOGGLE_STATUS } from './toggle-status';
@@ -23,6 +24,10 @@ export class DropdownMenuDirective implements OnInit, OnDestroy, AfterViewInit {
   ngUnsubscribe: Subject<void> = new Subject<void>();
   clickListener = this.onDocumentClick.bind(this);
   @HostBinding('class') classes = 'ngx-dropdown-menu';
+  @HostListener('window:resize', ['$event']) onResize(event) {
+    console.log('resize');
+    this.calcMenuPosition();
+   }
   constructor(
     @Host() public dropdown: NgxDropdownComponent,
     private elementRef: ElementRef,
@@ -30,7 +35,15 @@ export class DropdownMenuDirective implements OnInit, OnDestroy, AfterViewInit {
     private viewContainer: ViewContainerRef
   ) {}
   ngAfterViewInit() {
-   // fromEvent(window, 'resize').subscribe(res => console.log('rxjs ', res))
+    this.initWindowResizeListener();
+  }
+  initWindowResizeListener() {
+    fromEvent(window, 'resize')
+    .pipe(
+      takeUntil(this.ngUnsubscribe)
+    ).subscribe(res => {
+      this.calcMenuPosition();
+    });
   }
   ngOnInit() {
     this.dropdown
@@ -49,13 +62,23 @@ export class DropdownMenuDirective implements OnInit, OnDestroy, AfterViewInit {
       });
   }
   calcMenuPosition(): void {
-    const hostEl = document.getElementsByClassName('ngx-dropdown open')[0] as HTMLElement;
-    const el = document.getElementsByClassName('ngx-dropdown-menu')[0] as HTMLElement;
-    const rect = hostEl.getBoundingClientRect();
-    const top = this.dropdown.positinY === 'above' ? rect.top - el.offsetHeight : rect.top;
-   // const top = rect.top - hostEl.offsetHeight;
-    el.style.top =  `${top}px`;
-    el.style.left = `${rect.left}px`;
+ setTimeout(() => {
+  const hostEl = document.getElementsByClassName('ngx-dropdown open')[0] as HTMLElement;
+  const el = document.getElementsByClassName('ngx-dropdown-menu')[0] as HTMLElement;
+  if (!el) {return;}
+  const rect = hostEl.getBoundingClientRect();
+  const top = this.dropdown.positinY === 'above' ? rect.top - el.offsetHeight : rect.top;
+  const diff = window.innerHeight - rect.top;
+  const isFit = diff > el.scrollHeight;
+  // console.log('diff', diff);
+  // console.log('isFit', isFit);
+  // console.log('rect', rect);
+  // console.log('elOffsetHeight', el.offsetHeight);
+  // console.log('scrollHeight', el.scrollHeight);
+  // console.log('el', el);
+  el.style.top =  isFit ? `${top}px` : `${top - el.offsetHeight}px`;
+  el.style.left = `${rect.left}px`;
+ }, 30);
   }
   getOffset(el): void {
     // let _x = 0;

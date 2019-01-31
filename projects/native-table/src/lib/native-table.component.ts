@@ -19,8 +19,8 @@ import {
 import { NativeTableService } from './native-table.service';
 import { PageQuery } from './page-query.model';
 import { RowCheckboxDirective } from './row-checkbox.directive';
-import { Subject, combineLatest } from 'rxjs';
-import { takeUntil, delay } from 'rxjs/operators';
+import { Subject, combineLatest, timer } from 'rxjs';
+import { takeUntil, delay, map, switchMap } from 'rxjs/operators';
 import { isArray } from 'util';
 import { TableEditerAction } from './table-action.model';
 
@@ -140,6 +140,8 @@ export class NgxNativeTableComponent
   shConfirmModal: boolean;
   loading: boolean;
   rowCount: number;
+  /** Full table data response */
+  tableData: any;
   constructor(public tableService: NativeTableService) {}
 
   ngOnInit() {
@@ -185,6 +187,7 @@ export class NgxNativeTableComponent
     this.rowData = null;
     this.tableService.getTableData(pageQuery, this.config).subscribe(
       res => {
+        this.tableData = res;
         this.buildTableData(res, newColumns);
         this.loading = false;
       },
@@ -247,12 +250,28 @@ export class NgxNativeTableComponent
     console.log((this.visibleColumnDefs.map(col => col.n).join(',')));
    this.visibleColumnDefs = [...this.defaultColumnDefs].
    filter(colDef => ( this.visibleColumnDefs.map(col => col.n).join(',')).includes(colDef.n));
+   this.sendHiddenColumns(this.visibleColumnDefs, this.allColumnDefs);
+  }
+  /** Saves hidden collumn names to server */
+  sendHiddenColumns(visibleColumnDefs, allColumnDefs): void {
+    const hiddenColumnNames = [...allColumnDefs]
+   .filter(colDef => !(visibleColumnDefs.map(col => col.n).join(',').includes(colDef.n)))
+   .map(colDef => colDef.i) ;
+   console.log(hiddenColumnNames);
+   const hiddenColumnNamesSplitted: string = hiddenColumnNames ? hiddenColumnNames.join(',') : '';
+   const tableName: string = this.tableData && this.tableData.tbl && this.tableData.tbl[0] && this.tableData.tbl[0].tn;
+   this.actionClick.next({type: 'toggleColumnView', data: {
+     tableName: tableName,
+     hiddenColumnNames: hiddenColumnNamesSplitted
+   }});
   }
   showAllColumns(): void {
     this.visibleColumnDefs = [...this.defaultColumnDefs];
+    this.sendHiddenColumns(this.visibleColumnDefs, this.allColumnDefs);
   }
   hideAllColumns(): void {
     this.visibleColumnDefs = [];
+    this.sendHiddenColumns(this.visibleColumnDefs, this.allColumnDefs);
   }
   addData(): void {
     this.actionClick.next({type: 'insert'});
@@ -298,14 +317,16 @@ export class NgxNativeTableComponent
       dataArray.push(data);
     }
     dataArray.forEach((row: RowCheckboxDirective, i) => {
-        combinedObsArray.push(this.tableService.removeRow(row.data, this.config));
+        combinedObsArray.push( timer(i * 50).pipe(
+          switchMap(res => this.tableService.removeRow(row.data, this.config)))
+        );
   });
   console.log(dataArray);
    combineLatest(...combinedObsArray).subscribe(
          res => {
     //  this.rowRemoved.next(row);
       this.tableService.getTableData$.next();
-      console.log('removeing --', dataArray);
+      console.log('removing --', dataArray);
          });
 }
 onPrint() {
