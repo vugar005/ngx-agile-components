@@ -62,23 +62,23 @@ export class DropdownMenuDirective implements OnInit, OnDestroy, AfterViewInit {
       });
   }
   calcMenuPosition(): void {
- setTimeout(() => {
-  const hostEl = document.getElementsByClassName('ngx-dropdown open')[0] as HTMLElement;
-  const el = document.getElementsByClassName('ngx-dropdown-menu')[0] as HTMLElement;
-  if (!el) {return;}
-  const rect = hostEl.getBoundingClientRect();
-  const top = this.dropdown.positinY === 'above' ? rect.top - el.offsetHeight : rect.top;
-  const diff = window.innerHeight - rect.top;
-  const isFit = diff > el.scrollHeight;
-  // console.log('diff', diff);
-  // console.log('isFit', isFit);
-  // console.log('rect', rect);
-  // console.log('elOffsetHeight', el.offsetHeight);
-  // console.log('scrollHeight', el.scrollHeight);
-  // console.log('el', el);
-  el.style.top =  isFit ? `${top}px` : `${top - el.offsetHeight}px`;
-  el.style.left = `${rect.left}px`;
- }, 30);
+    setTimeout(() => {
+      const hostEl = document.getElementsByClassName('ngx-dropdown open')[0] as HTMLElement;
+      const el = document.getElementsByClassName('ngx-dropdown-menu')[0] as HTMLElement;
+      if (!el) {return; }
+      const rect = hostEl.getBoundingClientRect();
+      const top = this.dropdown.positinY === 'above' ? rect.top - el.offsetHeight : rect.top;
+      const diff = window.innerHeight - rect.top;
+      const isFit = diff > el.scrollHeight;
+      // console.log('diff', diff);
+      // console.log('isFit', isFit);
+      // console.log('rect', rect);
+      // console.log('elOffsetHeight', el.offsetHeight);
+      // console.log('scrollHeight', el.scrollHeight);
+      // console.log('el', el);
+      el.style.top =  isFit ? `${top}px` : `${top - el.offsetHeight}px`;
+      el.style.left = `${rect.left}px`;
+    }, 30);
   }
   getOffset(el): void {
     // let _x = 0;
