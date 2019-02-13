@@ -113,6 +113,17 @@ td.ngx-native-checkmark-cell > * {
   max-width: 175px;
   text-overflow: ellipsis;
 }
+
+.ngx-native-table td .filter-cell {
+  input {
+    padding: 4px 6px;
+    margin: 0;
+    text-align: center;
+    color: #757575;
+    border: 1px solid #d3d3d3;
+    border-radius: 3px;
+  }
+}
 .ngx-native-table th {
   border-bottom: 1px solid #e0e0e0;
 }

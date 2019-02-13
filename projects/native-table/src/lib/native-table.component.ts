@@ -60,6 +60,25 @@ import { TableEditerAction } from './table-action.model';
         </th>
       </thead>
       <tbody>
+
+      <tr>
+        <td
+        *ngIf="rowSelection"
+        rowsToggleAllCheckbox
+        >
+        <!-- <div class="ngx-checkmark-container">
+            <input type="checkbox" /> <span class="ngx-checkmark"></span>
+          </div> -->
+        </td>
+        <td *ngIf="indexNumber" class="ngx-index-number"></td>
+
+        <td *ngFor="let col of visibleColumnDefs" [attr.col-key]="col?.i" >
+           <div class="filter-cell"> <input value="Search {{col.i }}"> </div>
+        </td>
+        <td *ngIf="editTemplate" class="ngx-native-table-editTemplate">
+        </td>
+      </tr>
+
         <tr
           *ngFor="let row of rowData; let i = index"
           [attr.row-id]="row?.id"
@@ -118,6 +137,7 @@ export class NgxNativeTableComponent
   @ViewChildren(RowCheckboxDirective) public rowCheckboxes: QueryList<any>;
   @Input() config: any;
   @Input() pagination = true;
+  @Input() pageSize = 150;
   @Input() rowSelection = true;
   @ViewChild(ConfirmModalComponent) confirmRef: ConfirmModalComponent;
   @Input() indexNumber = true;
@@ -132,7 +152,6 @@ export class NgxNativeTableComponent
   visibleColumnDefs = [];
   hiddenColumnNames: string;
   defaultColumnDefs: any;
-  pageLength: number;
   pageQuery: PageQuery = new PageQuery();
   activeEditMenuIndex: string | number;
   _onDestroy$ = new Subject<void>();
@@ -144,7 +163,8 @@ export class NgxNativeTableComponent
   constructor(public tableService: NativeTableService) {}
 
   ngOnInit() {
-    this.getTableData(this.pageQuery, true);
+    this.pageQuery = {...this.pageQuery, pageSize: this.pageSize};
+    this.getTableData( this.pageQuery, true);
     this.listenToGetDataEvent();
   }
   listenToGetDataEvent(): void {
@@ -209,7 +229,7 @@ export class NgxNativeTableComponent
     } catch (er) {console.log(er); }
   }
   buildRows(data): void {
-    this.pageLength = data.tbl[0].rowCount;
+   // this.pageLength = data.tbl[0].rowCount;
     const rowData = data.tbl[0].r;
     const newRowData = [...rowData].map((row, index) => {
       row.no = index + 1;
