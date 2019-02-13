@@ -12,7 +12,7 @@ import { TableDataInsertComponent } from './table-data-insert/table-data-insert.
 })
 export class DemoNativeTableComponent  {
  config: ApiConfig = {
-  getApi: 'api/post/Permission/Comments/GetDatasetCommentList',
+  getApi: 'api/post/Permission/Operations/GetOperationList',
   insertApi: 'api/post/Permission/Applications/InsertNewApplication',
   updateApi: 'api/post/Permission/Applications/UpdateApplication',
   deleteApi: 'api/post/Permission/Comments/DeleteDatasetComment'

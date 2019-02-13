@@ -102,7 +102,7 @@ import { TableEditerAction } from './table-action.model';
       </tbody>
   </table>
   </div>
-  <ngx-simple-paginator *ngIf="pagination"
+  <ngx-simple-paginator *ngIf="pagination && rowCount"
   [length] = "rowCount"
   [pageSize]="10"
   (page)="onPageChange($event)"
@@ -204,7 +204,7 @@ export class NgxNativeTableComponent
       //  if (newColumns && !this.rowData) {
           this.buildColumns(res);
           this.setColumnsView(res);
-        this.rowCount = res.tbl[0].rowCount;
+        if (!this.rowCount) {this.rowCount = res.tbl[0].rowCount; }
         this.buildRows(res);
       }
     } catch (er) {console.log(er); }
