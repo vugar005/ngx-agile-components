@@ -1,6 +1,5 @@
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { CheckboxStatus } from './checkbox-status';
-import { ApiConfig } from './api-config.model';
 import {
   Component,
   OnInit,
