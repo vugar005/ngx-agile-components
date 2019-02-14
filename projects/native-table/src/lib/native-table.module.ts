@@ -12,6 +12,7 @@ import { TableLoaderOverlayComponent } from './table-loader-overlay/table-loader
 import { TableNoDataOverlayComponent } from './table-no-data-overlay/table-no-data-overlay.component';
 import { NgxDropdownModule } from './dropdown/dropdown.module';
 import { NgxPaginatorModule } from './paginator/paginator.module';
+import { FormsModule } from '@angular/forms';
 // import { NgxPaginatorModule } from 'ngx-simple-paginator';
 // import { NgxDropdownModule } from 'ngx-simple-dropdown';
 
@@ -21,7 +22,8 @@ import { NgxPaginatorModule } from './paginator/paginator.module';
    imports: [
       CommonModule,
       NgxDropdownModule,
-      NgxPaginatorModule
+      NgxPaginatorModule,
+      FormsModule
    ],
    declarations: [
       NgxNativeTableComponent,

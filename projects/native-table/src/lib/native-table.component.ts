@@ -19,23 +19,22 @@ import { NativeTableService } from './native-table.service';
 import { PageQuery } from './page-query.model';
 import { RowCheckboxDirective } from './row-checkbox.directive';
 import { Subject, combineLatest, timer } from 'rxjs';
-import { takeUntil, delay, map, switchMap } from 'rxjs/operators';
+import { takeUntil, delay, map, switchMap, debounceTime } from 'rxjs/operators';
 import { isArray } from 'util';
 import { TableEditerAction } from './table-action.model';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'ngx-native-table',
   template: `
     <confirm-modal *ngIf="shConfirmModal" #confirmRef> </confirm-modal>
-    <ng-template #loadingOverlay>
-      <table-loader-overlay > </table-loader-overlay>
-    </ng-template>
+      <table-loader-overlay [ngStyle]="{'display': loading ? 'block' : 'none'}"> </table-loader-overlay>
     <ng-template #noData>
       <table-no-data-overlay> </table-no-data-overlay>
      </ng-template>
     <ng-container >
-      <div class ="ngx-table-element-wrapper" *ngIf="!loading else loadingOverlay">
-      <table class="ngx-native-table" *ngIf="rowData && visibleColumnDefs else noData ">
+      <form class ="ngx-table-element-wrapper" #f="ngForm" [ngStyle]="{'display': loading ? 'none' : 'block'}">
+      <table class="ngx-native-table"  *ngIf="rowData && visibleColumnDefs else noData ">
       <colgroup>
         <col *ngFor="let col of visibleColumnDefs">
       </colgroup>
@@ -64,17 +63,17 @@ import { TableEditerAction } from './table-action.model';
       <tr>
         <td
         *ngIf="rowSelection"
-        rowsToggleAllCheckbox
         >
-        <!-- <div class="ngx-checkmark-container">
-            <input type="checkbox" /> <span class="ngx-checkmark"></span>
-          </div> -->
         </td>
         <td *ngIf="indexNumber" class="ngx-index-number"></td>
-
-        <td *ngFor="let col of visibleColumnDefs" [attr.col-key]="col?.i" >
-           <div class="filter-cell"> <input value="Search {{col.i }}"> </div>
-        </td>
+          <td *ngFor="let col of visibleColumnDefs" [attr.col-key]="col?.i" >
+          <div class="filter-cell">
+           <input placeholder ="Search {{col.n }}"
+           [(ngModel)]="f.value[col.n]" name ="{{col.n}}"
+           (keydown)="onColumnFilterKeyDown($event)"
+           >
+            </div>
+       </td>
         <td *ngIf="editTemplate" class="ngx-native-table-editTemplate">
         </td>
       </tr>
@@ -119,10 +118,11 @@ import { TableEditerAction } from './table-action.model';
         </tr>
       </tbody>
   </table>
-  </div>
+
+  </form>
   <ngx-simple-paginator *ngIf="pagination && rowCount"
   [length] = "rowCount"
-  [pageSize]="10"
+  [pageSize]="pageSize"
   (page)="onPageChange($event)"
   > </ngx-simple-paginator>
 
@@ -132,8 +132,8 @@ import { TableEditerAction } from './table-action.model';
   styleUrls: ['./native-table.component.scss'],
   providers: [NativeTableService]
 })
-export class NgxNativeTableComponent
-  implements OnInit, AfterViewInit, OnDestroy {
+export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('f') form: NgForm;
   @ViewChildren(RowCheckboxDirective) public rowCheckboxes: QueryList<any>;
   @Input() config: any;
   @Input() pagination = true;
@@ -160,29 +160,50 @@ export class NgxNativeTableComponent
   rowCount: number;
   /** Full table data response */
   tableData: any;
+  pageIndex: number;
+  columnFilterChanged$ = new Subject<void>();
   constructor(public tableService: NativeTableService) {}
 
   ngOnInit() {
-    this.pageQuery = {...this.pageQuery, pageSize: this.pageSize};
-    this.getTableData( this.pageQuery, true);
+ //   this.pageQuery = {...this.pageQuery};
+    this.getTableData( true);
     this.listenToGetDataEvent();
+    this.listenToFormChange();
   }
+  listenToFormChange(): void {
+    this.columnFilterChanged$
+    .pipe(
+      debounceTime(2000),
+      takeUntil(this._onDestroy$)
+      ).subscribe(res => {
+        this.getTableData();
+      });
+  }
+  onColumnFilterKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Enter') {
+      this.getTableData();
+    } else {
+  //    this.columnFilterChanged$.next();
+    }
+  }
+
   listenToGetDataEvent(): void {
     this.tableService.getTableData$
       .pipe(takeUntil(this._onDestroy$))
       .subscribe(res => {
         if (this.visibleColumnDefs.length > 0) {
-          this.getTableData(this.pageQuery, false);
+          this.getTableData( false);
         } else {
-          this.getTableData(this.pageQuery, true);
+          this.getTableData( true);
         }
       });
   }
   onPageChange(e): void {
-    this.pageQuery.pageIndex = e.pageIndex;
-    this.pageQuery.pageSize = e.pageSize;
-    this.getTableData(this.pageQuery);
+    this.pageIndex = e.pageIndex;
+    this.pageSize = e.pageSize;
+    this.getTableData();
   }
+
   ngAfterViewInit() {}
   ngOnDestroy() {
     this._onDestroy$.next();
@@ -201,9 +222,16 @@ export class NgxNativeTableComponent
       );
     return checkedRows;
   }
-  getTableData(pageQuery: PageQuery, newColumns = false): void {
+  getTableData(newColumns = false): void {
     this.loading = true;
-    this.rowData = null;
+  //  this.rowData = null;
+    const pageQuery = {
+      ...this.pageQuery,
+      startLimit: this.pageIndex * this.pageSize || 0,
+      endLimit: this.pageIndex * this.pageSize + this.pageSize || this.pageSize,
+      ...this.form.value
+    };
+    console.log(pageQuery)
     this.tableService.getTableData(pageQuery, this.config).subscribe(
       res => {
         this.tableData = res;
@@ -261,6 +289,7 @@ export class NgxNativeTableComponent
     this.visibleColumnDefs = this.defaultColumnDefs
       .slice()
       .filter(col => !this.hiddenColumnNames.includes(col.i));
+      console.log(this.visibleColumnDefs)
     /** determines which columns to display on table view */
  //   this.toggleColumns(this.visibleColumnDefs);
   }

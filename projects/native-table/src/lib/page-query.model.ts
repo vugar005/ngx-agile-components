@@ -1,10 +1,8 @@
 export class PageQuery {
-  pageIndex ? = 0;
-  pageSize ? = 0;
-  sortingKey ?= '';
-  sortingValue ? = '';
-  filterKey ? = '';
-  filterValue ? = '';
+  startLimit? = 0;
+  endLimit? = 0;
+  // sortingKey ?= '';
+  // sortingValue ? = '';
   constructor() {
   }
 }

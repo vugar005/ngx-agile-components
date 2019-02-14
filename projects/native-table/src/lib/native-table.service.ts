@@ -9,13 +9,9 @@ export class NativeTableService {
   constructor(private http: HttpClient) {}
   getTableData$ = new Subject<void>();
   getTableData(pageQuery: PageQuery, config: ApiConfig): Observable<any> {
-    const kvData = {
-      startLimit: pageQuery.pageIndex * pageQuery.pageSize || 0,
-      endLimit: pageQuery.pageIndex * pageQuery.pageSize + pageQuery.pageSize || undefined,
-    };
-    this.appendAdditionFormData(kvData, config);
+    this.appendAdditionFormData(pageQuery, config);
     const body = {
-      kv: kvData
+      kv: pageQuery
     };
     // isDevMode() ? of(mockData).pipe(delay(1000)) :
     return  this.http.post(config.getApi, JSON.stringify(body));
