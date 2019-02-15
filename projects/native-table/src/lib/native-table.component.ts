@@ -1,3 +1,4 @@
+import { SortChangeModel } from './directives/sort-change.model';
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
 import { CheckboxStatus } from './checkbox-status';
 import {
@@ -33,7 +34,7 @@ import { NgForm } from '@angular/forms';
       <table-no-data-overlay> </table-no-data-overlay>
      </ng-template>
     <ng-container >
-      <form class ="ngx-table-element-wrapper" #f="ngForm" [ngStyle]="{'display': loading ? 'none' : 'block'}">
+      <form class ="ngx-table-element-wrapper" #f="ngForm" [ngStyle]="{'opacity': loading ? '0' : '1'}">
       <table class="ngx-native-table" *ngIf="visibleColumnDefs else noData "  >
       <!-- *ngIf="rowData && visibleColumnDefs else noData " -->
       <colgroup>
@@ -52,8 +53,13 @@ import { NgForm } from '@angular/forms';
         </th>
         <th *ngIf="indexNumber" class="ngx-index-number">#</th>
 
-        <th *ngFor="let col of visibleColumnDefs" [attr.col-key]="col?.i">
-          {{ col.n }}
+        <th *ngFor="let col of visibleColumnDefs" [attr.col-key]="col?.i" [orderByColumn]="col?.i" [sortState] = "sortState" (sortChange)="onSortChange($event)">
+         <div class="th-wrapper" >
+            {{ col.n }}
+          <div class="sort-icon-wrapper">
+            <sort-icon class="sort-icon" > </sort-icon>
+          </div>
+         </div>
         </th>
         <th *ngIf="editTemplate" class="ngx-native-table-editTemplate">
           Editer
@@ -121,7 +127,7 @@ import { NgForm } from '@angular/forms';
   </table>
 
   </form>
-  <ngx-simple-paginator *ngIf="pagination && rowCount"
+  <ngx-simple-paginator *ngIf="pagination"
   [length] = "rowCount"
   [pageSize]="pageSize"
   (page)="onPageChange($event)"
@@ -138,7 +144,7 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
   @ViewChildren(RowCheckboxDirective) public rowCheckboxes: QueryList<any>;
   @Input() config: any;
   @Input() pagination = true;
-  @Input() pageSize = 150;
+  @Input() pageSize = 25;
   @Input() rowSelection = true;
   @ViewChild(ConfirmModalComponent) confirmRef: ConfirmModalComponent;
   @Input() indexNumber = true;
@@ -163,6 +169,7 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
   tableData: any;
   pageIndex: number;
   columnFilterChanged$ = new Subject<void>();
+  sortState: SortChangeModel;
   constructor(public tableService: NativeTableService) {}
 
   ngOnInit() {
@@ -250,11 +257,12 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
   buildTableData(res, newColumns): void {
     try {
       if (res && res.tbl[0] && res.tbl[0].c) {
-      //  if (newColumns && !this.rowData) {
+      //  if (newColumns && !this.rowData) ;
           this.buildColumns(res);
           this.setColumnsView(res);
-         this.rowCount = res.tbl[0].allRowCount;
-        this.buildRows(res);
+          this.rowCount = res.tbl[0].allRowCount;
+          this.buildRows(res);
+          setTimeout(() => this.sortState = {...this.sortState}, 0 );
       }
     } catch (er) {console.log(er); }
   }
@@ -292,13 +300,12 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
     this.visibleColumnDefs = this.defaultColumnDefs
       .slice()
       .filter(col => !this.hiddenColumnNames.includes(col.i));
-      console.log(this.visibleColumnDefs)
     /** determines which columns to display on table view */
  //   this.toggleColumns(this.visibleColumnDefs);
   }
   toggleColumns(): void {
-    console.log( [...this.defaultColumnDefs].filter(colDef => (this.visibleColumnDefs.map(col => col.n))));
-    console.log((this.visibleColumnDefs.map(col => col.n).join(',')));
+  //  console.log( [...this.defaultColumnDefs].filter(colDef => (this.visibleColumnDefs.map(col => col.n))));
+//    console.log((this.visibleColumnDefs.map(col => col.n).join(',')));
    this.visibleColumnDefs = [...this.defaultColumnDefs].
    filter(colDef => ( this.visibleColumnDefs.map(col => col.n).join(',')).includes(colDef.n));
    this.sendHiddenColumns(this.visibleColumnDefs, this.allColumnDefs);
@@ -380,10 +387,16 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
       console.log('removing --', dataArray);
          });
 }
-onPrint() {
-  console.log('on print');
-}
-onExport() {
-  console.log('on export');
-}
+  onPrint() {
+    console.log('on print');
+  }
+  onExport() {
+    console.log('on export');
+  }
+  onSortChange(event: SortChangeModel) {
+    console.log(event);
+    this.pageQuery = {...this.pageQuery, orderByColumn: event.orderByColumn, orderBySort: event.orderBySort };
+   this.sortState = event;
+   this.getTableData();
+  }
   }

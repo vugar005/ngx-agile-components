@@ -13,6 +13,8 @@ import { TableNoDataOverlayComponent } from './table-no-data-overlay/table-no-da
 import { NgxDropdownModule } from './dropdown/dropdown.module';
 import { NgxPaginatorModule } from './paginator/paginator.module';
 import { FormsModule } from '@angular/forms';
+import { SortIconComponent } from './icons/sort-icon/sort-icon.component';
+import { OrderByColumnDirective } from './directives/order-by-column.directive';
 // import { NgxPaginatorModule } from 'ngx-simple-paginator';
 // import { NgxDropdownModule } from 'ngx-simple-dropdown';
 
@@ -35,7 +37,9 @@ import { FormsModule } from '@angular/forms';
       RowsToggleAllCheckboxDirective,
       ConfirmModalComponent,
       TableLoaderOverlayComponent,
-      TableNoDataOverlayComponent
+      TableNoDataOverlayComponent,
+      SortIconComponent,
+      OrderByColumnDirective
    ],
    exports: [
       NgxNativeTableComponent,

@@ -1,0 +1,52 @@
+:host {
+  display: block;
+  width: 1em;
+}
+
+:host-context(.asc) .arrow-up.icon {
+    color: #2980b9;
+    width: 3px;
+    opacity: 1;
+    &:before {
+      border-top: solid 3px currentColor;
+      border-right: solid 3px currentColor;
+    }
+  }
+:host-context(.desc) .arrow-up.icon {
+    color: #2980b9;
+    transform: rotateX(180deg);
+    width: 3px;
+    opacity: 1;
+    &:before {
+      border-top: solid 3px currentColor;
+      border-right: solid 3px currentColor;
+    }
+  }
+  :host-context(.hovered) .arrow-up.icon {
+    opacity: 1;
+  }
+.arrow-up.icon {
+  color: #555555;
+  opacity: 0;
+  position: absolute;
+  margin-left: 0.625em;
+  margin-top: 0.1875em;
+  width: 2px;
+  height: 1em;
+  background-color: currentColor;
+  transition: opacity 300ms ease-in;
+}
+
+.arrow-up.icon:before {
+  content: '';
+  position: absolute;
+  left: -0.3125em;
+  top: 1px;
+  width: 0.625em;
+  height: 0.625em;
+  border-top: solid 2px currentColor;
+  border-right: solid 2px currentColor;
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
+}
+

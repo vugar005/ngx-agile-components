@@ -91,6 +91,16 @@ td.ngx-native-checkmark-cell > * {
   top: 0;
   background: #ffffff;
   z-index: 10;
+  cursor: pointer;
+  .th-wrapper {
+    display: flex;
+    align-items: center;
+    .sort-icon-wrapper {
+      font-size: 10px;
+      margin-left: 6px;
+      height: 14px;
+    }
+  }
 }
 .ngx-native-table tr {
   transition: background-color 0.1s ease-in-out;
