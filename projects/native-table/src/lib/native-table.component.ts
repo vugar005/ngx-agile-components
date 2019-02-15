@@ -34,7 +34,8 @@ import { NgForm } from '@angular/forms';
      </ng-template>
     <ng-container >
       <form class ="ngx-table-element-wrapper" #f="ngForm" [ngStyle]="{'display': loading ? 'none' : 'block'}">
-      <table class="ngx-native-table"  *ngIf="rowData && visibleColumnDefs else noData ">
+      <table class="ngx-native-table" *ngIf="visibleColumnDefs else noData "  >
+      <!-- *ngIf="rowData && visibleColumnDefs else noData " -->
       <colgroup>
         <col *ngFor="let col of visibleColumnDefs">
       </colgroup>
@@ -224,7 +225,8 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
   }
   getTableData(newColumns = false): void {
     this.loading = true;
-  //  this.rowData = null;
+    this.rowData = null;
+    this.rowCount = null;
     const pageQuery = {
       ...this.pageQuery,
       startLimit: this.pageIndex * this.pageSize || 0,
@@ -251,13 +253,14 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
       //  if (newColumns && !this.rowData) {
           this.buildColumns(res);
           this.setColumnsView(res);
-        if (!this.rowCount) {this.rowCount = res.tbl[0].rowCount; }
+         this.rowCount = res.tbl[0].allRowCount;
         this.buildRows(res);
       }
     } catch (er) {console.log(er); }
   }
   buildRows(data): void {
    // this.pageLength = data.tbl[0].rowCount;
+   if (!data.tbl[0].r) {return; }
     const rowData = data.tbl[0].r;
     const newRowData = [...rowData].map((row, index) => {
       row.no = index + 1;
