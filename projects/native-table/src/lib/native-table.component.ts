@@ -28,113 +28,113 @@ import { NgForm } from '@angular/forms';
 @Component({
   selector: 'ngx-native-table',
   template: `
-    <confirm-modal *ngIf="shConfirmModal" #confirmRef> </confirm-modal>
-      <table-loader-overlay [ngStyle]="{'display': loading ? 'block' : 'none'}"> </table-loader-overlay>
-    <ng-template #noData>
-      <table-no-data-overlay> </table-no-data-overlay>
-     </ng-template>
-    <ng-container >
-      <form class ="ngx-table-element-wrapper" #f="ngForm" [ngStyle]="{'opacity': loading ? '0' : '1'}">
-      <table class="ngx-native-table" *ngIf="visibleColumnDefs else noData "  >
-      <!-- *ngIf="rowData && visibleColumnDefs else noData " -->
-      <colgroup>
-        <col *ngFor="let col of visibleColumnDefs">
-      </colgroup>
-      <thead>
-        <th
-          *ngIf="rowSelection"
-          rowsToggleAllCheckbox
-          [(rowCheckboxes)]="rowCheckboxes"
-          class="data-cell"
-        >
-        <!-- <div class="ngx-checkmark-container">
-            <input type="checkbox" /> <span class="ngx-checkmark"></span>
-          </div> -->
-        </th>
-        <th *ngIf="indexNumber" class="ngx-index-number">#</th>
+  <confirm-modal *ngIf="shConfirmModal" #confirmRef> </confirm-modal>
+<table-loader-overlay [ngStyle]="{'display': loading ? 'block' : 'none'}"> </table-loader-overlay>
+<ng-template #noData>
+<table-no-data-overlay> </table-no-data-overlay>
+</ng-template>
+<ng-container >
+<form class ="ngx-table-element-wrapper" #f="ngForm" [ngStyle]="{'opacity': loading ? '0' : '1'}">
+<table class="ngx-native-table" *ngIf="visibleColumnDefs else noData "  >
+<!-- *ngIf="rowData && visibleColumnDefs else noData " -->
+<colgroup>
+  <col *ngFor="let col of visibleColumnDefs">
+</colgroup>
+<thead>
+  <th
+    *ngIf="rowSelection"
+    rowsToggleAllCheckbox
+    [(rowCheckboxes)]="rowCheckboxes"
+    class="data-cell"
+  >
+  <!-- <div class="ngx-checkmark-container">
+      <input type="checkbox" /> <span class="ngx-checkmark"></span>
+    </div> -->
+  </th>
+  <th *ngIf="indexNumber" class="ngx-index-number">#</th>
 
-        <th *ngFor="let col of visibleColumnDefs" [attr.col-key]="col?.i" [orderByColumn]="col?.i" [sortState] = "sortState" (sortChange)="onSortChange($event)">
-         <div class="th-wrapper" >
-            {{ col.n }}
-          <div class="sort-icon-wrapper">
-            <sort-icon class="sort-icon" > </sort-icon>
-          </div>
-         </div>
-        </th>
-        <th *ngIf="editTemplate" class="ngx-native-table-editTemplate">
-          Editer
-        </th>
-      </thead>
-      <tbody>
+  <th *ngFor="let col of visibleColumnDefs" [attr.col-key]="col?.i"
+   [orderByColumn]="col?.i" [sortState] = "sortState" (sortChange)="onSortChange($event)">
+   <div class="th-wrapper" >
+      {{ col.n }}
+    <div class="sort-icon-wrapper">
+      <sort-icon class="sort-icon" > </sort-icon>
+    </div>
+   </div>
+  </th>
+  <th *ngIf="editTemplate" class="ngx-native-table-editTemplate">
+    Editer
+  </th>
+</thead>
+<tbody>
 
-      <tr>
-        <td
-        *ngIf="rowSelection"
-        >
-        </td>
-        <td *ngIf="indexNumber" class="ngx-index-number"></td>
-          <td *ngFor="let col of visibleColumnDefs" [attr.col-key]="col?.i" >
-          <div class="filter-cell">
-           <input placeholder ="Search {{col.n }}"
-           [(ngModel)]="f.value[col.n]" name ="{{col.n}}"
-           (keydown)="onColumnFilterKeyDown($event)"
-           >
-            </div>
-       </td>
-        <td *ngIf="editTemplate" class="ngx-native-table-editTemplate">
-        </td>
-      </tr>
+<tr>
+  <td
+  *ngIf="rowSelection"
+  >
+  </td>
+  <td *ngIf="indexNumber" class="ngx-index-number"></td>
+    <td *ngFor="let col of visibleColumnDefs" [attr.col-key]="col?.i" >
+    <div class="filter-cell">
+     <input placeholder ="Search {{col.n }}"
+     [(ngModel)]="f.value[col.n]" name ="{{col.n}}"
+     (keydown)="onColumnFilterKeyDown($event)"
+     >
+      </div>
+ </td>
+  <td *ngIf="editTemplate" class="ngx-native-table-editTemplate">
+  </td>
+</tr>
 
-        <tr
-          *ngFor="let row of rowData; let i = index"
-          [attr.row-id]="row?.id"
-          [data]="row"
-          rowCheckbox
-        >
-          <td
-            *ngIf="rowSelection"
-            valign="middle"
-            class="ngx-native-checkmark-cell"
-          >
-            <div class="ngx-checkmark-container">
-              <span class="ngx-checkmark"></span>
-            </div>
-          </td>
-          <td *ngIf="indexNumber" class="ngx-index-number">{{ i + 1 }}</td>
+  <tr
+    *ngFor="let row of rowData; let i = index"
+    [attr.row-id]="row?.id"
+    [data]="row"
+    rowCheckbox
+  >
+    <td
+      *ngIf="rowSelection"
+      valign="middle"
+      class="ngx-native-checkmark-cell"
+    >
+      <div class="ngx-checkmark-container">
+        <span class="ngx-checkmark"></span>
+      </div>
+    </td>
+    <td *ngIf="indexNumber" class="ngx-index-number">{{ i + 1 }}</td>
 
-          <td
-            *ngFor="let col of visibleColumnDefs"
-            [attr.col-key]="col?.i"
+    <td
+      *ngFor="let col of visibleColumnDefs"
+      [attr.col-key]="col?.i"
 
-          >
-           <div class="data-cell"> <a [title] ="row[col.i]"> {{ row[col.i] }} </a></div>
-          </td>
-          <td
-            *ngIf="editTemplate"
-            class="ngx-native-table-editTemplate"
-            [ngStyle]="{ 'z-index': activeEditMenuIndex === i ? '2' : '0' }"
-          >
-            <row-editer
-              [row]="row"
-              [index]="i"
-              (open)="activeEditMenuIndex = $event"
-            >
-              <ng-container *ngTemplateOutlet="editTemplate"> </ng-container>
-            </row-editer>
-          </td>
-        </tr>
-      </tbody>
-  </table>
+    >
+     <div class="data-cell"> <a [title] ="row[col.i]"> {{ row[col.i] }} </a></div>
+    </td>
+    <td
+      *ngIf="editTemplate"
+      class="ngx-native-table-editTemplate"
+      [ngStyle]="{ 'z-index': activeEditMenuIndex === i ? '2' : '0' }"
+    >
+      <row-editer
+        [row]="row"
+        [index]="i"
+        (open)="activeEditMenuIndex = $event"
+      >
+        <ng-container *ngTemplateOutlet="editTemplate"> </ng-container>
+      </row-editer>
+    </td>
+  </tr>
+</tbody>
+</table>
 
-  </form>
-  <ngx-simple-paginator *ngIf="pagination"
-  [length] = "rowCount"
-  [pageSize]="pageSize"
-  (page)="onPageChange($event)"
-  > </ngx-simple-paginator>
+</form>
+<ngx-simple-paginator *ngIf="pagination"
+[length] = "rowCount"
+[pageSize]="pageSize"
+(page)="onPageChange($event)"
+> </ngx-simple-paginator>
 
-    </ng-container>
-
+</ng-container>
   `,
   styleUrls: ['./native-table.component.scss'],
   providers: [NativeTableService]
@@ -393,8 +393,7 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
   onExport() {
     console.log('on export');
   }
-  onSortChange(event: SortChangeModel) {
-    console.log(event);
+  onSortChange(event: SortChangeModel): void {
     this.pageQuery = {...this.pageQuery, orderByColumn: event.orderByColumn, orderBySort: event.orderBySort };
    this.sortState = event;
    this.getTableData();

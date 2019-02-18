@@ -6,7 +6,9 @@ button[t-btn] {
   border: 0;
   outline: 0;
 }
-
+* {
+  box-sizing:border-box ;
+}
 p {
   margin: 0;
 }

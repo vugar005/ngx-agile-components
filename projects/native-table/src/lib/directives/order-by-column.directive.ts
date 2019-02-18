@@ -11,12 +11,11 @@ export class OrderByColumnDirective implements AfterViewInit, OnChanges {
   @Output() sortChange = new EventEmitter<SortChangeModel>();
   orderBySort = <string>SortStates.inActive;
   @HostBinding('class') classes = '';
-  @HostListener('click', ['$event']) click() { this.onClick(); }
-  @HostListener('mouseover', ['$event']) mouseOver() {this.onMouseOver(); }
-  @HostListener('mouseleave', ['$event']) mouseLeave () {this.onMouseLeave(); }
+  @HostListener('click', ['$event']) click(event) { this.onClick(event); }
+  @HostListener('mouseover', ['$event']) mouseOver(event) {this.onMouseOver(event); }
+  @HostListener('mouseleave', ['$event']) mouseLeave (event) {this.onMouseLeave(event); }
   constructor() { }
   ngAfterViewInit() {
-  //  setTimeout(() => console.log(this.sortByColumns), 3000)
   }
  //    && JSON.stringify(changes['sortState'].previousValue) === JSON.stringify(changes['sortState'].currentValue)
   ngOnChanges(changes: SimpleChanges) {
@@ -25,13 +24,11 @@ export class OrderByColumnDirective implements AfterViewInit, OnChanges {
       || (changes['sortState'].firstChange)) {return; }
       const sortChangeValue: SortChangeModel = changes['sortState'].currentValue;
         if (sortChangeValue.orderByColumn === this.orderByColumn) {
-          console.log('equal')
           this.orderBySort = <SortStates>sortChangeValue.orderBySort;
           this.classes =   <SortStates>sortChangeValue.orderBySort;
-          console.log(this.classes)
          }
   }
-  onClick() {
+  onClick(e): void {
     switch  (this.orderBySort) {
       case SortStates.inActive:
         this.orderBySort = SortStates.asc;
@@ -46,19 +43,19 @@ export class OrderByColumnDirective implements AfterViewInit, OnChanges {
       case SortStates.desc:
          this.orderBySort = SortStates.inActive;
          this.classes = '';
-        // this.emitSortChange();
+         this.emitSortChange();
         break;
     }
   }
-  emitSortChange() {
+  emitSortChange(): void {
     this.sortChange.next({orderByColumn: this.orderByColumn, orderBySort: this.orderBySort});
   }
-  onMouseOver() {
+  onMouseOver(e): void {
     if (this.orderBySort === SortStates.inActive) {
       this.classes = 'hovered';
     }
   }
-  onMouseLeave() {
+  onMouseLeave(e): void {
     if (this.orderBySort === SortStates.inActive) {
       this.classes = '';
     }

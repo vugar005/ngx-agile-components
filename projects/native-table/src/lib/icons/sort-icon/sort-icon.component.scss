@@ -44,6 +44,7 @@
   top: 1px;
   width: 0.625em;
   height: 0.625em;
+  box-sizing: content-box;
   border-top: solid 2px currentColor;
   border-right: solid 2px currentColor;
   -webkit-transform: rotate(-45deg);
