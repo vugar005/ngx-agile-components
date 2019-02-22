@@ -19,6 +19,5 @@ export class RowsToggleAllCheckboxDirective implements AfterViewInit {
     }
    }
    ngAfterViewInit() {
-      console.log(this.rowCheckboxes)
    }
 }

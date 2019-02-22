@@ -6,6 +6,7 @@ import { NgxNativeTableComponent } from 'projects/native-table/src/public_api';
 import { TableEditerAction } from 'projects/native-table/src/lib/table-action.model';
 import { Observable } from 'rxjs';
 import { TableModel } from './demo-native-table/table.model';
+import { RemoveConfirmComponent } from './demo-native-table/remove-confirm/remove-confirm.component';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,6 @@ constructor(private http: HttpClient, private dialog: MatDialog) { }
         viewName: data.tableName,
         columns: data.hiddenColumnNames
     };
-
     this.postTableData('api/post/InsertHiddenColumn', body).subscribe();
     break;
     case 'insert':
@@ -30,6 +30,11 @@ constructor(private http: HttpClient, private dialog: MatDialog) { }
     });
    console.log('on insert');
       break;
+      case 'remove':
+     const modalRef =  this.dialog.open(RemoveConfirmComponent);
+      modalRef.afterClosed().subscribe(res => console.log(res));
+     console.log('remove');
+        break;
     case 'edit':
     this.dialog.open(templateComponent, {
       data: { table: table, row: actionObject.data}
@@ -43,7 +48,7 @@ constructor(private http: HttpClient, private dialog: MatDialog) { }
       break;
     case'unConfirm':
     //  this.onUnConfirm();
-    console.log('on confirm');
+    console.log('on Unconfirm');
       break;
   }
 }

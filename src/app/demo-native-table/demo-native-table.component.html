@@ -1,6 +1,7 @@
 
 <button (click)="table.getCheckedRows()">Rows</button>
 <button (click)="table?.addData()">Add Data</button>
+<button (click)="table?.onPrint()">On Print</button>
 <button (click)="table?.onMultiRemove()" [disabled]="!table?.isRowSelected">Remove Selected</button>
 
 <mat-form-field >
@@ -30,9 +31,17 @@
 </ngx-native-table>
 </div>
 
-<ng-template #editer>
-   <button [attr.t-btn]="'edit'">Edit</button>
+<ng-template #editer let-row>
+    <button mat-button [matMenuTriggerFor]="menu">EDIT</button>
+        <mat-menu #menu="matMenu" class="table-editer-menu">
+            <button mat-menu-item (click)="onOptClick({row: row, type: 'edit'})" >EDIT</button>
+            <button mat-menu-item (click)="onOptClick({row: row, type: 'remove'})">Remove</button>
+            <button mat-menu-item (click)="onOptClick({row: row, type: 'confirm'})" >Confirm</button>
+            <button mat-menu-item (click)="onOptClick({row: row, type: 'unConfirm'})" >UNCONFIRM</button>
+        </mat-menu>
+   <!-- <button [attr.t-btn]="'edit'">Edit</button>
    <button [attr.t-btn]="'remove'">Remove</button>
    <button [attr.t-btn]="'confirm'">Confirm</button>
-   <button [attr.t-btn]="'unConfirm'">UnConfirm</button>
+   <button [attr.t-btn]="'unConfirm'">UnConfirm</button> -->
+
   </ng-template>

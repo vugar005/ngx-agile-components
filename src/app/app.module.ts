@@ -20,6 +20,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import { FormUtilsModule } from 'projects/form-utils/src/lib/form-utils.module';
 import {MatSelectModule} from '@angular/material/select';
+import { RemoveConfirmComponent } from './demo-native-table/remove-confirm/remove-confirm.component';
 
 @NgModule({
    declarations: [
@@ -27,6 +28,7 @@ import {MatSelectModule} from '@angular/material/select';
       DemoDropdownComponent,
       DemoNativeTableComponent,
       TableDataInsertComponent,
+      RemoveConfirmComponent
    ],
    imports: [
       BrowserModule,
@@ -49,7 +51,8 @@ import {MatSelectModule} from '@angular/material/select';
      {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}
    ],
    entryComponents: [
-      TableDataInsertComponent
+      TableDataInsertComponent,
+      RemoveConfirmComponent
    ],
    bootstrap: [
       AppComponent

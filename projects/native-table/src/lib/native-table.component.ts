@@ -35,7 +35,7 @@ import { NgForm } from '@angular/forms';
 </ng-template>
 <ng-container >
 <form class ="ngx-table-element-wrapper" #f="ngForm" [ngStyle]="{'opacity': loading ? '0' : '1'}">
-<table class="ngx-native-table" *ngIf="visibleColumnDefs else noData "  >
+<table class="ngx-native-table" *ngIf="visibleColumnDefs else noData " id="ngx-native-table" >
 <!-- *ngIf="rowData && visibleColumnDefs else noData " -->
 <colgroup>
   <col *ngFor="let col of visibleColumnDefs">
@@ -44,7 +44,6 @@ import { NgForm } from '@angular/forms';
   <th
     *ngIf="rowSelection"
     rowsToggleAllCheckbox
-    [(rowCheckboxes)]="rowCheckboxes"
     class="data-cell"
   >
   <!-- <div class="ngx-checkmark-container">
@@ -115,13 +114,7 @@ import { NgForm } from '@angular/forms';
       class="ngx-native-table-editTemplate"
       [ngStyle]="{ 'z-index': activeEditMenuIndex === i ? '2' : '0' }"
     >
-      <row-editer
-        [row]="row"
-        [index]="i"
-        (open)="activeEditMenuIndex = $event"
-      >
-        <ng-container *ngTemplateOutlet="editTemplate"> </ng-container>
-      </row-editer>
+        <ng-container *ngTemplateOutlet="editTemplate;context: {row: row}"> </ng-container>
     </td>
   </tr>
 </tbody>
@@ -173,7 +166,6 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
   constructor(public tableService: NativeTableService) {}
 
   ngOnInit() {
- //   this.pageQuery = {...this.pageQuery};
     this.getTableData( true);
     this.listenToGetDataEvent();
     this.listenToFormChange();
@@ -240,7 +232,6 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
       endLimit: this.pageIndex * this.pageSize + this.pageSize || this.pageSize,
       ...this.form.value
     };
-    console.log(pageQuery)
     this.tableService.getTableData(pageQuery, this.config).subscribe(
       res => {
         this.tableData = res;
@@ -315,7 +306,6 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
     const hiddenColumnNames = [...allColumnDefs]
    .filter(colDef => !(visibleColumnDefs.map(col => col.n).join(',').includes(colDef.n)))
    .map(colDef => colDef.i) ;
-   console.log(hiddenColumnNames);
    const hiddenColumnNamesSplitted: string = hiddenColumnNames ? hiddenColumnNames.join(',') : '';
    const tableName: string = this.tableData && this.tableData.tbl && this.tableData.tbl[0] && this.tableData.tbl[0].tn;
    this.actionClick.next({type: 'toggleColumnView', data: {
@@ -351,7 +341,6 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
   try {
     this.shConfirmModal = true;
     const rows = this.getCheckedRows();
-    console.log(rows)
     setTimeout(
       () =>
         this.confirmRef.closeRef$.subscribe(res => {
@@ -379,7 +368,6 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
           switchMap(res => this.tableService.removeRow(row.data, this.config)))
         );
   });
-  console.log(dataArray);
    combineLatest(...combinedObsArray).subscribe(
          res => {
     //  this.rowRemoved.next(row);
@@ -389,6 +377,22 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
 }
   onPrint() {
     console.log('on print');
+    let printContent;
+    let tableContent = document.getElementById("ngx-native-table");
+    const printStyles = '' +
+    '<style type="text/css">' +
+    'table th, table td {' +
+    'border-bottom: 1px solid #e0e0e0;' +
+    'padding;0.5em;' +
+    '}' +
+    '</style>';
+    printContent = tableContent.outerHTML + printStyles;
+    const WinPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
+    WinPrint.document.write(printContent);
+    WinPrint.document.close();
+    WinPrint.focus();
+    WinPrint.print();
+    WinPrint.close();
   }
   onExport() {
     console.log('on export');

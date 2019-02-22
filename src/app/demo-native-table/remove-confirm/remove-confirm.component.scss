@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  color: rgba(0,0,0,.87);
+}
+button {
+  height: auto;
+  border: 0;
+  outline: 0;
+  padding: 12px 16px;
+  background: transparent;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  cursor: pointer;
+  &:focus {
+    outline: 0;
+  }
+  &:hover {
+    background: #eee;
+  }
+}
+.ng-modal-content {
+  display: flex;
+  flex-direction: column;
+  .ng-modal-actions {
+    padding-top: 12px;
+  }
+}
