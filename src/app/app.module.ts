@@ -21,6 +21,7 @@ import {MatButtonModule} from '@angular/material/button';
 import { FormUtilsModule } from 'projects/form-utils/src/lib/form-utils.module';
 import {MatSelectModule} from '@angular/material/select';
 import { RemoveConfirmComponent } from './demo-native-table/remove-confirm/remove-confirm.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 @NgModule({
    declarations: [
@@ -44,7 +45,8 @@ import { RemoveConfirmComponent } from './demo-native-table/remove-confirm/remov
       MatInputModule,
       FormsModule,
       MatButtonModule,
-      MatSelectModule
+      MatSelectModule,
+      MatCheckboxModule
    ],
    providers: [
      {provide: HTTP_INTERCEPTORS, useClass: APIInterceptor, multi: true},

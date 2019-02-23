@@ -27,11 +27,16 @@
     [rowSelection]="true"
     [dialogRef]="dialog"
     (actionClick)="onOptClick($event)"
+    [extraColumnTemplates]="[table_column]"
+    [exceptionalColumnNames]="['actions', 'no', 'operationEn', 'moduleEn', 'active']"
+    (tdCellClick)="onCellClick($event)"
 >
+
+
 </ngx-native-table>
 </div>
 
-<ng-template #editer let-row>
+<ng-template #editer let-row = "row">
     <button mat-button [matMenuTriggerFor]="menu">EDIT</button>
         <mat-menu #menu="matMenu" class="table-editer-menu">
             <button mat-menu-item (click)="onOptClick({row: row, type: 'edit'})" >EDIT</button>
@@ -45,3 +50,13 @@
    <button [attr.t-btn]="'unConfirm'">UnConfirm</button> -->
 
   </ng-template>
+
+<ng-template #table_column let-row = "row" let-type="type">
+  <div class="extra-column">
+      <div class="extra-column__th" *ngIf="type ==='th'">Check</div>
+      <div class="extra-column__td" *ngIf="type ==='td'">
+        <mat-checkbox [checked]="checkedOps?.includes(row?.id)"(click)="onCheckBoxClick()"></mat-checkbox>
+      </div>
+    </div>
+</ng-template>
+

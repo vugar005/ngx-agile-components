@@ -61,6 +61,10 @@ import { NgForm } from '@angular/forms';
     </div>
    </div>
   </th>
+  <th *ngFor="let extraColumn of extraColumnTemplates">
+   <ng-container *ngTemplateOutlet="extraColumn;context: {row: row, type: 'th'}"> </ng-container>
+  </th>
+
   <th *ngIf="editTemplate" class="ngx-native-table-editTemplate">
     Editer
   </th>
@@ -81,13 +85,15 @@ import { NgForm } from '@angular/forms';
      >
       </div>
  </td>
+ <td *ngFor="let column of extraColumnTemplates">
+  </td>
   <td *ngIf="editTemplate" class="ngx-native-table-editTemplate">
   </td>
 </tr>
 
   <tr
     *ngFor="let row of rowData; let i = index"
-    [attr.row-id]="row?.id"
+    [attr.row_id]="row?.id"
     [data]="row"
     rowCheckbox
   >
@@ -104,10 +110,13 @@ import { NgForm } from '@angular/forms';
 
     <td
       *ngFor="let col of visibleColumnDefs"
-      [attr.col-key]="col?.i"
-
+      [attr.col_key]="col?.i"
+      (click)="onTdCellClick({row: row, col_key: col.i})"
     >
      <div class="data-cell"> <a [title] ="row[col.i]"> {{ row[col.i] }} </a></div>
+    </td>
+    <td *ngFor="let extraColumn of extraColumnTemplates">
+      <ng-container *ngTemplateOutlet="extraColumn;context: {row: row, type: 'td'}"> </ng-container>
     </td>
     <td
       *ngIf="editTemplate"
@@ -116,6 +125,7 @@ import { NgForm } from '@angular/forms';
     >
         <ng-container *ngTemplateOutlet="editTemplate;context: {row: row}"> </ng-container>
     </td>
+
   </tr>
 </tbody>
 </table>
@@ -142,7 +152,9 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
   @ViewChild(ConfirmModalComponent) confirmRef: ConfirmModalComponent;
   @Input() indexNumber = true;
   @Input() editTemplate: TemplateRef<any>;
+  @Input() extraColumnTemplates: TemplateRef<any>[];
   @Input() dialogRef: any;
+  @Output() tdCellClick = new EventEmitter<{row: any, col_key: string}>();
   @Output() rowRemoved = new EventEmitter();
   @Output()
   actionClick = new EventEmitter<TableEditerAction>();
@@ -151,6 +163,7 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
   allColumnDefs: any;
   visibleColumnDefs = [];
   hiddenColumnNames: string;
+  @Input() exceptionalColumnNames = ['actions, no']; // not received from server
   defaultColumnDefs: any;
   pageQuery: PageQuery = new PageQuery();
   activeEditMenuIndex: string | number;
@@ -271,7 +284,7 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
     const customSequentialColumndDefs = [];
     const columnDefs = data.tbl[0].c;
     const seqColumns = data.tbl[0].seqColumn.split(',');
-    seqColumns.push('actions', 'no');
+    seqColumns.push(this.exceptionalColumnNames);
     seqColumns.forEach(element => {
       columnDefs.forEach((colDef: any) => {
         if (colDef.i === element) {
@@ -288,11 +301,11 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
     this.defaultColumnDefs = [...this.allColumnDefs].filter(colDef =>
       defaultColumnNames.includes(colDef.i)
     );
-    this.visibleColumnDefs = this.defaultColumnDefs
-      .slice()
-      .filter(col => !this.hiddenColumnNames.includes(col.i));
-    /** determines which columns to display on table view */
- //   this.toggleColumns(this.visibleColumnDefs);
+    this.visibleColumnDefs = res.tbl[0].c;
+    // this.defaultColumnDefs
+    //   .slice()
+    //   .filter(col => !this.hiddenColumnNames.includes(col.i));
+      console.log(this.visibleColumnDefs)
   }
   toggleColumns(): void {
   //  console.log( [...this.defaultColumnDefs].filter(colDef => (this.visibleColumnDefs.map(col => col.n))));
@@ -378,7 +391,7 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
   onPrint() {
     console.log('on print');
     let printContent;
-    let tableContent = document.getElementById("ngx-native-table");
+    const tableContent = document.getElementById('ngx-native-table');
     const printStyles = '' +
     '<style type="text/css">' +
     'table th, table td {' +
@@ -401,5 +414,8 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
     this.pageQuery = {...this.pageQuery, orderByColumn: event.orderByColumn, orderBySort: event.orderBySort };
    this.sortState = event;
    this.getTableData();
+  }
+  onTdCellClick(data: {row: any, col_key: string}) {
+    this.tdCellClick.next(data);
   }
   }

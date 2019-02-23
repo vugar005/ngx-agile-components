@@ -3,6 +3,20 @@
 }
 .table-wrapper {
 width: 700px;
+width: 100vw;
 height: 300px;
 overflow: auto;
 }
+
+/deep/ .ngx-native-table {
+
+  th {
+
+  }
+
+td {
+
+}
+
+}
+
