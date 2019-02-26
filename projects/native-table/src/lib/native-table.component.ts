@@ -62,7 +62,7 @@ import { NgForm } from '@angular/forms';
    </div>
   </th>
   <th *ngFor="let extraColumn of extraColumnTemplates">
-   <ng-container *ngTemplateOutlet="extraColumn;context: {row: row, type: 'th'}"> </ng-container>
+   <ng-container *ngTemplateOutlet="extraColumn;context: {type: 'th'}"> </ng-container>
   </th>
 
   <th *ngIf="editTemplate" class="ngx-native-table-editTemplate">

@@ -18,10 +18,10 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
-import { FormUtilsModule } from 'projects/form-utils/src/lib/form-utils.module';
 import {MatSelectModule} from '@angular/material/select';
 import { RemoveConfirmComponent } from './demo-native-table/remove-confirm/remove-confirm.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { FormUtilsModule } from './demo-native-table/form-utils/form-utils.module';
 
 @NgModule({
    declarations: [
@@ -35,7 +35,6 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
       BrowserModule,
       BrowserAnimationsModule,
       NgxDropdownModule,
-      FormUtilsModule,
       NgxNativeTableModule,
       AppRoutingModule,
       HttpClientModule,
@@ -46,7 +45,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
       FormsModule,
       MatButtonModule,
       MatSelectModule,
-      MatCheckboxModule
+      MatCheckboxModule,
+      FormUtilsModule
    ],
    providers: [
      {provide: HTTP_INTERCEPTORS, useClass: APIInterceptor, multi: true},

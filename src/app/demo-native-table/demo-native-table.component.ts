@@ -14,7 +14,7 @@ import { MatCheckbox } from '@angular/material/checkbox';
 })
 export class DemoNativeTableComponent  {
  config: ApiConfig = {
-  getApi: 'api/get/Permission/UserRoles/GetUserRolePrivilege',
+  getApi: 'api/post/Permission/Applications/GetApplicationList',
   insertApi: 'api/post/Permission/Applications/InsertNewApplication',
   updateApi: 'api/post/Permission/Applications/UpdateApplication',
   deleteApi: 'api/post/Permission/Comments/DeleteDatasetComment'
@@ -27,7 +27,7 @@ export class DemoNativeTableComponent  {
     .subscribe((res: any) => this.checkedOps  = res.tbl[0].r.map(r => r.id));
   }
   onOptClick(event) {
-//  this.sharedService.tableActionImplement(event, this.table, TableDataInsertComponent);
+     this.sharedService.tableActionImplement(event, this.table, TableDataInsertComponent);
   }
   isChecked(rowData) {
     if  (!rowData && this.checkedOps) {return; }

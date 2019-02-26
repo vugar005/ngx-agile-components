@@ -39,10 +39,10 @@
 <ng-template #editer let-row = "row">
     <button mat-button [matMenuTriggerFor]="menu">EDIT</button>
         <mat-menu #menu="matMenu" class="table-editer-menu">
-            <button mat-menu-item (click)="onOptClick({row: row, type: 'edit'})" >EDIT</button>
-            <button mat-menu-item (click)="onOptClick({row: row, type: 'remove'})">Remove</button>
-            <button mat-menu-item (click)="onOptClick({row: row, type: 'confirm'})" >Confirm</button>
-            <button mat-menu-item (click)="onOptClick({row: row, type: 'unConfirm'})" >UNCONFIRM</button>
+            <button mat-menu-item (click)="onOptClick({data: row, type: 'edit'})" >EDIT</button>
+            <button mat-menu-item (click)="onOptClick({data: row, type: 'remove'})">Remove</button>
+            <button mat-menu-item (click)="onOptClick({data: row, type: 'confirm'})" >Confirm</button>
+            <button mat-menu-item (click)="onOptClick({data: row, type: 'unConfirm'})" >UNCONFIRM</button>
         </mat-menu>
    <!-- <button [attr.t-btn]="'edit'">Edit</button>
    <button [attr.t-btn]="'remove'">Remove</button>

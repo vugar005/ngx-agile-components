@@ -15,8 +15,8 @@ export class SharedService {
 
 constructor(private http: HttpClient, private dialog: MatDialog) { }
   tableActionImplement(actionObject: TableEditerAction, table: NgxNativeTableComponent, templateComponent) {
-  switch (actionObject.type) {
-    case 'toggleColumnView':
+  switch (actionObject.type.toLowerCase()) {
+    case 'togglecolumnview':
     const data = actionObject.data;
     const body = {
         viewName: data.tableName,
@@ -28,25 +28,21 @@ constructor(private http: HttpClient, private dialog: MatDialog) { }
     this.dialog.open(templateComponent, {
       data: { table: table, row: undefined}
     });
-   console.log('on insert');
       break;
       case 'remove':
      const modalRef =  this.dialog.open(RemoveConfirmComponent);
       modalRef.afterClosed().subscribe(res => console.log(res));
-     console.log('remove');
         break;
     case 'edit':
     this.dialog.open(templateComponent, {
       data: { table: table, row: actionObject.data}
     });
-   console.log('on edit');
       break;
     case 'confirm':
    //   this.onConfirm();
-   console.log(actionObject.data);
    console.log('on confirm');
       break;
-    case'unConfirm':
+    case'unconfirm':
     //  this.onUnConfirm();
     console.log('on Unconfirm');
       break;

@@ -2,9 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RowEditerComponent } from './row-editer/row-editer.component';
 import { RowInsertDialogComponent } from './row-insert-dialog/row-insert-dialog.component';
-import { InsertTableDataDirective } from './insert-table-data.directive';
+
 import { NgxNativeTableComponent } from './native-table.component';
-import { UpdateTableDataDirective } from './update-table-data.directive';
+
 import { RowCheckboxDirective } from './row-checkbox.directive';
 import { RowsToggleAllCheckboxDirective } from './rows-toggle-all-checkbox.directive';
 import { ConfirmModalComponent } from './confirm-modal/confirm-modal.component';
@@ -31,8 +31,6 @@ import { OrderByColumnDirective } from './directives/order-by-column.directive';
       NgxNativeTableComponent,
       RowEditerComponent,
       RowInsertDialogComponent,
-      InsertTableDataDirective,
-      UpdateTableDataDirective,
       RowCheckboxDirective,
       RowsToggleAllCheckboxDirective,
       ConfirmModalComponent,
@@ -43,8 +41,7 @@ import { OrderByColumnDirective } from './directives/order-by-column.directive';
    ],
    exports: [
       NgxNativeTableComponent,
-      InsertTableDataDirective,
-      UpdateTableDataDirective
+
    ]
 })
 export class NgxNativeTableModule { }
