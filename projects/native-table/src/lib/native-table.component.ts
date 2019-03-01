@@ -301,11 +301,10 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
     this.defaultColumnDefs = [...this.allColumnDefs].filter(colDef =>
       defaultColumnNames.includes(colDef.i)
     );
-    this.visibleColumnDefs = res.tbl[0].c;
-    // this.defaultColumnDefs
-    //   .slice()
-    //   .filter(col => !this.hiddenColumnNames.includes(col.i));
-      console.log(this.visibleColumnDefs)
+    this.visibleColumnDefs = res.tbl[0].c
+     this.defaultColumnDefs
+       .slice()
+       .filter(col => !this.hiddenColumnNames.includes(col.i));
   }
   toggleColumns(): void {
   //  console.log( [...this.defaultColumnDefs].filter(colDef => (this.visibleColumnDefs.map(col => col.n))));
@@ -352,18 +351,19 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
   }
   onMultiRemove(): void {
   try {
-    this.shConfirmModal = true;
-    const rows = this.getCheckedRows();
-    setTimeout(
-      () =>
-        this.confirmRef.closeRef$.subscribe(res => {
-          if (res === 'yes') {
-            this.removeData(rows);
-          }
-          this.shConfirmModal = false;
-        }),
-      0
-    );
+    if (!this.getCheckedRows) {return; }
+    const rows = this.getCheckedRows().map(checkRow => checkRow.data);
+    this.actionClick.next({type: 'delete', data: rows});
+    // setTimeout(
+    //   () =>
+    //     this.confirmRef.closeRef$.subscribe(res => {
+    //       if (res === 'yes') {
+    //         this.removeData(rows);
+    //       }
+    //       this.shConfirmModal = false;
+    //     }),
+    //   0
+    // );
   } catch (er) {
     console.log(er);
   }

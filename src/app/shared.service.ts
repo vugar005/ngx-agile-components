@@ -38,6 +38,9 @@ constructor(private http: HttpClient, private dialog: MatDialog) { }
       data: { table: table, row: actionObject.data}
     });
       break;
+    case 'delete':
+      console.log(actionObject)
+    break;
     case 'confirm':
    //   this.onConfirm();
    console.log('on confirm');
