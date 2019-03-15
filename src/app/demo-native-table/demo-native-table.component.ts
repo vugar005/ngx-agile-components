@@ -17,7 +17,8 @@ export class DemoNativeTableComponent  {
   getApi: 'api/post/Permission/Applications/GetApplicationList',
   insertApi: 'api/post/Permission/Applications/InsertNewApplication',
   updateApi: 'api/post/Permission/Applications/UpdateApplication',
-  deleteApi: 'api/post/Permission/Comments/DeleteDatasetComment'
+  deleteApi: 'api/post/Permission/Comments/DeleteDatasetComment',
+  additionalFormData: {test: '1234'}
  };
  checkedOps = [];
  @ViewChild('table') table: NgxNativeTableComponent;

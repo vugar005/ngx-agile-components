@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { NgxNativeTableComponent } from 'projects/native-table/src/lib/native-table.component';
+import { SharedService } from 'src/app/shared.service';
 @Directive({
   selector: '[insertTableData]'
 })
@@ -27,7 +28,7 @@ export class InsertTableDataDirective implements AfterViewInit, OnChanges {
   onclick() {
     this.tryInsertTableData();
   }
-  constructor() {}
+  constructor(private sharedService: SharedService) {}
   isValid() {
     console.log(this.form && !this.form.valid);
     //    this.disabled = this.form && !this.form.valid;
@@ -60,8 +61,13 @@ export class InsertTableDataDirective implements AfterViewInit, OnChanges {
   }
   insertTableData() {
     this.isLoading = true;
-    this.table.tableService
-      .insertTableData(this.form, this.table.config)
+    console.log(this.form)
+    const data = {
+      kv: {...this.form.value}
+    };
+    console.log(data)
+    this.sharedService
+      .postTableData( this.table.config.insertApi, data, this.table)
       .subscribe(
         res => {
           if (res && res.err && res.err.length > 0) {

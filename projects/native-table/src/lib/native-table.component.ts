@@ -301,7 +301,8 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
     this.defaultColumnDefs = [...this.allColumnDefs].filter(colDef =>
       defaultColumnNames.includes(colDef.i)
     );
-    this.visibleColumnDefs = res.tbl[0].c
+    // res.tbl[0].c
+    this.visibleColumnDefs =
      this.defaultColumnDefs
        .slice()
        .filter(col => !this.hiddenColumnNames.includes(col.i));
@@ -336,58 +337,7 @@ export class NgxNativeTableComponent implements OnInit, AfterViewInit, OnDestroy
   addData(): void {
     this.actionClick.next({type: 'insert'});
   }
-  onRemove(data): void {
-    this.shConfirmModal = true;
-    setTimeout(
-      () =>
-        this.confirmRef.closeRef$.subscribe(res => {
-          if (res === 'yes') {
-            this.removeData(data);
-          }
-          this.shConfirmModal = false;
-        }),
-      0
-    );
-  }
-  onMultiRemove(): void {
-  try {
-    if (!this.getCheckedRows) {return; }
-    const rows = this.getCheckedRows().map(checkRow => checkRow.data);
-    this.actionClick.next({type: 'delete', data: rows});
-    // setTimeout(
-    //   () =>
-    //     this.confirmRef.closeRef$.subscribe(res => {
-    //       if (res === 'yes') {
-    //         this.removeData(rows);
-    //       }
-    //       this.shConfirmModal = false;
-    //     }),
-    //   0
-    // );
-  } catch (er) {
-    console.log(er);
-  }
-  }
-  removeData(data): void {
-    const dataArray: RowCheckboxDirective[] = [];
-    const combinedObsArray = [];
-    if (isArray(data)) {
-      dataArray.push(...data);
-    } else {
-      dataArray.push(data);
-    }
-    dataArray.forEach((row: RowCheckboxDirective, i) => {
-        combinedObsArray.push( timer(i * 50).pipe(
-          switchMap(res => this.tableService.removeRow(row.data, this.config)))
-        );
-  });
-   combineLatest(...combinedObsArray).subscribe(
-         res => {
-    //  this.rowRemoved.next(row);
-      this.tableService.getTableData$.next();
-      console.log('removing --', dataArray);
-         });
-}
+
   onPrint() {
     console.log('on print');
     let printContent;

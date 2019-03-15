@@ -1,3 +1,4 @@
+import { SharedService } from './../../../shared.service';
 import {
   Directive,
   Input,
@@ -22,7 +23,7 @@ export class UpdateTableDataDirective implements AfterViewInit {
   onclick() {
     this.tryUpdateTableData();
   }
-  constructor() {}
+  constructor(private sharedService: SharedService) {}
   ngAfterViewInit() {}
   tryUpdateTableData() {
     if (!this.form) {
@@ -49,8 +50,12 @@ export class UpdateTableDataDirective implements AfterViewInit {
   }
   updateTableData() {
     this.isLoading = true;
-    this.table.tableService
-      .updateTableData(this.form, this.table.config)
+    this.isLoading = true;
+    const data = {
+      kv: {...this.form.value}
+    };
+    this.sharedService
+      .postTableData( this.table.config.updateApi, data, this.table)
       .subscribe(
         res => {
           this.isLoading = false;

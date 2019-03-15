@@ -49,7 +49,7 @@ export class RowEditerComponent  {
     };
     switch (attribute) {
       case 'remove':
-        this.tableComponent.onRemove(obj);
+    //    this.tableComponent.onRemove(obj);
         break;
         default:
         this.tableComponent.actionClick.next(obj);

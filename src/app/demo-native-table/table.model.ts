@@ -1,5 +1,5 @@
 export interface TableModel {
-  err: string;
+  err: any;
   kv: any;
   tbl: Tbl[];
 }
